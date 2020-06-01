@@ -1,17 +1,19 @@
 package com.example.intervaltimer;
 
+import android.nfc.Tag;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.os.SystemClock;
 
@@ -20,11 +22,16 @@ public class MainActivity extends AppCompatActivity {
 
     //Declare Vars used
     TextView display;
-    Button start, stop, reset;
+    Button start, stop, reset, set;
     Handler handler;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
-    int Seconds, Minutes, MilliSeconds ;
+    int inputSeconds, Seconds, Minutes, MilliSeconds ;
 
+    EditText setSec;
+
+    // Spinner Example
+//    Spinner setSec;
+//    String secList[] = {"1","2","3","4","5","6","7","8","9","10"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +43,53 @@ public class MainActivity extends AppCompatActivity {
         start = (Button)findViewById(R.id.startButton);
         stop  = (Button)findViewById(R.id.stopButton);
         reset = (Button)findViewById(R.id.resetButton);
-
+        set = (Button)findViewById(R.id.setTimer);
         handler = new Handler();
+
+        setSec = (EditText)findViewById(R.id.setSeconds);
+
+        // Spinner Example
+//        Spinner setSec = (Spinner)findViewById(R.id.spinner);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, secList);
+//        setSec.setAdapter(adapter);
+
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                inputSeconds = Integer.valueOf(setSec.getText().toString());
+
+                Seconds = inputSeconds % 60 ;
+                Minutes =  inputSeconds / 60 ;
+                MilliSeconds = 0 ;
+
+                display.setText("" + Minutes + ":"
+                        + String.format("%02d", Seconds) + "."
+                        + String.format("%03d", MilliSeconds));
+            }
+        });
+
+        // Ex. use number pad ENTER/Done click to do an action
+        setSec.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    //Log.i(TAG,"Enter pressed");
+                }
+                inputSeconds = Integer.valueOf(setSec.getText().toString());
+
+                TimeBuff = inputSeconds * 1000;
+
+                Seconds = inputSeconds % 60 ;
+                Minutes =  inputSeconds / 60 ;
+                MilliSeconds = 0 ;
+
+                display.setText("" + Minutes + ":"
+                        + String.format("%02d", Seconds) + "."
+                        + String.format("%03d", MilliSeconds));
+                return false;
+            }
+        });
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(runnable, 0);
 
                 reset.setEnabled(false);
+                set.setEnabled(false);
 
             }
         });
@@ -60,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.removeCallbacks(runnable);
 
                 reset.setEnabled(true);
+                set.setEnabled(true);
 
             }
         });
