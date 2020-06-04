@@ -1,6 +1,6 @@
 package com.example.intervaltimer;
 
-import android.nfc.Tag;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,10 +24,12 @@ public class MainActivity extends AppCompatActivity {
     TextView display;
     Button start, stop, reset, set;
     Handler handler;
-    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
-    int inputSeconds, Seconds, Minutes, MilliSeconds ;
+    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
+    int inputSeconds, Seconds, Minutes, MilliSeconds, SetTime ;
 
     EditText setSec;
+
+    MediaPlayer shortBeep;
 
     // Spinner Example
 //    Spinner setSec;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        shortBeep = MediaPlayer.create(this, R.raw.short_beep01);
 
         // Create the buttons and timer in code land to match layout land
         display = (TextView)findViewById(R.id.display);
@@ -53,40 +57,45 @@ public class MainActivity extends AppCompatActivity {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, secList);
 //        setSec.setAdapter(adapter);
 
-        set.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                inputSeconds = Integer.valueOf(setSec.getText().toString());
-
-                Seconds = inputSeconds % 60 ;
-                Minutes =  inputSeconds / 60 ;
-                MilliSeconds = 0 ;
-
-                display.setText("" + Minutes + ":"
-                        + String.format("%02d", Seconds) + "."
-                        + String.format("%03d", MilliSeconds));
-            }
-        });
+//        set.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                inputSeconds = Integer.valueOf(setSec.getText().toString());
+//
+//                Seconds = inputSeconds % 60 ;
+//                Minutes =  inputSeconds / 60 ;
+//                MilliSeconds = 0 ;
+//
+//                display.setText("" + String.format("%02d", Minutes) + ":"
+//                        + String.format("%02d", Seconds) + "."
+//                        + String.format("%03d", MilliSeconds));
+//            }
+//        });
 
         // Ex. use number pad ENTER/Done click to do an action
         setSec.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    //Log.i(TAG,"Enter pressed");
+                // Check if null entry
+                if (setSec.getText().toString().trim().length() == 0) {
+                    inputSeconds = 0;
+                } else {
+                    inputSeconds = Integer.valueOf(setSec.getText().toString());
                 }
-                inputSeconds = Integer.valueOf(setSec.getText().toString());
 
-                TimeBuff = inputSeconds * 1000;
+                SetTime = inputSeconds;
+                TimeBuff = inputSeconds * 1000; //TimeBuff in millisec
 
                 Seconds = inputSeconds % 60 ;
                 Minutes =  inputSeconds / 60 ;
                 MilliSeconds = 0 ;
 
-                display.setText("" + Minutes + ":"
+                display.setText("" + String.format("%02d", Minutes) + ":"
                         + String.format("%02d", Seconds) + "."
                         + String.format("%03d", MilliSeconds));
+
+                stop.setEnabled(true);
                 return false;
             }
         });
@@ -95,11 +104,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                StartTime = SystemClock.uptimeMillis();
+                StartTime = SystemClock.elapsedRealtime();
                 handler.postDelayed(runnable, 0);
 
                 reset.setEnabled(false);
                 set.setEnabled(false);
+                stop.setEnabled(true);
 
             }
         });
@@ -108,12 +118,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                TimeBuff += MillisecondTime;
+                TimeBuff -= MillisecondTime;
 
                 handler.removeCallbacks(runnable);
 
                 reset.setEnabled(true);
                 set.setEnabled(true);
+                stop.setEnabled(false);
 
             }
         });
@@ -124,40 +135,52 @@ public class MainActivity extends AppCompatActivity {
 
                 MillisecondTime = 0L ;
                 StartTime = 0L ;
-                TimeBuff = 0L ;
+                TimeBuff = SetTime * 1000;
                 UpdateTime = 0L ;
-                Seconds = 0 ;
-                Minutes = 0 ;
+
+                Seconds = SetTime % 60;
+                Minutes = SetTime / 60;
                 MilliSeconds = 0 ;
 
-                display.setText("00:00.000");
+                display.setText("" + String.format("%02d", Minutes) + ":"
+                        + String.format("%02d", Seconds) + "."
+                        + String.format("%03d", MilliSeconds));
 
+                stop.setEnabled(true);
             }
         });
 
     }
 
+    // Countdown Runnable
     public Runnable runnable = new Runnable() {
 
         public void run() {
 
-            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
+            MillisecondTime = SystemClock.elapsedRealtime() - StartTime;
+            UpdateTime = TimeBuff - MillisecondTime;
 
-            UpdateTime = TimeBuff + MillisecondTime;
+            // Check if timer is at 0 or close enough :/ (hundreth sec accuracy I think)
+            if (UpdateTime <= 0) {
+                shortBeep.start();
 
-            Seconds = (int) (UpdateTime / 1000);
+                display.setText("00:00.000");
+                handler.removeCallbacks(runnable);
 
-            Minutes = Seconds / 60;
-
-            Seconds = Seconds % 60;
-
-            MilliSeconds = (int) (UpdateTime % 1000);
-
-            display.setText("" + Minutes + ":"
-                    + String.format("%02d", Seconds) + "."
-                    + String.format("%03d", MilliSeconds));
-
-            handler.postDelayed(this, 0);
+                // Button toggle on/off
+                reset.setEnabled(true);
+                set.setEnabled(true);
+                stop.setEnabled(false);
+            } else { // Continue countdown
+                Seconds = (int) (UpdateTime / 1000);
+                Minutes = Seconds / 60;
+                Seconds = Seconds % 60;
+                MilliSeconds = (int) (UpdateTime % 1000);
+                display.setText("" + String.format("%02d", Minutes) + ":"
+                        + String.format("%02d", Seconds) + "."
+                        + String.format("%03d", MilliSeconds));
+                handler.postDelayed(this, 0);
+            }
         }
 
     };
