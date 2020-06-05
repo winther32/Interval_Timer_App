@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     MediaPlayer shortBeep;
 
+    Timer t1;
+
     // Spinner Example
 //    Spinner setSec;
 //    String secList[] = {"1","2","3","4","5","6","7","8","9","10"};
@@ -52,25 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
         setSec = (EditText)findViewById(R.id.setSeconds);
 
-        // Spinner Example
-//        Spinner setSec = (Spinner)findViewById(R.id.spinner);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, secList);
-//        setSec.setAdapter(adapter);
+        t1 = new Timer("Test", 0, 10);
 
 //        set.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//
-//                inputSeconds = Integer.valueOf(setSec.getText().toString());
-//
-//                Seconds = inputSeconds % 60 ;
-//                Minutes =  inputSeconds / 60 ;
-//                MilliSeconds = 0 ;
-//
-//                display.setText("" + String.format("%02d", Minutes) + ":"
-//                        + String.format("%02d", Seconds) + "."
-//                        + String.format("%03d", MilliSeconds));
-//            }
 //        });
 
         // Ex. use number pad ENTER/Done click to do an action
