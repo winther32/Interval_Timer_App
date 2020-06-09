@@ -1,12 +1,12 @@
 package com.example.intervaltimer;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
@@ -20,30 +20,33 @@ import android.os.SystemClock;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Vars for basic timer
     //Declare Vars used
     TextView display;
     Button start, stop, reset, set;
     Handler handler;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     int inputSeconds, Seconds, Minutes, MilliSeconds, SetTime ;
-
     EditText setSec;
+    //Timer t1;
 
-    MediaPlayer shortBeep;
+    // Home screen vars
+    MediaPlayer shortBeep; // Probably needs to be created in onCreate thus still in Home activity
+    //Button newWorkout;
 
-    Timer t1;
-
-    // Spinner Example
-//    Spinner setSec;
-//    String secList[] = {"1","2","3","4","5","6","7","8","9","10"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Home screen vars and code #############################################
         shortBeep = MediaPlayer.create(this, R.raw.short_beep01);
 
+        //newWorkout = findViewById(R.id.newWorkout);
+
+
+        // Timer Vars and code ####################################################
         // Create the buttons and timer in code land to match layout land
         display = (TextView)findViewById(R.id.display);
         start = (Button)findViewById(R.id.startButton);
@@ -51,10 +54,9 @@ public class MainActivity extends AppCompatActivity {
         reset = (Button)findViewById(R.id.resetButton);
         set = (Button)findViewById(R.id.setTimer);
         handler = new Handler();
-
         setSec = (EditText)findViewById(R.id.setSeconds);
 
-        t1 = new Timer("Test", 0, 10);
+        //t1 = new Timer("Test", 0, 10);
 
 //        set.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -172,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+
+    public void launchNewWorkout(View view) {
+        Intent intent = new Intent(this, )
+    }
 
 
     @Override
