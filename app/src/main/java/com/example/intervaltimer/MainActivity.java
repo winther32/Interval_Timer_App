@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Home screen vars and code #############################################
         shortBeep = MediaPlayer.create(this, R.raw.short_beep01);
@@ -176,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void launchNewWorkout(View view) {
-        Intent intent = new Intent(this, )
+        Intent intent = new Intent(this, WorkoutView.class );
+        startActivity(intent);
     }
 
 
