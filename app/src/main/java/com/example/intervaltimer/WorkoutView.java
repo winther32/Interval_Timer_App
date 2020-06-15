@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener {
 
-    TextView tempTimerName;
+    TextView currentTimer, currentName;
+    Workout workout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +28,12 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
-        tempTimerName = findViewById(R.id.topTimerName);
+        currentTimer = findViewById(R.id.topTimerDisplay);
+        currentName = findViewById(R.id.currentName);
+
+        // For New assuming only new workouts.
+        // TODO: expand to accept saved workouts
+        workout = new Workout();
 
         FloatingActionButton newTimer = findViewById(R.id.newTimer);
         newTimer.setOnClickListener(new View.OnClickListener() {
@@ -46,7 +52,21 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
     @Override
-    public void applyTexts(String name, String minutes, String seconds) {
-        tempTimerName.setText(name + " " + minutes + ":" + seconds);
+    public void applyTexts(String name, int minutes, int seconds) {
+        // First need to make a new timer obj. and add to workout
+
+        //workout.add(newTimer);
+//        // Update the Display based on workout list
+//
+    }
+
+    public void addTimer(Timer timer) {
+        // Add timer to workout list
+        workout.add(timer);
+        // Display current timer in list
+        Timer timerNow = workout.currentTimer();
+        currentTimer.setText("" + String.format("%02d", timerNow.Minutes) + ":" + String.format("%02d",timerNow.Seconds) + ".000");
+        currentName.setText(timerNow.Name);
+
     }
 }

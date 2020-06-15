@@ -31,11 +31,4 @@
         app:backgroundTint="#989898"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <TextView
-        android:id="@+id/topTimerName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Default 1"
-        android:layout_gravity="center"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

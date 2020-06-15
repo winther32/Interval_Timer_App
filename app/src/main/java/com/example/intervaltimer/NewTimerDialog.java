@@ -42,7 +42,20 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                         String name = WorkoutName.getText().toString();
                         String minutes = Min.getText().toString();
                         String seconds = Sec.getText().toString();
-                        listener.applyTexts(name, minutes, seconds);
+                        int intMinutes;
+                        int intSeconds;
+                        // Null pointer checks
+                        if (minutes.trim().length() == 0) {
+                            intMinutes = 0;
+                        } else {intMinutes = Integer.valueOf(minutes);}
+                        if (seconds.trim().length() == 0) {
+                            intSeconds = 0;
+                        } else {intSeconds = Integer.valueOf(seconds);}
+                        // Some info must be provided to create a new timer
+                        if (name != "" || intMinutes != 0 || intSeconds != 0) {
+                            Timer newTimer = new Timer(name, intMinutes, intSeconds);
+                            listener.addTimer(newTimer);
+                        }
                     }
                 });
 
@@ -67,6 +80,7 @@ public class NewTimerDialog extends AppCompatDialogFragment {
 
     // interface with the class
     public interface NewTimerDialogListener {
-        void applyTexts(String name, String minutes, String seconds);
+        void applyTexts(String name, int minutes, int seconds);
+        void addTimer(Timer timer);
     }
 }

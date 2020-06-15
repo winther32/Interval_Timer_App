@@ -9,55 +9,50 @@
         android:id="@+id/inMin"
         android:layout_width="100dp"
         android:layout_height="43dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
         android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintEnd_toStartOf="@+id/inSec"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/inWorkoutName"
         app:layout_constraintTop_toBottomOf="@+id/inWorkoutName" />
 
     <EditText
         android:id="@+id/inSec"
         android:layout_width="100dp"
-        android:layout_height="42dp"
+        android:layout_height="43dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/inWorkoutName"
         app:layout_constraintTop_toBottomOf="@+id/inWorkoutName" />
 
     <TextView
         android:id="@+id/minLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="112dp"
-        android:layout_marginLeft="112dp"
         android:layout_marginTop="4dp"
         android:text="Min."
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/inMin"
+        app:layout_constraintStart_toStartOf="@+id/inMin"
         app:layout_constraintTop_toBottomOf="@+id/inMin" />
 
     <TextView
         android:id="@+id/secLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="100dp"
-        android:layout_marginRight="100dp"
         android:text="Sec."
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/inSec"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@+id/inSec"
         app:layout_constraintTop_toBottomOf="@+id/inSec" />
 
     <EditText
         android:id="@+id/inWorkoutName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Timer Name"
