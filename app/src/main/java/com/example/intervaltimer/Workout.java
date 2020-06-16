@@ -39,4 +39,17 @@ public class Workout {
         //TODO: assert that index in range of masterList
         return timerList.get(index);
     }
+
+    // Tries to return the next timer and iterate position. If no timer next, returns null.
+    public Timer move_and_get() {
+        if (position + 1 >= timerList.size()) {
+            return null;
+        } else {
+            return timerList.get(++position);
+        }
+    }
+
+    public void restart() {
+        position = 0;
+    }
 }

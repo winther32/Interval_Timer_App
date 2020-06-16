@@ -1,6 +1,8 @@
 package com.example.intervaltimer;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,8 +32,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     Handler handler;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     int Seconds, Minutes, MilliSeconds ;
-    MediaPlayer shortBeep;
-
+    MediaPlayer shortBeep, twoBeeps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Create the buttons and timer in code land to match layout land
         handler = new Handler();
         shortBeep = MediaPlayer.create(this, R.raw.short_beep01);
+        twoBeeps = MediaPlayer.create(this, R.raw.beeps2);
 
         currentTimerDisplay = findViewById(R.id.topTimerDisplay);
         currentNameDisplay = findViewById(R.id.currentName);
@@ -87,15 +89,32 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public Runnable runnable = new Runnable() {
 
         public void run() {
-            // TODO: Find place to set initial time buffer
             MillisecondTime = SystemClock.elapsedRealtime() - StartTime;
             UpdateTime = TimeBuff - MillisecondTime;
 
             // Check if timer is at 0 or close enough :/ (hundreth sec accuracy I think)
             if (UpdateTime <= 0) {
-                shortBeep.start();
-                currentTimerDisplay.setText("00:00.000");
-                handler.removeCallbacks(runnable);
+                // If here current timer has ended
+                // Check if next timer exists.
+                // If no timer next
+                Timer timerOrNull = workout.move_and_get();
+                if (timerOrNull == null) {
+                    twoBeeps.start();
+                    workout.restart();
+                    Timer firstTimer = workout.currentTimer();
+                    currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
+                            ":" + String.format("%02d", firstTimer.Seconds) + ".000");
+                    currentNameDisplay.setText(firstTimer.Name);
+                    handler.removeCallbacks(runnable);
+                } else { // Found another timer to run. Set and continue
+                    shortBeep.start();
+                    TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
+                    StartTime = SystemClock.elapsedRealtime();
+                    currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
+                            ":" + String.format("%02d", timerOrNull.Seconds) + ".000");
+                    currentNameDisplay.setText(timerOrNull.Name);
+                    handler.postDelayed(this, 0);
+                }
             } else { // Continue countdown
                 Seconds = (int) (UpdateTime / 1000);
                 Minutes = Seconds / 60;
