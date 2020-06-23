@@ -1,6 +1,7 @@
 package com.example.intervaltimer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +11,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    ArrayList<Workout> workoutList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +28,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        loadData(); // Load any previously saved workouts.
+
+    }
+
+
+    // Load the saved workout list from Shared Prefs.
+    private void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Workout list", null);
+        Type type = new TypeToken<ArrayList<Workout>>() {}.getType();
+        workoutList = gson.fromJson(json, type);
+        if (workoutList == null) {
+            workoutList = new ArrayList<>();
+        }
     }
 
 

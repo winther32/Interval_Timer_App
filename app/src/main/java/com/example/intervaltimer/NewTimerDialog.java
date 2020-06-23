@@ -44,15 +44,26 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                         String seconds = Sec.getText().toString();
                         int intMinutes;
                         int intSeconds;
+
                         // Null pointer checks
                         if (minutes.trim().length() == 0) {
                             intMinutes = 0;
-                        } else {intMinutes = Integer.valueOf(minutes);}
+                        } else {intMinutes = Integer.parseInt(minutes);}
                         if (seconds.trim().length() == 0) {
                             intSeconds = 0;
-                        } else {intSeconds = Integer.valueOf(seconds);}
+                        } else {intSeconds = Integer.parseInt(seconds);}
+
                         // Some info must be provided to create a new timer
                         if (name != "" || intMinutes != 0 || intSeconds != 0) {
+                            // Convert inputs to appropriate sizes if needed
+                            intMinutes += intSeconds / 60;
+                            intSeconds = intSeconds % 60;
+
+                            // Set a maximum min size for display.
+                            if (intMinutes > 99) {
+                                intMinutes = 99;
+                            }
+
                             Timer newTimer = new Timer(name, intMinutes, intSeconds);
                             listener.addTimer(newTimer);
                         }
@@ -80,7 +91,6 @@ public class NewTimerDialog extends AppCompatDialogFragment {
 
     // interface with the class
     public interface NewTimerDialogListener {
-        void applyTexts(String name, int minutes, int seconds);
         void addTimer(Timer timer);
     }
 }
