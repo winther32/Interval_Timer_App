@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    RecyclerView workoutRecycler;
     ArrayList<Workout> workoutList;
 
     @Override
@@ -29,8 +32,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        loadData(); // Load any previously saved workouts.
+        loadData(); // Load any previously saved workouts into workoutList
+        workoutRecycler = findViewById(R.id.workoutSelectRecycler);
+        SelectAdapter selectAdapter = new SelectAdapter(this, workoutList);
 
+        workoutRecycler.setAdapter(selectAdapter);
+        workoutRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
 

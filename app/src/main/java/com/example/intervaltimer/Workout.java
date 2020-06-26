@@ -11,6 +11,9 @@ public class Workout {
     // For early dev only using timers. (S)sets not implemented
     protected ArrayList<Timer> timerList; // iterable list of only timers
     int position = 0;
+    String workoutName = "Default";
+    //String level = "1"; // difficulty level
+    int totalTime; // Total run time of the workout
 
     /////// Constructors ////////////
     public Workout() {
@@ -18,6 +21,23 @@ public class Workout {
     }
 
     //////// Methods ////////////////
+
+    // Returns the total run time of workout in SECONDS.
+    public int getTotalTime() {
+        int countMin = 0;
+        int countSec = 0;
+        // Get all times from all timers in workout
+        for (int i = 0; i  < timerList.size(); i++) {
+            countMin += timerList.get(i).Minutes;
+            countSec += timerList.get(i).Seconds;
+        }
+        countSec += (countMin * 60); // Convert to sec
+        return countSec;
+    }
+
+    public String getWorkoutName() {
+        return  workoutName;
+    }
 
     // Add timer to end of list
     public void add(Timer unit) {
