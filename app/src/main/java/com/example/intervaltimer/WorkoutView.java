@@ -88,8 +88,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         });
     }
 
-
-
     // Function to save to shared Prefs
     private void saveWorkout(){
         workoutList.add(workout); // add newly created workout to save array
@@ -129,18 +127,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         workout.add(timer);
         // Workout now has at least one timer and thus can be run. Enable running
         //done.setEnabled(true);
-
-        // Part of when actual timer was on screen
-//        // Reset to start of workout.
-//        workout.restart();
-//        Timer timerNow = workout.currentTimer();
-//        currentTimerDisplay.setText("" + String.format("%02d", timerNow.Minutes) + ":" +
-//                String.format("%02d",timerNow.Seconds) + ".000");
-//        currentNameDisplay.setText(timerNow.Name);
-//        // Set buffer to count down from
-//        TimeBuff = (timerNow.Minutes * 60 + timerNow.Seconds) * 1000;
-//        // Since timer added, start stop button enabled.
-//        startStop.setEnabled(true);
     }
 
     // Called onClick of the Save Button

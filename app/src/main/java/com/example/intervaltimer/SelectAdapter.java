@@ -15,13 +15,15 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
 
     private ArrayList<Workout> allWorkouts;
     Context context;
+    private OnWorkoutClickListener workoutClickListener;
 
     // Constructor
-    public SelectAdapter(Context ct, ArrayList<Workout> workouts) {
+    public SelectAdapter(Context ct, ArrayList<Workout> workouts, OnWorkoutClickListener clickListener) {
         // Pull info from the workout list and arrange into more manageable arrays
         // ie names, length first timer, difficulty
         context = ct;
         allWorkouts = workouts;
+        workoutClickListener = clickListener;
     }
 
     @NonNull
@@ -29,7 +31,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
     public SelectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.row_workout, parent, false);
-        return new SelectViewHolder(view);
+        return new SelectViewHolder(view, workoutClickListener);
     }
 
     @Override
@@ -43,14 +45,29 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
         return allWorkouts.size();
     }
 
-    public static class SelectViewHolder extends RecyclerView.ViewHolder {
+
+    public class SelectViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView wrkName, wrkRun;
+        OnWorkoutClickListener workoutClickListener;
 
-        public SelectViewHolder(@NonNull View itemView) {
+        public SelectViewHolder(@NonNull View itemView, OnWorkoutClickListener listener) {
             super(itemView);
             wrkName = itemView.findViewById(R.id.selectNameText);
             wrkRun = itemView.findViewById(R.id.selectRunView);
+            this.workoutClickListener = listener;
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            workoutClickListener.workoutClicked(allWorkouts.get(getAdapterPosition()));
+        }
+    }
+
+    // Interface for clicking the recycler view
+    public interface OnWorkoutClickListener {
+        void workoutClicked(Workout workout);
     }
 }

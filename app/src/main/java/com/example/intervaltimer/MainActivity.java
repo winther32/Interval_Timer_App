@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SelectAdapter.OnWorkoutClickListener{
 
     RecyclerView workoutRecycler;
     ArrayList<Workout> workoutList;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadData(); // Load any previously saved workouts into workoutList
         workoutRecycler = findViewById(R.id.workoutSelectRecycler);
-        SelectAdapter selectAdapter = new SelectAdapter(this, workoutList);
+        SelectAdapter selectAdapter = new SelectAdapter(this, workoutList, this);
 
         workoutRecycler.setAdapter(selectAdapter);
         workoutRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -59,6 +59,23 @@ public class MainActivity extends AppCompatActivity {
     public void launchNewWorkout(View view) {
         Intent intent = new Intent(this, WorkoutView.class );
         startActivity(intent);
+    }
+
+    // Called onClick of the Save Button
+    public void launchRunWorkout(Workout workout) {
+        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
+
+        Intent intent = new Intent(this, WorkoutRun.class );
+        // Pass the index of the workout in workoutList to new activity.
+        intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+        startActivity(intent);
+    }
+
+    // Call onClick of recycler workout list
+    @Override
+    public void workoutClicked(Workout workout) {
+        // What to do when recycler item is clicked ie run selected workout
+        launchRunWorkout(workout);
     }
 
 
