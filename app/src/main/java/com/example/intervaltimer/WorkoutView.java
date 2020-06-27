@@ -1,9 +1,8 @@
 package com.example.intervaltimer;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.ToneGenerator;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,7 +19,6 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -30,25 +28,15 @@ import java.util.ArrayList;
 
 public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener {
 
-    TextView currentTimerDisplay, currentNameDisplay;
+    Button save;
     Workout workout;
-    ToggleButton startStop;
-    Button reset, save;
-
-    // Vars for basic timer
-    //Declare Vars used
-    Handler handler;
-    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
-    int Seconds, Minutes, MilliSeconds ;
-    MediaPlayer shortBeep, twoBeeps;
-
     ArrayList<Workout> workoutList; // Location to save to.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_view);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.editToolbar);
         setSupportActionBar(toolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -62,15 +50,12 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         loadData(); // Load the workout array as storage location.
         workout = new Workout(); // In create new workout.. This is new obj.
         final FloatingActionButton newTimer = findViewById(R.id.newTimer);
-        reset = findViewById(R.id.resetButton);
         save = findViewById(R.id.saveButton);
 
         // Launches timer info dialog
         newTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
                 openTimerCreation();
             }
         });
@@ -79,117 +64,20 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveWorkout();
-            }
-        });
-
-        //////////////////////// Pertaining to Running Timer Functionality ////////////////////////
-        // To Contain: edit button, progress bar, current timer display, recycler view of upcoming
-        // timers, start/stop toggle, workout reset button, sounds for intervals and completion,
-        // handler for runnable, timer runnable.
-
-        // Create the buttons and timer in code land to match layout land
-        handler = new Handler();
-        shortBeep = MediaPlayer.create(this, R.raw.short_beep01);
-        twoBeeps = MediaPlayer.create(this, R.raw.beeps2);
-        currentTimerDisplay = findViewById(R.id.topTimerDisplay);
-        currentNameDisplay = findViewById(R.id.currentName);
-        startStop = findViewById(R.id.startStopButton);
-
-        // If nothing in the workout. You can't start it. (Prevent Null calls)
-        if (workout.size() == 0) {
-            startStop.setEnabled(false);
-            reset.setEnabled(false);
-        }
-
-        // Toggle button for start stop of workout
-        startStop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // Timer should be running (ie start pressed)
-                    StartTime = SystemClock.elapsedRealtime();
-                    handler.postDelayed(runnable, 0);
-                    newTimer.setEnabled(false);
-                    reset.setEnabled(false);
+                // Ensure no empty workouts are saved. Save notification
+                if (workout.size() > 0) {
+                    saveWorkout();
+                    Snackbar.make(v, "Workout Saved", Snackbar.LENGTH_LONG)
+                            .setAction("Save", null).show();
                 } else {
-                    // Timer should be stopped (Stop pressed)
-                    TimeBuff -= MillisecondTime;
-                    handler.removeCallbacks(runnable);
-                    newTimer.setEnabled(true);
-                    reset.setEnabled(true);
+                    Snackbar.make(v, "Cannot Save Empty Workout", Snackbar.LENGTH_LONG)
+                            .setAction("No Save", null).show();
                 }
-            }
-        });
-
-        // Restart workout mid workout on pause
-        reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Reset workout to the start
-                workout.restart(); // Reset position in workout to start
-                Timer firstTimer = workout.currentTimer();
-                // Change Display
-                currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                        ":" + String.format("%02d", firstTimer.Seconds) + ".000");
-                currentNameDisplay.setText(firstTimer.Name);
-                // Reset timer buff to countdown time
-                MillisecondTime = 0L;
-                TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
-                startStop.setChecked(false); // Reset start/stop toggle to "START"
-                reset.setEnabled(false); // Reset disabled since already at start
-                handler.removeCallbacks(runnable); // Remove runnable from Q
             }
         });
     }
 
-    // Countdown Runnable
-    public Runnable runnable = new Runnable() {
-        public void run() {
-            MillisecondTime = SystemClock.elapsedRealtime() - StartTime;
-            UpdateTime = TimeBuff - MillisecondTime;
 
-            // Check if timer is at 0 or close enough :/ (hundreth sec accuracy I think)
-            if (UpdateTime <= 0) {
-                // If here, current timer has ended
-                Timer timerOrNull = workout.move_and_get(); // Check for another timer
-                if (timerOrNull == null) {
-                    // Have reached end of workout
-                    twoBeeps.start(); // Completion sound
-                    // Reset workout to the start
-                    workout.restart(); // Reset position in workout to start
-                    Timer firstTimer = workout.currentTimer();
-                    // Change Display
-                    currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                            ":" + String.format("%02d", firstTimer.Seconds) + ".000");
-                    currentNameDisplay.setText(firstTimer.Name);
-                    // Reset timer buff to countdown time
-                    MillisecondTime = 0L;
-                    TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
-                    startStop.setChecked(false); // Reset start/stop toggle to "START"
-                    reset.setEnabled(false); // Reset disabled since already at start
-                    handler.removeCallbacks(runnable); // Remove runnable from Q
-                } else { // Found another timer to run. Set and continue
-                    shortBeep.start();
-                    TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
-                    StartTime = SystemClock.elapsedRealtime();
-                    currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
-                            ":" + String.format("%02d", timerOrNull.Seconds) + ".000");
-                    currentNameDisplay.setText(timerOrNull.Name);
-                    handler.postDelayed(this, 0);
-                }
-            } else { // Continue countdown timer not done
-                Seconds = (int) (UpdateTime / 1000);
-                Minutes = Seconds / 60;
-                Seconds = Seconds % 60;
-                MilliSeconds = (int) (UpdateTime % 1000);
-                currentTimerDisplay.setText("" + String.format("%02d", Minutes) + ":"
-                        + String.format("%02d", Seconds) + "."
-                        + String.format("%03d", MilliSeconds));
-                handler.postDelayed(this, 0);
-            }
-        }
-    };
 
     // Function to save to shared Prefs
     private void saveWorkout(){
@@ -225,15 +113,27 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void addTimer(Timer timer) {
         // Add timer to workout list
         workout.add(timer);
-        // Reset to start of workout.
-        workout.restart();
-        Timer timerNow = workout.currentTimer();
-        currentTimerDisplay.setText("" + String.format("%02d", timerNow.Minutes) + ":" +
-                String.format("%02d",timerNow.Seconds) + ".000");
-        currentNameDisplay.setText(timerNow.Name);
-        // Set buffer to count down from
-        TimeBuff = (timerNow.Minutes * 60 + timerNow.Seconds) * 1000;
-        // Since timer added, start stop button enabled.
-        startStop.setEnabled(true);
+
+        // Part of when actual timer was on screen
+//        // Reset to start of workout.
+//        workout.restart();
+//        Timer timerNow = workout.currentTimer();
+//        currentTimerDisplay.setText("" + String.format("%02d", timerNow.Minutes) + ":" +
+//                String.format("%02d",timerNow.Seconds) + ".000");
+//        currentNameDisplay.setText(timerNow.Name);
+//        // Set buffer to count down from
+//        TimeBuff = (timerNow.Minutes * 60 + timerNow.Seconds) * 1000;
+//        // Since timer added, start stop button enabled.
+//        startStop.setEnabled(true);
+    }
+
+    // Called onClick of the Save Button
+    public void launchRunWorkout(View view) {
+        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
+
+        Intent intent = new Intent(this, WorkoutRun.class );
+        // Pass the index of the workout in workoutList to new activity.
+        intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+        startActivity(intent);
     }
 }

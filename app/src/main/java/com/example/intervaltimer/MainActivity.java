@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
 
         loadData(); // Load any previously saved workouts into workoutList
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         String json = sharedPreferences.getString("Workout list", null);
         Type type = new TypeToken<ArrayList<Workout>>() {}.getType();
         workoutList = gson.fromJson(json, type);
+        // If nothing saved create an empty list to use.
         if (workoutList == null) {
             workoutList = new ArrayList<>();
         }

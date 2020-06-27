@@ -45,7 +45,7 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                         int intMinutes;
                         int intSeconds;
 
-                        // Null pointer checks
+                        // Null pointer checks on user input
                         if (minutes.trim().length() == 0) {
                             intMinutes = 0;
                         } else {intMinutes = Integer.parseInt(minutes);}
