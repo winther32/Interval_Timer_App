@@ -82,6 +82,8 @@ public class WorkoutRun extends AppCompatActivity {
         currentNameDisplay.setText(workout.currentTimer().Name);
         currentTimerDisplay.setText("" + String.format("%02d", workout.currentTimer().Minutes) + ":" +
                 String.format("%02d",workout.currentTimer().Seconds) + ".000");
+        // Init timeBuff for countdown
+        TimeBuff = (workout.currentTimer().Minutes * 60 + workout.currentTimer().Seconds) * 1000;
 
         // Toggle button for start stop of workout
         startStop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

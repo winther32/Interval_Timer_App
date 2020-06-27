@@ -16,9 +16,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 
 public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener {
 
-    Button save;
+    Button save, done;
     Workout workout;
     ArrayList<Workout> workoutList; // Location to save to.
 
@@ -51,6 +53,15 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         workout = new Workout(); // In create new workout.. This is new obj.
         final FloatingActionButton newTimer = findViewById(R.id.newTimer);
         save = findViewById(R.id.saveButton);
+        done = findViewById(R.id.doneEdit);
+
+        // Protect against launching Run activity with no workout
+        // Will need further checks with the addition of timer removal functionality
+        if (workout.size() > 0) {
+            done.setEnabled(true);
+        } else {
+            done.setEnabled(false);
+        }
 
         // Launches timer info dialog
         newTimer.setOnClickListener(new View.OnClickListener() {
@@ -68,10 +79,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
                 if (workout.size() > 0) {
                     saveWorkout();
                     Snackbar.make(v, "Workout Saved", Snackbar.LENGTH_LONG)
-                            .setAction("Save", null).show();
+                            .show();
                 } else {
                     Snackbar.make(v, "Cannot Save Empty Workout", Snackbar.LENGTH_LONG)
-                            .setAction("No Save", null).show();
+                            .show();
                 }
             }
         });
@@ -88,6 +99,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         String json = gson.toJson(workoutList);
         editor.putString("Workout list", json);
         editor.apply();
+
+        // For now workout must be saved in order to be run
+        done.setEnabled(true);
     }
 
     // Load the saved workout list from Shared Prefs.
@@ -113,6 +127,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void addTimer(Timer timer) {
         // Add timer to workout list
         workout.add(timer);
+        // Workout now has at least one timer and thus can be run. Enable running
+        //done.setEnabled(true);
 
         // Part of when actual timer was on screen
 //        // Reset to start of workout.
