@@ -55,7 +55,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
             super(itemView);
             wrkName = itemView.findViewById(R.id.selectNameText);
             wrkRun = itemView.findViewById(R.id.selectRunView);
-            this.workoutClickListener = listener;
+            workoutClickListener = listener;
 
             itemView.setOnClickListener(this);
         }

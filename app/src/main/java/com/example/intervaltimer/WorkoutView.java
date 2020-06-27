@@ -13,6 +13,8 @@ import com.google.gson.reflect.TypeToken;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.SystemClock;
@@ -33,6 +35,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     Button save, done;
     Workout workout;
     ArrayList<Workout> workoutList; // Location to save to.
+    RecyclerView editRecycler;
+    EditAdapter editAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +54,21 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // timer and later set FAB.
 
         loadData(); // Load the workout array as storage location.
+
+        // TODO: Change below so can edit existing workouts
         workout = new Workout(); // In create new workout.. This is new obj.
+
         final FloatingActionButton newTimer = findViewById(R.id.newTimer);
         save = findViewById(R.id.saveButton);
         done = findViewById(R.id.doneEdit);
+
+        // Setting up Recycler view
+        editRecycler = findViewById(R.id.workoutEditRecycler);
+        editAdapter = new EditAdapter(workout);
+        editRecycler.setAdapter(editAdapter);
+        editRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+
 
         // Protect against launching Run activity with no workout
         // Will need further checks with the addition of timer removal functionality
@@ -63,7 +78,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             done.setEnabled(false);
         }
 
-        // Launches timer info dialog
+        // Launches new timer info dialog (get info)
         newTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +140,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void addTimer(Timer timer) {
         // Add timer to workout list
         workout.add(timer);
+        editAdapter.notifyItemInserted((workout.timerList.size()) - 1);
         // Workout now has at least one timer and thus can be run. Enable running
         //done.setEnabled(true);
     }
@@ -132,7 +148,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     // Called onClick of the Save Button
     public void launchRunWorkout(View view) {
         // TODO: Verify that workout exists in workoutList. (prevent null pointers)
-
+        // TODO: Save after every edit
         Intent intent = new Intent(this, WorkoutRun.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.

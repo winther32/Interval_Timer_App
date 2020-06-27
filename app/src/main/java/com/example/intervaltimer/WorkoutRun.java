@@ -1,5 +1,6 @@
 package com.example.intervaltimer;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -41,6 +42,10 @@ public class WorkoutRun extends AppCompatActivity {
         setContentView(R.layout.activity_workout_run);
         Toolbar toolbar = findViewById(R.id.RunToolbar);
         setSupportActionBar(toolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
 
         loadData(); // Loading in workoutList (probs faster way to init workout)
         // Getting the index of selected workout from the intent from WorkoutView
