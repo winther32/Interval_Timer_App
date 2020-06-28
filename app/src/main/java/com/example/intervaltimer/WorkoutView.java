@@ -2,13 +2,11 @@ package com.example.intervaltimer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,26 +14,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.SystemClock;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
-public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener {
+public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener, WorkoutNameDialog.WorkoutNameDialogListener {
 
     Button save, done;
     Workout workout;
     ArrayList<Workout> workoutList; // Location to save to.
     RecyclerView editRecycler;
+    TextView wrkName, wrkTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +42,19 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
+
         ////////////////////// Edit View functionality ///////////////////////////////////
         // To Contain: recycler view of all timers in workout, save button and add
         // timer and later set FAB.
+
+        wrkName = findViewById(R.id.dispWrkName);
+        wrkTime = findViewById(R.id.dispWrkTotalTime);
 
         loadData(); // Load the workout array as storage location.
 
         // TODO: Change below so can edit existing workouts
         workout = new Workout();// In create new workout.. This is new obj.
-        //workout.add(new Timer("Test", 1, 1));
-
+        launchNamePrompt();
 
         final FloatingActionButton newTimer = findViewById(R.id.newTimer);
         save = findViewById(R.id.saveButton);
@@ -141,9 +138,29 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void addTimer(Timer timer) {
         // Add timer to workout list
         workout.timerList.add(timer);
+        // Add timer to the recycler view
         editRecycler.getAdapter().notifyItemInserted((workout.timerList.size()) - 1);
+        // Update total time display
+        int totSec = workout.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        wrkTime.setText("Total Time " + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
         // Workout now has at least one timer and thus can be run. Enable running
         //done.setEnabled(true);
+    }
+
+    private void launchNamePrompt() {
+        WorkoutNameDialog nameDialog = new WorkoutNameDialog();
+        nameDialog.show(getSupportFragmentManager(), "Workout Name Prompt");
+    }
+
+    // Set the title to the name of the workout (usr input)
+    // Also set name of workout
+    public void passTitle(String title) {
+        //this.getActionBar().setTitle(title);
+        workout.workoutName = title;
+        wrkName.setText(title);
     }
 
     // Called onClick of the Save Button

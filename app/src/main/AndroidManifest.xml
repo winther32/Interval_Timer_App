@@ -9,8 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar" >
-        <activity android:name=".WorkoutRun" >
-            android:parentActivityName=".MainActivity"
+        <activity
+            android:name=".WorkoutRun" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -18,7 +18,6 @@
         <activity
             android:name=".WorkoutView"
             android:label="@string/title_activity_workout_view"
-            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -26,7 +25,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:label="@string/my_workouts"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

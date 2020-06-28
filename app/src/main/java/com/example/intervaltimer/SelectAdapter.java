@@ -37,7 +37,11 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
     @Override
     public void onBindViewHolder(@NonNull SelectViewHolder holder, int position) {
         holder.wrkName.setText(allWorkouts.get(position).workoutName);
-        holder.wrkRun.setText(String.valueOf(allWorkouts.get(position).getTotalTime()));
+        int totSec = allWorkouts.get(position).getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        holder.wrkRun.setText("Total Time " + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
     }
 
     @Override

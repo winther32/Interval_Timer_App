@@ -62,7 +62,10 @@ public class WorkoutRun extends AppCompatActivity {
 //            // Gracefully fail here
 //        }
 
+        // Init workout from list. Index from click
         workout = workoutList.get(index);
+        // Set bar title to workout name
+        ab.setTitle(workout.workoutName);
         // Reset workout may change later if want to be able to pick up where left off
         workout.restart();
         // get clone of workout timerList with head cut off
