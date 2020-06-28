@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,9 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class WorkoutNameDialog extends AppCompatDialogFragment {
@@ -22,7 +26,7 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.workout_name_dialog, null);
+        final View view = inflater.inflate(R.layout.workout_name_dialog, null);
 
         wrkNameText = view.findViewById(R.id.editWorkoutName);
 
@@ -31,7 +35,8 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Want to go back to Home screen
+                        // Launch to home screen
+                        listener.toHome();
                     }
                 })
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
@@ -39,7 +44,8 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // Save the workout and init as empty timer list
                         //TODO: Save workout, fix recyclers and displays to handle empty wrkouts
-                        listener.passTitle(wrkNameText.getText().toString());
+                        String wrkName = wrkNameText.getText().toString().trim();
+                        listener.passTitle(wrkName);
                     }
                 });
         return builder.create();
@@ -61,6 +67,7 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
     // interface with the class
     public interface WorkoutNameDialogListener {
        void passTitle(String title);
+       void toHome();
     }
 
 }

@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
     // Called onClick of the Save Button
     public void launchRunWorkout(Workout workout) {
         // TODO: Verify that workout exists in workoutList. (prevent null pointers)
-
         Intent intent = new Intent(this, WorkoutRun.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.

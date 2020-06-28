@@ -3,6 +3,8 @@ package com.example.intervaltimer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -158,9 +160,24 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     // Set the title to the name of the workout (usr input)
     // Also set name of workout
     public void passTitle(String title) {
-        //this.getActionBar().setTitle(title);
-        workout.workoutName = title;
-        wrkName.setText(title);
+
+        // Notification in background OK for now but not the best.
+        // Assert Something had been input
+        if (title.length() == 0) {
+            Snackbar.make(findViewById(android.R.id.content), "Workouts Must Have a Name", Snackbar.LENGTH_SHORT)
+                    .show();
+            launchNamePrompt();
+        } else {
+            workout.workoutName = title;
+            wrkName.setText(title);
+        }
+    }
+
+    // Way to get back to home screen from dialog cancel.
+    // Possibly not best way since launches new intent. Could use old?
+    public void toHome() {
+        Intent intent = new Intent(this, MainActivity.class );
+        startActivity(intent);
     }
 
     // Called onClick of the Save Button
@@ -171,5 +188,28 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            launchNamePrompt(); // Rename workout
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
