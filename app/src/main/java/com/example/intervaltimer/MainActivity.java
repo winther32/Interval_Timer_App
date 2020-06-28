@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         loadData(); // Load any previously saved workouts into workoutList
         workoutRecycler = findViewById(R.id.workoutSelectRecycler);
         SelectAdapter selectAdapter = new SelectAdapter(this, workoutList, this);
-
         workoutRecycler.setAdapter(selectAdapter);
         workoutRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -51,7 +50,22 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         // If nothing saved create an empty list to use.
         if (workoutList == null) {
             workoutList = new ArrayList<>();
+
+            // Default for Testing
+            saveWorkout(new DebugTestWorkout().testWorkout);
         }
+    }
+
+    // Here for debug Test addition
+    // Function to save to shared Prefs
+    private void saveWorkout(Workout workout){
+        workoutList.add(workout); // add newly created workout to save array
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(workoutList);
+        editor.putString("Workout list", json);
+        editor.apply();
     }
 
 

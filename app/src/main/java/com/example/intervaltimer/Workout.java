@@ -1,6 +1,7 @@
 package com.example.intervaltimer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 // Outtermost obj in arch
 // Made up of Sets and timers
@@ -33,10 +34,6 @@ public class Workout {
         }
         countSec += (countMin * 60); // Convert to sec
         return countSec;
-    }
-
-    public String getWorkoutName() {
-        return  workoutName;
     }
 
     // Add timer to end of list
@@ -82,5 +79,15 @@ public class Workout {
     // Returns the size of the workout (ie number of timers)
     public int size() {
         return timerList.size();
+    }
+
+    // Return an ArrayList of tail of the timerList (ie without first timer)
+    public ArrayList<Timer> initNextTimers() {
+        ArrayList<Timer> nextTimers = new ArrayList<>();
+        int timeLength = timerList.size();
+        for (int i = 1; i < timeLength; i++) {
+            nextTimers.add(timerList.get(i));
+        }
+        return nextTimers;
     }
 }

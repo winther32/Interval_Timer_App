@@ -3,6 +3,8 @@ package com.example.intervaltimer;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 public class WorkoutRun extends AppCompatActivity {
 
     ArrayList<Workout> workoutList;
+    RecyclerView runRecycler;
+    ArrayList<Timer> nextTimers; // For recycler display
 
     // Vars for basic timer
     TextView currentTimerDisplay, currentNameDisplay;
@@ -61,6 +65,13 @@ public class WorkoutRun extends AppCompatActivity {
         workout = workoutList.get(index);
         // Reset workout may change later if want to be able to pick up where left off
         workout.restart();
+        // get clone of workout timerList with head cut off
+        nextTimers = workout.initNextTimers();
+
+        runRecycler = findViewById(R.id.runNextTimers);
+        EditAdapter runAdapter = new EditAdapter(this, nextTimers);
+        runRecycler.setAdapter(runAdapter);
+        runRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         // Potentially bloat. Shouldn't have empty workouts by now
         // If nothing in the workout. You can't start it. (Prevent Null calls)
@@ -86,7 +97,7 @@ public class WorkoutRun extends AppCompatActivity {
         // Init displays from loaded workout (Current timer, recycler next timers)
         currentNameDisplay.setText(workout.currentTimer().Name);
         currentTimerDisplay.setText("" + String.format("%02d", workout.currentTimer().Minutes) + ":" +
-                String.format("%02d",workout.currentTimer().Seconds) + ".000");
+                String.format("%02d", workout.currentTimer().Seconds) + ".000");
         // Init timeBuff for countdown
         TimeBuff = (workout.currentTimer().Minutes * 60 + workout.currentTimer().Seconds) * 1000;
 
@@ -142,7 +153,8 @@ public class WorkoutRun extends AppCompatActivity {
                 if (timerOrNull == null) {
                     // Have reached end of workout
                     twoBeeps.start(); // Completion sound
-                    // Reset workout to the start
+
+                    //////// Reset workout to the start ///////
                     workout.restart(); // Reset position in workout to start
                     Timer firstTimer = workout.currentTimer();
                     // Change Display
@@ -155,6 +167,13 @@ public class WorkoutRun extends AppCompatActivity {
                     startStop.setChecked(false); // Reset start/stop toggle to "START"
                     reset.setEnabled(false); // Reset disabled since already at start
                     handler.removeCallbacks(runnable); // Remove runnable from Q
+                    // Update next Timer display (slow but functional)
+                    int timeLength = workout.timerList.size();
+                    for (int i = 1; i < timeLength; i++) {
+                        nextTimers.add(workout.timerList.get(i));
+                    }
+                    runRecycler.getAdapter().notifyDataSetChanged();
+
                 } else { // Found another timer to run. Set and continue
                     shortBeep.start();
                     TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
@@ -163,6 +182,10 @@ public class WorkoutRun extends AppCompatActivity {
                             ":" + String.format("%02d", timerOrNull.Seconds) + ".000");
                     currentNameDisplay.setText(timerOrNull.Name);
                     handler.postDelayed(this, 0);
+
+                    // Update next timer view
+                    nextTimers.remove(0);
+                    runRecycler.getAdapter().notifyItemRemoved(0);
                 }
             } else { // Continue countdown timer not done
                 Seconds = (int) (UpdateTime / 1000);

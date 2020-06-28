@@ -36,7 +36,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     Workout workout;
     ArrayList<Workout> workoutList; // Location to save to.
     RecyclerView editRecycler;
-    EditAdapter editAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         loadData(); // Load the workout array as storage location.
 
         // TODO: Change below so can edit existing workouts
-        workout = new Workout(); // In create new workout.. This is new obj.
+        workout = new Workout();// In create new workout.. This is new obj.
+        //workout.add(new Timer("Test", 1, 1));
+
 
         final FloatingActionButton newTimer = findViewById(R.id.newTimer);
         save = findViewById(R.id.saveButton);
@@ -64,10 +65,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         // Setting up Recycler view
         editRecycler = findViewById(R.id.workoutEditRecycler);
-        editAdapter = new EditAdapter(workout);
+        EditAdapter editAdapter = new EditAdapter(this, workout.timerList);
+
         editRecycler.setAdapter(editAdapter);
         editRecycler.setLayoutManager(new LinearLayoutManager(this));
-
 
 
         // Protect against launching Run activity with no workout
@@ -139,8 +140,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     // Used by the NewTimerDialog to create timer and put into this context. Part of edit screen
     public void addTimer(Timer timer) {
         // Add timer to workout list
-        workout.add(timer);
-        editAdapter.notifyItemInserted((workout.timerList.size()) - 1);
+        workout.timerList.add(timer);
+        editRecycler.getAdapter().notifyItemInserted((workout.timerList.size()) - 1);
         // Workout now has at least one timer and thus can be run. Enable running
         //done.setEnabled(true);
     }

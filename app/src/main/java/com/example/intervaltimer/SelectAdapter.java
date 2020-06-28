@@ -45,7 +45,6 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
         return allWorkouts.size();
     }
 
-
     public class SelectViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView wrkName, wrkRun;
