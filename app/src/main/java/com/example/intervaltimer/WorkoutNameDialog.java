@@ -32,14 +32,14 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setTitle("Name Your Workout")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Launch to home screen
-                        listener.toHome();
+                        // Launch to home screen.
+                        //listener.toHome();
                     }
                 })
-                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Save the workout and init as empty timer list

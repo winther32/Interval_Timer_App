@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 
 public class WorkoutRun extends AppCompatActivity {
 
-    ArrayList<Workout> workoutList;
+    private ArrayList<Workout> workoutList; // Where things stored
     RecyclerView runRecycler;
     ArrayList<Timer> nextTimers; // For recycler display
 
@@ -78,12 +79,12 @@ public class WorkoutRun extends AppCompatActivity {
         runRecycler.setAdapter(runAdapter);
         runRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        // Potentially bloat. Shouldn't have empty workouts by now
+        // Potentially bloat.
         // If nothing in the workout. You can't start it. (Prevent Null calls)
-//        if (workout.size() == 0) {
-//            startStop.setEnabled(false);
-//            reset.setEnabled(false);
-//        }
+        if (workout.size() == 0) {
+            startStop.setEnabled(false);
+            reset.setEnabled(false);
+        }
 
         //////////////////////// Pertaining to Running Timer Functionality ////////////////////////
         // To Contain: edit button, progress bar, current timer display, recycler view of upcoming
@@ -218,10 +219,20 @@ public class WorkoutRun extends AppCompatActivity {
         }
     }
 
+    // Launch edit view with given workout
+    // Called onClick of the edit Button in Run menu
+    public void launchEditWorkout(Workout workout) {
+        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
+        Intent intent = new Intent(this, WorkoutView.class );
+        // Pass the index of the workout in workoutList to new activity.
+        intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_run, menu);
         return true;
     }
 
@@ -233,7 +244,8 @@ public class WorkoutRun extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.runToEdit) {
+            launchEditWorkout(workout);
             return true;
         }
 

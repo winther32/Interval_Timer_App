@@ -25,7 +25,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
-public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener, WorkoutNameDialog.WorkoutNameDialogListener {
+public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener,
+        WorkoutNameDialog.WorkoutNameDialogListener, DeleteWorkoutDialog.DeleteWorkoutDialogListener {
 
     Button save, done;
     Workout workout;
@@ -54,9 +55,25 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         loadData(); // Load the workout array as storage location.
 
-        // TODO: Change below so can edit existing workouts
-        workout = new Workout();// In create new workout.. This is new obj.
-        launchNamePrompt();
+        // If new Workout there will be no extra data so index will default to -1
+        // If coming from an existing workout there will be an index attached
+        int index = getIntent().getIntExtra("Workout Index", -1);
+
+        if (index == -1) {
+            workout = new Workout();// In create new workout.. This is new obj.
+            launchNamePrompt();
+        } else {
+            // Init workout from list. Index from click
+            workout = workoutList.get(index);
+            wrkName.setText(workout.workoutName);
+            int totSec = workout.getTotalTime();
+            int Min = totSec / 60;
+            totSec = totSec % 60;
+            wrkTime.setText("Total Time " + String.format("%02d", Min) +
+                    ":" + String.format("%02d", totSec));
+        }
+
+
 
         final FloatingActionButton newTimer = findViewById(R.id.newTimer);
         save = findViewById(R.id.saveButton);
@@ -105,7 +122,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     // Function to save to shared Prefs
     private void saveWorkout(){
-        workoutList.add(workout); // add newly created workout to save array
+        if (!workoutList.contains(workout)) {
+            workoutList.add(workout); // add newly created workout to save array
+        }
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -152,6 +171,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         //done.setEnabled(true);
     }
 
+    // Launch function for Workout names dialog
     private void launchNamePrompt() {
         WorkoutNameDialog nameDialog = new WorkoutNameDialog();
         nameDialog.show(getSupportFragmentManager(), "Workout Name Prompt");
@@ -160,13 +180,14 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     // Set the title to the name of the workout (usr input)
     // Also set name of workout
     public void passTitle(String title) {
+        // Current idea allows default workout name and ability to rename after
 
         // Notification in background OK for now but not the best.
         // Assert Something had been input
         if (title.length() == 0) {
-            Snackbar.make(findViewById(android.R.id.content), "Workouts Must Have a Name", Snackbar.LENGTH_SHORT)
-                    .show();
-            launchNamePrompt();
+//            Snackbar.make(findViewById(android.R.id.content), "Workouts Must Have a Name", Snackbar.LENGTH_SHORT)
+//                    .show();
+//            launchNamePrompt();
         } else {
             workout.workoutName = title;
             wrkName.setText(title);
@@ -190,10 +211,31 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         startActivity(intent);
     }
 
+
+    // Launch function for verify delete workout prompt
+    public void launchDeleteWorkout() {
+        DeleteWorkoutDialog deleteDialog = new DeleteWorkoutDialog();
+        deleteDialog.show(getSupportFragmentManager(), "Workout Delete Verify");
+    }
+
+    public void deleteWorkout() {
+        // remove from workoutList array
+        workoutList.remove(workout);
+        // Save updated array
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(workoutList);
+        editor.putString("Workout list", json);
+        editor.apply();
+        // Return to home screen
+        toHome();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_edit, menu);
         return true;
     }
 
@@ -205,9 +247,12 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_rename) {
             launchNamePrompt(); // Rename workout
             return true;
+        }
+        if (id == R.id.edit_deleteWrk) {
+            launchDeleteWorkout();
         }
 
         return super.onOptionsItemSelected(item);
