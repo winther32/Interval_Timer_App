@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -31,6 +32,12 @@ public class WorkoutRun extends AppCompatActivity {
     private ArrayList<Workout> workoutList; // Where things stored
     RecyclerView runRecycler;
     ArrayList<Timer> nextTimers; // For recycler display
+    private ActionBar actionBar;
+
+    // Progress Bar vars (essentially just stop watch)
+    ProgressBar progressBar;
+    int totalTime, timeRun;
+    long MilliUp, totStart, newTime, upBuff = 0L;
 
     // Vars for basic timer
     TextView currentTimerDisplay, currentNameDisplay;
@@ -50,11 +57,12 @@ public class WorkoutRun extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.RunToolbar);
         setSupportActionBar(toolbar);
         // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
+        actionBar = getSupportActionBar();
         // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        loadData(); // Loading in workoutList (probs faster way to init workout)
+        // Loading in workoutList (probs faster way to init workout)
+        loadData();
         // Getting the index of selected workout from the intent from WorkoutView
         int index = getIntent().getIntExtra("Workout Index", -1);
 
@@ -68,23 +76,28 @@ public class WorkoutRun extends AppCompatActivity {
         // Init workout from list. Index from click
         workout = workoutList.get(index);
         // Set bar title to workout name
-        ab.setTitle(workout.workoutName);
+        actionBar.setTitle(workout.workoutName);
         // Reset workout may change later if want to be able to pick up where left off
         workout.restart();
+
+        // Init Recycler of next timers
         // get clone of workout timerList with head cut off
         nextTimers = workout.initNextTimers();
-
         runRecycler = findViewById(R.id.runNextTimers);
         EditAdapter runAdapter = new EditAdapter(this, nextTimers);
         runRecycler.setAdapter(runAdapter);
         runRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        // Potentially bloat.
         // If nothing in the workout. You can't start it. (Prevent Null calls)
         if (workout.size() == 0) {
             startStop.setEnabled(false);
             reset.setEnabled(false);
         }
+
+        // init Progress bar
+        progressBar = findViewById(R.id.runProgressBar);
+        totalTime = workout.getTotalTime(); // total time in sec
+        timeRun = 0;
 
         //////////////////////// Pertaining to Running Timer Functionality ////////////////////////
         // To Contain: edit button, progress bar, current timer display, recycler view of upcoming
@@ -114,13 +127,17 @@ public class WorkoutRun extends AppCompatActivity {
                 if (isChecked) {
                     // Timer should be running (ie start pressed)
                     StartTime = SystemClock.elapsedRealtime();
+                    totStart = SystemClock.elapsedRealtime();
                     handler.postDelayed(runnable, 0);
                     reset.setEnabled(false);
+                    actionBar.setDisplayHomeAsUpEnabled(false);
                 } else {
                     // Timer should be stopped (Stop pressed)
                     TimeBuff -= MillisecondTime;
+                    upBuff += MillisecondTime;
                     handler.removeCallbacks(runnable);
                     reset.setEnabled(true);
+                    actionBar.setDisplayHomeAsUpEnabled(true);
                 }
             }
         });
@@ -142,6 +159,14 @@ public class WorkoutRun extends AppCompatActivity {
                 startStop.setChecked(false); // Reset start/stop toggle to "START"
                 reset.setEnabled(false); // Reset disabled since already at start
                 handler.removeCallbacks(runnable); // Remove runnable from Q
+
+                // Reset Prog Bar
+                upBuff = 0L;
+                MilliUp = 0L;
+                totStart = 0L;
+                newTime = 0L;
+                timeRun = 0;
+                progressBar.setProgress(0);
             }
         });
     }
@@ -149,7 +174,14 @@ public class WorkoutRun extends AppCompatActivity {
     // Countdown Runnable
     public Runnable runnable = new Runnable() {
         public void run() {
-            MillisecondTime = SystemClock.elapsedRealtime() - StartTime;
+            // Update Prog Bar
+            MilliUp = SystemClock.elapsedRealtime() - totStart;
+            newTime = upBuff + MilliUp;
+            timeRun = (int) (newTime / 1000);
+            progressBar.setProgress((timeRun*100)/totalTime);
+
+            // Update Timer
+            MillisecondTime = SystemClock.elapsedRealtime() - StartTime; // Time passed since start
             UpdateTime = TimeBuff - MillisecondTime;
 
             // Check if timer is at 0 or close enough :/ (hundreth sec accuracy I think)
@@ -167,6 +199,7 @@ public class WorkoutRun extends AppCompatActivity {
                     currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
                             ":" + String.format("%02d", firstTimer.Seconds) + ".000");
                     currentNameDisplay.setText(firstTimer.Name);
+                    progressBar.setProgress(0);
                     // Reset timer buff to countdown time
                     MillisecondTime = 0L;
                     TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
@@ -179,7 +212,6 @@ public class WorkoutRun extends AppCompatActivity {
                         nextTimers.add(workout.timerList.get(i));
                     }
                     runRecycler.getAdapter().notifyDataSetChanged();
-
                 } else { // Found another timer to run. Set and continue
                     shortBeep.start();
                     TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
@@ -193,7 +225,7 @@ public class WorkoutRun extends AppCompatActivity {
                     nextTimers.remove(0);
                     runRecycler.getAdapter().notifyItemRemoved(0);
                 }
-            } else { // Continue countdown timer not done
+            } else { // Continue countdown, timer not done
                 Seconds = (int) (UpdateTime / 1000);
                 Minutes = Seconds / 60;
                 Seconds = Seconds % 60;
