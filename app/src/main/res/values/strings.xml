@@ -10,5 +10,22 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+<!--    Strings used in display layouts-->
     <string name="my_workouts">My Workouts</string>
+    <string name="progress">Progress</string>
+    <string name="empty_timer_display">00:00.00</string>
+    <string name="workout">Workout</string>
+    <string name="workout_name">Workout Name</string>
+    <string name="run_time">Run Time</string>
+    <string name="timer_name">Timer Name</string>
+    <string name="minutes">Minutes</string>
+    <string name="seconds">Seconds</string>
+    <string name="new_workout">NEW WORKOUT</string>
+    <string name="total_time">Total Time</string>
+    <string name="save">SAVE</string>
+    <string name="done">DONE</string>
+    <string name="reset">RESET</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
 </resources>

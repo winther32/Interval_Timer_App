@@ -14,7 +14,7 @@
         android:layout_marginLeft="28dp"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="Workout Name"
+        android:hint="@string/workout_name"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -116,7 +116,7 @@ public class WorkoutRun extends AppCompatActivity {
         // Init displays from loaded workout (Current timer, recycler next timers)
         currentNameDisplay.setText(workout.currentTimer().Name);
         currentTimerDisplay.setText("" + String.format("%02d", workout.currentTimer().Minutes) + ":" +
-                String.format("%02d", workout.currentTimer().Seconds) + ".000");
+                String.format("%02d", workout.currentTimer().Seconds) + ".00");
         // Init timeBuff for countdown
         TimeBuff = (workout.currentTimer().Minutes * 60 + workout.currentTimer().Seconds) * 1000;
 
@@ -151,7 +151,7 @@ public class WorkoutRun extends AppCompatActivity {
                 Timer firstTimer = workout.currentTimer();
                 // Change Display
                 currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                        ":" + String.format("%02d", firstTimer.Seconds) + ".000");
+                        ":" + String.format("%02d", firstTimer.Seconds) + ".00");
                 currentNameDisplay.setText(firstTimer.Name);
                 // Reset timer buff to countdown time
                 MillisecondTime = 0L;
@@ -197,7 +197,7 @@ public class WorkoutRun extends AppCompatActivity {
                     Timer firstTimer = workout.currentTimer();
                     // Change Display
                     currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                            ":" + String.format("%02d", firstTimer.Seconds) + ".000");
+                            ":" + String.format("%02d", firstTimer.Seconds) + ".00");
                     currentNameDisplay.setText(firstTimer.Name);
                     progressBar.setProgress(0);
                     // Reset timer buff to countdown time
@@ -217,7 +217,7 @@ public class WorkoutRun extends AppCompatActivity {
                     TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
                     StartTime = SystemClock.elapsedRealtime();
                     currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
-                            ":" + String.format("%02d", timerOrNull.Seconds) + ".000");
+                            ":" + String.format("%02d", timerOrNull.Seconds) + ".00");
                     currentNameDisplay.setText(timerOrNull.Name);
                     handler.postDelayed(this, 0);
 
@@ -229,10 +229,10 @@ public class WorkoutRun extends AppCompatActivity {
                 Seconds = (int) (UpdateTime / 1000);
                 Minutes = Seconds / 60;
                 Seconds = Seconds % 60;
-                MilliSeconds = (int) (UpdateTime % 1000);
+                MilliSeconds = (int) (UpdateTime % 1000) / 10;
                 currentTimerDisplay.setText("" + String.format("%02d", Minutes) + ":"
                         + String.format("%02d", Seconds) + "."
-                        + String.format("%03d", MilliSeconds));
+                        + String.format("%02d", MilliSeconds));
                 handler.postDelayed(this, 0);
             }
         }
