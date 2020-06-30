@@ -116,7 +116,7 @@ public class WorkoutRun extends AppCompatActivity {
         // Init displays from loaded workout (Current timer, recycler next timers)
         currentNameDisplay.setText(workout.currentTimer().Name);
         currentTimerDisplay.setText("" + String.format("%02d", workout.currentTimer().Minutes) + ":" +
-                String.format("%02d", workout.currentTimer().Seconds) + ".00");
+                String.format("%02d", workout.currentTimer().Seconds));
         // Init timeBuff for countdown
         TimeBuff = (workout.currentTimer().Minutes * 60 + workout.currentTimer().Seconds) * 1000;
 
@@ -134,7 +134,7 @@ public class WorkoutRun extends AppCompatActivity {
                 } else {
                     // Timer should be stopped (Stop pressed)
                     TimeBuff -= MillisecondTime;
-                    upBuff += MillisecondTime;
+                    upBuff += MilliUp;
                     handler.removeCallbacks(runnable);
                     reset.setEnabled(true);
                     actionBar.setDisplayHomeAsUpEnabled(true);
@@ -147,26 +147,7 @@ public class WorkoutRun extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Reset workout to the start
-                workout.restart(); // Reset position in workout to start
-                Timer firstTimer = workout.currentTimer();
-                // Change Display
-                currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                        ":" + String.format("%02d", firstTimer.Seconds) + ".00");
-                currentNameDisplay.setText(firstTimer.Name);
-                // Reset timer buff to countdown time
-                MillisecondTime = 0L;
-                TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
-                startStop.setChecked(false); // Reset start/stop toggle to "START"
-                reset.setEnabled(false); // Reset disabled since already at start
-                handler.removeCallbacks(runnable); // Remove runnable from Q
-
-                // Reset Prog Bar
-                upBuff = 0L;
-                MilliUp = 0L;
-                totStart = 0L;
-                newTime = 0L;
-                timeRun = 0;
-                progressBar.setProgress(0);
+               resetRunDisplay();
             }
         });
     }
@@ -191,36 +172,15 @@ public class WorkoutRun extends AppCompatActivity {
                 if (timerOrNull == null) {
                     // Have reached end of workout
                     twoBeeps.start(); // Completion sound
-
-                    //////// Reset workout to the start ///////
-                    workout.restart(); // Reset position in workout to start
-                    Timer firstTimer = workout.currentTimer();
-                    // Change Display
-                    currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                            ":" + String.format("%02d", firstTimer.Seconds) + ".00");
-                    currentNameDisplay.setText(firstTimer.Name);
-                    progressBar.setProgress(0);
-                    // Reset timer buff to countdown time
-                    MillisecondTime = 0L;
-                    TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
-                    startStop.setChecked(false); // Reset start/stop toggle to "START"
-                    reset.setEnabled(false); // Reset disabled since already at start
-                    handler.removeCallbacks(runnable); // Remove runnable from Q
-                    // Update next Timer display (slow but functional)
-                    int timeLength = workout.timerList.size();
-                    for (int i = 1; i < timeLength; i++) {
-                        nextTimers.add(workout.timerList.get(i));
-                    }
-                    runRecycler.getAdapter().notifyDataSetChanged();
+                    resetRunDisplay();
                 } else { // Found another timer to run. Set and continue
                     shortBeep.start();
                     TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
                     StartTime = SystemClock.elapsedRealtime();
                     currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
-                            ":" + String.format("%02d", timerOrNull.Seconds) + ".00");
+                            ":" + String.format("%02d", timerOrNull.Seconds));
                     currentNameDisplay.setText(timerOrNull.Name);
                     handler.postDelayed(this, 0);
-
                     // Update next timer view
                     nextTimers.remove(0);
                     runRecycler.getAdapter().notifyItemRemoved(0);
@@ -231,8 +191,7 @@ public class WorkoutRun extends AppCompatActivity {
                 Seconds = Seconds % 60;
                 MilliSeconds = (int) (UpdateTime % 1000) / 10;
                 currentTimerDisplay.setText("" + String.format("%02d", Minutes) + ":"
-                        + String.format("%02d", Seconds) + "."
-                        + String.format("%02d", MilliSeconds));
+                        + String.format("%02d", Seconds));
                 handler.postDelayed(this, 0);
             }
         }
@@ -249,6 +208,39 @@ public class WorkoutRun extends AppCompatActivity {
         if (workoutList == null) {
             workoutList = new ArrayList<>();
         }
+    }
+
+    // Reset workout displays
+    public void resetRunDisplay() {
+        //////// Reset workout to the start ///////
+        workout.restart(); // Reset position in workout to start
+        Timer firstTimer = workout.currentTimer();
+
+        // Change Main Display
+        currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
+                ":" + String.format("%02d", firstTimer.Seconds));
+        currentNameDisplay.setText(firstTimer.Name);
+
+        // Reset timer buff to countdown time
+        MillisecondTime = 0L;
+        TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
+        startStop.setChecked(false); // Reset start/stop toggle to "START"
+        reset.setEnabled(false); // Reset disabled since already at start
+        handler.removeCallbacks(runnable); // Remove runnable from Q
+
+        // Update next Timer display (slow but functional)
+        nextTimers.clear(); // Remove all remaining timers
+        int timeLength = workout.timerList.size();
+        // Add all but head if timer to list
+        for (int i = 1; i < timeLength; i++) {
+            nextTimers.add(workout.timerList.get(i));
+        }
+        runRecycler.getAdapter().notifyDataSetChanged();
+
+        // Reset Progress Bar and it's timer
+        MilliUp = 0L;
+        upBuff = 0L;
+        progressBar.setProgress(0);
     }
 
     // Launch edit view with given workout

@@ -35,7 +35,7 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
         Timer timer = timerList.get(position);
         holder.timerName.setText(timer.Name);
         holder.timerClock.setText("" + String.format("%02d", timer.Minutes) + ":" +
-                String.format("%02d", timer.Seconds) + ".00");
+                String.format("%02d", timer.Seconds));
     }
 
     @Override
