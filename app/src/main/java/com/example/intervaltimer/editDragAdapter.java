@@ -35,7 +35,7 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
     @Override
     public editDragAdapter.editDragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.edit_row_timer, parent, false);
+        View view = inflater.inflate(R.layout.swipe_item, parent, false);
         return new editDragAdapter.editDragViewHolder(view);
     }
 
@@ -55,8 +55,9 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
         public editDragViewHolder(final View itemView) {
             super(itemView, mGrabHandleId, mDragOnLongPress);
 
-            timerName = itemView.findViewById(R.id.editTimerName);
-            timerClock = itemView.findViewById(R.id.editTimerClock);
+            timerName = itemView.findViewById(R.id.swipeTimerName);
+            timerClock = itemView.findViewById(R.id.swipeTimerClock);
+
         }
     }
 }

@@ -14,12 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.woxthebox.draglistview.DragListView;
+import com.woxthebox.draglistview.swipe.ListSwipeHelper;
+import com.woxthebox.draglistview.swipe.ListSwipeItem;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -90,26 +93,43 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         // Set up the drag list
         dragListView = findViewById(R.id.editDragList);
-        dragListView.setDragListListener(new DragListView.DragListListener() {
+//        dragListView.setDragListListener(new DragListView.DragListListener() {
+////            @Override
+////            public void onItemDragStarted(int position) {
+////
+////            }
+////
+////            @Override
+////            public void onItemDragging(int itemPosition, float x, float y) {
+////
+////            }
+////
+////            @Override
+////            public void onItemDragEnded(int fromPosition, int toPosition) {
+////
+////            }
+////        });
+        dragListView.setSwipeListener(new ListSwipeHelper.OnSwipeListenerAdapter() {
             @Override
-            public void onItemDragStarted(int position) {
+            public void onItemSwipeStarted(ListSwipeItem item) {
+                super.onItemSwipeStarted(item);
 
             }
 
             @Override
-            public void onItemDragging(int itemPosition, float x, float y) {
+            public void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection) {
+                super.onItemSwipeEnded(item, swipedDirection);
 
-            }
-
-            @Override
-            public void onItemDragEnded(int fromPosition, int toPosition) {
-
+                if (swipedDirection == ListSwipeItem.SwipeDirection.LEFT) {
+//                    int pos = dragListView.getAdapter().getPositionForItem(item); // UNSAFE?
+//                    dragListView.getAdapter().removeItem(pos);
+                }
             }
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
-        dragListView.setCanDragHorizontally(true);
+        dragListView.setCanDragHorizontally(false);
 
-        editDragAdapter itemAdapter = new editDragAdapter(workout.timerList, R.id.timer_row_card, true);
+        editDragAdapter itemAdapter = new editDragAdapter(workout.timerList, R.id.timer_swipe_card, true);
         dragListView.setAdapter(itemAdapter, true);
 
 
