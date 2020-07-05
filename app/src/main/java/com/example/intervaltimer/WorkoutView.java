@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.woxthebox.draglistview.DragItemAdapter;
+import com.woxthebox.draglistview.DragListView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -33,6 +36,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     ArrayList<Workout> workoutList; // Location to save to.
     RecyclerView editRecycler;
     TextView wrkName, wrkTime;
+
+    DragListView dragListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +85,36 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         done = findViewById(R.id.doneEdit);
 
         // Setting up Recycler view
-        editRecycler = findViewById(R.id.workoutEditRecycler);
-        EditAdapter editAdapter = new EditAdapter(this, workout.timerList);
+//        editRecycler = findViewById(R.id.workoutEditRecycler);
+//        EditAdapter editAdapter = new EditAdapter(this, workout.timerList);
+//
+//        editRecycler.setAdapter(editAdapter);
+//        editRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        editRecycler.setAdapter(editAdapter);
-        editRecycler.setLayoutManager(new LinearLayoutManager(this));
+        // Set up the drag list
+        dragListView = findViewById(R.id.editDragList);
+        dragListView.setDragListListener(new DragListView.DragListListener() {
+            @Override
+            public void onItemDragStarted(int position) {
+
+            }
+
+            @Override
+            public void onItemDragging(int itemPosition, float x, float y) {
+
+            }
+
+            @Override
+            public void onItemDragEnded(int fromPosition, int toPosition) {
+
+            }
+        });
+        dragListView.setLayoutManager(new LinearLayoutManager(this));
+        dragListView.setCanDragHorizontally(true);
+
+        editDragAdapter itemAdapter = new editDragAdapter(workout.timerList, R.id.timer_row_card, true);
+        dragListView.setAdapter(itemAdapter, true);
+
 
 
         // Protect against launching Run activity with no workout

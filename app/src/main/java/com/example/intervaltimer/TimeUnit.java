@@ -8,7 +8,7 @@ import java.util.UUID;
 public class TimeUnit {
     int Iterations = 1;
     String Name;
-    UUID ID = UUID.randomUUID(); // Make sure that each unit is unique
+    UUID ID =  UUID.randomUUID(); // Make sure that each unit is unique
 
     // Basic constructor (prob should not be used ever)
 //    public TimeUnit() {
