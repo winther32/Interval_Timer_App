@@ -26,7 +26,9 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
 
     @Override
     public long getUniqueItemId(int position) {
-        return (timerArrayList.get(position).ID.getMostSignificantBits() & Long.MAX_VALUE);
+        // Bit manipulation should give good enough ID to (unlikely to get collision)
+        // Should probably account for rare collision
+        return (timerArrayList.get(position).ID);
     }
 
     @NonNull
