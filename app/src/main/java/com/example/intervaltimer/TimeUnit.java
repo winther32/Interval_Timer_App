@@ -9,7 +9,7 @@ public class TimeUnit {
     int Iterations = 1;
     String Name;
     // Make sure that each unit is unique. Very small chance of collision
-    long ID =  (UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
+    UUID ID =  UUID.randomUUID();
 
     // Basic constructor (prob should not be used ever)
 //    public TimeUnit() {
