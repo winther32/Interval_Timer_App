@@ -43,7 +43,7 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
         return timerList.size();
     }
 
-    public class EditViewHolder extends RecyclerView.ViewHolder {
+    public static class EditViewHolder extends RecyclerView.ViewHolder {
 
         TextView timerName, timerClock;
 

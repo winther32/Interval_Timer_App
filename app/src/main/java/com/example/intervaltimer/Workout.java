@@ -83,6 +83,9 @@ public class Workout {
         return timerList.size();
     }
 
+    // Boolean if workout is empty or not (timerList empty)
+    public boolean empty() { return timerList.isEmpty();}
+
     // Return an ArrayList of tail of the timerList (ie without first timer)
     public ArrayList<Timer> initNextTimers() {
         ArrayList<Timer> nextTimers = new ArrayList<>();

@@ -58,8 +58,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // If new Workout there will be no extra data so index will default to -1
         // If coming from an existing workout there will be an index attached
         int index = getIntent().getIntExtra("Workout Index", -1);
-
         if (index == -1) {
+            // Init new workout
             workout = new Workout();// In create new workout.. This is new obj.
             launchNamePrompt();
         } else {
@@ -69,7 +69,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             int totSec = workout.getTotalTime();
             int Min = totSec / 60;
             totSec = totSec % 60;
-            wrkTime.setText("Total Time " + String.format("%02d", Min) +
+            wrkTime.setText("" + String.format("%02d", Min) +
                     ":" + String.format("%02d", totSec));
         }
 
@@ -181,7 +181,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     // Also set name of workout
     public void passTitle(String title) {
         // Current idea allows default workout name and ability to rename after
-
         // Notification in background OK for now but not the best.
         // Assert Something had been input
         if (title.length() == 0) {
@@ -189,6 +188,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 //                    .show();
 //            launchNamePrompt();
         } else {
+            // Workout name length cap
+            if (title.length() > 64) {
+                title = title.substring(0,64);
+            }
             workout.workoutName = title;
             wrkName.setText(title);
         }

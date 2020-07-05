@@ -30,8 +30,8 @@ import java.util.ArrayList;
 public class WorkoutRun extends AppCompatActivity {
 
     private ArrayList<Workout> workoutList; // Where things stored
-    RecyclerView runRecycler;
-    ArrayList<Timer> nextTimers; // For recycler display
+    private RecyclerView runRecycler;
+    private ArrayList<Timer> nextTimers; // For recycler display
     private ActionBar actionBar;
 
     // Progress Bar vars (essentially just stop watch)
@@ -88,11 +88,6 @@ public class WorkoutRun extends AppCompatActivity {
         runRecycler.setAdapter(runAdapter);
         runRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        // If nothing in the workout. You can't start it. (Prevent Null calls)
-        if (workout.size() == 0) {
-            startStop.setEnabled(false);
-            reset.setEnabled(false);
-        }
 
         // init Progress bar
         progressBar = findViewById(R.id.runProgressBar);
@@ -117,8 +112,17 @@ public class WorkoutRun extends AppCompatActivity {
         currentNameDisplay.setText(workout.currentTimer().Name);
         currentTimerDisplay.setText("" + String.format("%02d", workout.currentTimer().Minutes) + ":" +
                 String.format("%02d", workout.currentTimer().Seconds));
+
         // Init timeBuff for countdown
         TimeBuff = (workout.currentTimer().Minutes * 60 + workout.currentTimer().Seconds) * 1000;
+
+        // Init button states
+        reset.setEnabled(false);
+        // If nothing in the workout. You can't start it. (Prevent Null calls)
+        if (workout.size() == 0) {
+            startStop.setEnabled(false);
+        }
+
 
         // Toggle button for start stop of workout
         startStop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
