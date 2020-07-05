@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
@@ -27,7 +26,7 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
 
     @Override
     public long getUniqueItemId(int position) {
-        return position;
+        return (timerArrayList.get(position).ID.getMostSignificantBits() & Long.MAX_VALUE);
     }
 
     @NonNull
@@ -59,42 +58,3 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
         }
     }
 }
-
-//    private ArrayList<Timer> timerArrayList;
-//
-//    public editDragAdapter(ArrayList<Timer> timerList) {
-//        timerArrayList = timerList;
-//    }
-//
-//    @Override
-//    public long getUniqueItemId(int position) {
-//        return 0; // timerArrayList.get(position).ID;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public editDragAdapter.editDragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-//        View view = inflater.inflate(R.layout.edit_row_timer, parent, false);
-//        return new editDragAdapter.editDragViewHolder(view, 0, false);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-//        Timer timer = timerArrayList.get(position);
-//        holder.timerName.setText(timer.Name);
-//        holder.timerClock.setText("" + String.format("%02d", timer.Minutes) + ":" +
-//                String.format("%02d", timer.Seconds));
-//    }
-//
-//public static class editDragViewHolder extends DragItemAdapter.ViewHolder {
-//
-//    TextView timerName, timerClock;
-//
-//    public editDragViewHolder(View itemView, int handleResId, boolean dragOnLongPress) {
-//        super(itemView, handleResId, dragOnLongPress);
-//
-//        timerName = itemView.findViewById(R.id.editTimerName);
-//        timerClock = itemView.findViewById(R.id.editTimerClock);
-//    }
-//}
