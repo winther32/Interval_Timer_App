@@ -21,11 +21,13 @@
     <string name="timer_name">Timer Name</string>
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
-    <string name="new_workout">NEW WORKOUT</string>
+    <string name="New_workout">NEW WORKOUT</string>
     <string name="total_time">Total Time</string>
-    <string name="save">SAVE</string>
-    <string name="done">DONE</string>
-    <string name="reset">RESET</string>
-    <string name="start">START</string>
-    <string name="stop">STOP</string>
+    <string name="Save">SAVE</string>
+    <string name="Done">DONE</string>
+    <string name="Reset">RESET</string>
+    <string name="Start">START</string>
+    <string name="Stop">STOP</string>
+    <string name="Edit">EDIT</string>
+    <string name="Delete">DELETE</string>
 </resources>

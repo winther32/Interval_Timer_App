@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         Toolbar toolbar = findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
 
+        // Load and set up recycler view
         loadData(); // Load any previously saved workouts into workoutList
         workoutRecycler = findViewById(R.id.workoutSelectRecycler);
         SelectAdapter selectAdapter = new SelectAdapter(this, workoutList, this);
@@ -75,8 +76,8 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         startActivity(intent);
     }
 
-    // Called onClick of the Save Button
-    public void launchRunWorkout(Workout workout) {
+    // Starts Run workout activity
+    public void launchWorkout(Workout workout) {
         // TODO: Verify that workout exists in workoutList. (prevent null pointers)
         Intent intent = new Intent(this, WorkoutRun.class );
         // Pass the index of the workout in workoutList to new activity.
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
     @Override
     public void workoutClicked(Workout workout) {
         // What to do when recycler item is clicked ie run selected workout
-        launchRunWorkout(workout);
+        launchWorkout(workout);
     }
 
 

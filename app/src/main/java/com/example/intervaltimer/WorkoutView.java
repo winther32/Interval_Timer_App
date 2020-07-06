@@ -55,6 +55,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // To Contain: recycler view of all timers in workout, save button and add
         // timer and later set FAB.
 
+        ////////////////////// Init workout and header labels ///////////////////////////
         wrkName = findViewById(R.id.dispWrkName);
         wrkTime = findViewById(R.id.dispWrkTotalTime);
 
@@ -79,11 +80,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         }
 
 
-
-        final FloatingActionButton newTimer = findViewById(R.id.newTimer);
-        save = findViewById(R.id.saveButton);
-        done = findViewById(R.id.doneEdit);
-
         // Setting up Recycler view
 //        editRecycler = findViewById(R.id.workoutEditRecycler);
 //        EditAdapter editAdapter = new EditAdapter(this, workout.timerList);
@@ -91,7 +87,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 //        editRecycler.setAdapter(editAdapter);
 //        editRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set up the drag list
+
+        ///////////////////////Set up the drag list ///////////////////////
+
         dragListView = findViewById(R.id.editDragList);
 //        dragListView.setDragListListener(new DragListView.DragListListener() {
 ////            @Override
@@ -109,6 +107,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 ////
 ////            }
 ////        });
+        // Swipe listener for edit and delete functionality
         dragListView.setSwipeListener(new ListSwipeHelper.OnSwipeListenerAdapter() {
             @Override
             public void onItemSwipeStarted(ListSwipeItem item) {
@@ -120,19 +119,24 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             public void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection) {
                 super.onItemSwipeEnded(item, swipedDirection);
 
-                if (swipedDirection == ListSwipeItem.SwipeDirection.LEFT) {
-//                    int pos = dragListView.getAdapter().getPositionForItem(item); // UNSAFE?
+                if (swipedDirection == ListSwipeItem.SwipeDirection.RIGHT) {
+//                    Timer timer = (Timer) item.getTag();
+//                    int pos = dragListView.getAdapter().getPositionForItem(timer); // UNSAFE?
 //                    dragListView.getAdapter().removeItem(pos);
                 }
             }
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
         dragListView.setCanDragHorizontally(false);
-
         editDragAdapter itemAdapter = new editDragAdapter(workout.timerList, R.id.timer_swipe_card, true);
         dragListView.setAdapter(itemAdapter, true);
 
 
+        ////////////////////////// Init buttons and onCLicks  //////////////////////////////
+
+        final FloatingActionButton newTimer = findViewById(R.id.newTimer);
+        save = findViewById(R.id.saveButton);
+        done = findViewById(R.id.doneEdit);
 
         // Protect against launching Run activity with no workout
         // Will need further checks with the addition of timer removal functionality
@@ -150,6 +154,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             }
         });
 
+        // TODO: rethink possibility of saving empty workouts
         // Save button click listener
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,12 +207,16 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         timerDialog.show(getSupportFragmentManager(), "Timer creation");
     }
 
-    // Used by the NewTimerDialog to create timer and put into this context. Part of edit screen
+    // Used by the NewTimerDialog to create timer and put into this context. Interface func.
     public void addTimer(Timer timer) {
-        // Add timer to workout list
-        workout.timerList.add(timer);
-        // Add timer to the recycler view
-        editRecycler.getAdapter().notifyItemInserted((workout.timerList.size()) - 1);
+//        // Add timer to workout list
+//        workout.timerList.add(timer);
+//        // Add timer to the recycler view
+//        editRecycler.getAdapter().notifyItemInserted((workout.timerList.size()) - 1);
+
+        // Add to drag and drop list
+        dragListView.getAdapter().addItem(workout.timerList.size(), timer);
+
         // Update total time display
         int totSec = workout.getTotalTime();
         int Min = totSec / 60;
@@ -224,11 +233,11 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         nameDialog.show(getSupportFragmentManager(), "Workout Name Prompt");
     }
 
-    // Set the title to the name of the workout (usr input)
+    // Set the title to the name of the workout (usr input) interface func.
     // Also set name of workout
     public void passTitle(String title) {
         // Current idea allows default workout name and ability to rename after
-        // Notification in background OK for now but not the best.
+        // Notification in background OK for now but not the best. (commented out)
         // Assert Something had been input
         if (title.length() == 0) {
 //            Snackbar.make(findViewById(android.R.id.content), "Workouts Must Have a Name", Snackbar.LENGTH_SHORT)
@@ -251,7 +260,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         startActivity(intent);
     }
 
-    // Called onClick of the Save Button
+    // Called onClick of the Done Button
     public void launchRunWorkout(View view) {
         // TODO: Verify that workout exists in workoutList. (prevent null pointers)
         // TODO: Save after every edit
@@ -262,12 +271,13 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
 
-    // Launch function for verify delete workout prompt
+    // Launch function for verify delete workout prompt. Used in edit Menu
     public void launchDeleteWorkout() {
         DeleteWorkoutDialog deleteDialog = new DeleteWorkoutDialog();
         deleteDialog.show(getSupportFragmentManager(), "Workout Delete Verify");
     }
 
+    // Func used by delete workout dialog to remove workout. Interface func.
     public void deleteWorkout() {
         // remove from workoutList array
         workoutList.remove(workout);
@@ -281,6 +291,20 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Return to home screen
         toHome();
     }
+
+    // Edit and delete functions on click after swipe
+    public void deleteSwipe(View view) {
+        TextView itemID = view.findViewById(R.id.swipeDelete);
+        int pos = Integer.parseInt(itemID.getHint().toString());
+        dragListView.getAdapter().removeItem(pos);
+    }
+
+    public void editSwipe() {
+
+    }
+
+
+    /////////////////// Menu functions ////////////////
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

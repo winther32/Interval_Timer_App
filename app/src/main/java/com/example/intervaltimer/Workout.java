@@ -43,6 +43,9 @@ public class Workout {
         timerList.add(unit);
     }
 
+    // Remove timer at given index
+    public void remove(int position) { timerList.remove(position);}
+
     // Iterate the position in workout
     public void next() {
         // Check to ensure use of next() will not create out of range index
@@ -59,7 +62,7 @@ public class Workout {
     }
 
     // Get a timer at a given pos
-    public TimeUnit get(int index) {
+    public Timer get(int index) {
         //TODO: assert that index in range of masterList
         return timerList.get(index);
     }

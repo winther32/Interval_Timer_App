@@ -28,7 +28,7 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
     public long getUniqueItemId(int position) {
         // Bit manipulation should give good enough ID to (unlikely to get collision)
         // Should probably account for rare collision
-        return (timerArrayList.get(position).ID.getMostSignificantBits() & Long.MAX_VALUE);
+        return ((int) timerArrayList.get(position).ID.getMostSignificantBits() & Long.MAX_VALUE);
     }
 
     @NonNull
@@ -46,17 +46,21 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
         holder.timerName.setText(timer.Name);
         holder.timerClock.setText("" + String.format("%02d", timer.Minutes) + ":" +
                 String.format("%02d", timer.Seconds));
+
+        // Super Cheesy way to pass the pos if view to use for swipe clicks.
+        holder.timerID.setHint(""+String.format("%d", position));
     }
 
     public class editDragViewHolder extends DragItemAdapter.ViewHolder {
 
-        public TextView timerName, timerClock;
+        public TextView timerName, timerClock, timerID;
 
         public editDragViewHolder(final View itemView) {
             super(itemView, mGrabHandleId, mDragOnLongPress);
 
             timerName = itemView.findViewById(R.id.swipeTimerName);
             timerClock = itemView.findViewById(R.id.swipeTimerClock);
+            timerID = itemView.findViewById(R.id.swipeDelete);
 
         }
     }
