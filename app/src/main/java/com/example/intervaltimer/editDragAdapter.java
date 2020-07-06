@@ -48,20 +48,21 @@ public class editDragAdapter extends DragItemAdapter<Timer, editDragAdapter.edit
                 String.format("%02d", timer.Seconds));
 
         // Super Cheesy way to pass the pos if view to use for swipe clicks.
-        holder.timerID.setHint(""+String.format("%d", position));
+        holder.timerPosDel.setHint(""+String.format("%d", position));
+        holder.timerPosEdt.setHint(""+String.format("%d", position));
     }
 
     public class editDragViewHolder extends DragItemAdapter.ViewHolder {
 
-        public TextView timerName, timerClock, timerID;
+        public TextView timerName, timerClock, timerPosDel, timerPosEdt;
 
         public editDragViewHolder(final View itemView) {
             super(itemView, mGrabHandleId, mDragOnLongPress);
 
             timerName = itemView.findViewById(R.id.swipeTimerName);
             timerClock = itemView.findViewById(R.id.swipeTimerClock);
-            timerID = itemView.findViewById(R.id.swipeDelete);
-
+            timerPosDel = itemView.findViewById(R.id.swipeDelete);
+            timerPosEdt = itemView.findViewById(R.id.swipeEdit);
         }
     }
 }

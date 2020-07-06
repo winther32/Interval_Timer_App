@@ -19,6 +19,19 @@ public class NewTimerDialog extends AppCompatDialogFragment {
     EditText Min, Sec;
     NewTimerDialogListener listener;
 
+    boolean editMode = false;
+    String mName, mMin, mSec;
+    int position;
+
+    // Potential use for loading in info of a given timer
+    public void editInstance(String tName, String tMin, String tSec, int pos) {
+        editMode = true;
+        mName = tName;
+        mMin = tMin;
+        mSec = tSec;
+        position = pos;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -26,9 +39,21 @@ public class NewTimerDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_timer_creation, null);
 
-        builder.setView(view)
-                .setTitle("Timer")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        WorkoutName = view.findViewById(R.id.inWorkoutName);
+        Min = view.findViewById(R.id.inMin);
+        Sec = view.findViewById(R.id.inSec);
+
+        builder.setView(view);
+        if (editMode) {
+            builder.setTitle("Edit Timer");
+            WorkoutName.setText(mName);
+            Min.setText(mMin);
+            Sec.setText(mSec);
+        } else {
+            builder.setTitle("New Timer");
+        }
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Want nothing to happen so nothing here
@@ -45,7 +70,7 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                         int intMinutes;
                         int intSeconds;
 
-                        // Null pointer checks on user input
+                        // Null pointer checks on user number input
                         if (minutes.trim().length() == 0) {
                             intMinutes = 0;
                         } else {intMinutes = Integer.parseInt(minutes);}
@@ -53,8 +78,8 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                             intSeconds = 0;
                         } else {intSeconds = Integer.parseInt(seconds);}
 
-                        // Some info must be provided to create a new timer
-                        if (name != "" || intMinutes != 0 || intSeconds != 0) {
+                        // Some time info must be provided to create a new timer
+                        if (intMinutes != 0 || intSeconds != 0) {
                             // Convert inputs to appropriate sizes if needed
                             intMinutes += intSeconds / 60;
                             intSeconds = intSeconds % 60;
@@ -64,15 +89,13 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                                 intMinutes = 99;
                             }
 
-                            Timer newTimer = new Timer(name, intMinutes, intSeconds);
-                            listener.addTimer(newTimer);
+                            Timer timer = new Timer(name, intMinutes, intSeconds);
+                            if (editMode) {
+                                listener.editTimer(timer, position);
+                            } else { listener.addTimer(timer); }
                         }
                     }
                 });
-
-        WorkoutName = view.findViewById(R.id.inWorkoutName);
-        Min = view.findViewById(R.id.inMin);
-        Sec = view.findViewById(R.id.inSec);
 
         return builder.create();
     }
@@ -92,5 +115,6 @@ public class NewTimerDialog extends AppCompatDialogFragment {
     // interface with the class
     public interface NewTimerDialogListener {
         void addTimer(Timer timer);
+        void editTimer(Timer timer, int pos);
     }
 }

@@ -227,6 +227,21 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         //done.setEnabled(true);
     }
 
+    // Used by NewTimerDialog to edit timer. Interface func.
+    public  void editTimer(Timer timer, int pos) {
+
+        // Rn jut add and new then remove the old timer to "edit"
+        dragListView.getAdapter().addItem(pos, timer);
+        dragListView.getAdapter().removeItem(pos+1);
+
+        // Update total time display
+        int totSec = workout.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        wrkTime.setText("Total Time " + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
+    }
+
     // Launch function for Workout names dialog
     private void launchNamePrompt() {
         WorkoutNameDialog nameDialog = new WorkoutNameDialog();
@@ -292,15 +307,24 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         toHome();
     }
 
-    // Edit and delete functions on click after swipe
+
+    //////////// Edit and delete functions on click after swipe /////////////
+
+    // Delete the swiped item on click of delete text onClick of swipeDelete
     public void deleteSwipe(View view) {
         TextView itemID = view.findViewById(R.id.swipeDelete);
         int pos = Integer.parseInt(itemID.getHint().toString());
         dragListView.getAdapter().removeItem(pos);
     }
 
-    public void editSwipe() {
-
+    // Launch edit timer dialog on click of edit swipe
+    public void editSwipe(View view) {
+        TextView itemID = view.findViewById(R.id.swipeEdit);
+        int pos = Integer.parseInt(itemID.getHint().toString());
+        Timer timer = workout.get(pos);
+        NewTimerDialog timerDialog = new NewTimerDialog();
+        timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), pos);
+        timerDialog.show(getSupportFragmentManager(), "Timer creation");
     }
 
 
