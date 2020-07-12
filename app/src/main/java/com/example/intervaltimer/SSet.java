@@ -28,4 +28,9 @@ public class SSet extends TimeUnit {
         ss1.ssList.add(newPos, s1);
         return ss1;
     }
+
+    @Override
+    public int getType() {
+        return TYPE_SUPER_SET;
+    }
 }

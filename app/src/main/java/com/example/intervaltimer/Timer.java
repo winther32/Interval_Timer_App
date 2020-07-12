@@ -3,8 +3,7 @@ package com.example.intervaltimer;
 // Basic Timer class
 public class Timer extends TimeUnit {
 
-    // Name and iterations inherited
-    int Minutes, Seconds;
+    // Name, iterations, UUID, Min, and Sec inherited
 
     // Vars for set management
     String parentSet = null; // Name of set if in one else null
@@ -24,5 +23,11 @@ public class Timer extends TimeUnit {
         Minutes = minutes;
         Seconds = seconds;
         Iterations = iterations;
+    }
+
+    // Return type for adapter
+    @Override
+    public int getType() {
+        return TYPE_TIMER;
     }
 }

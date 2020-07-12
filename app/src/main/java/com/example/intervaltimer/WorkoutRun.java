@@ -25,15 +25,17 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.sql.Time;
 import java.util.ArrayList;
 
 public class WorkoutRun extends AppCompatActivity {
 
     private ArrayList<Workout> workoutList; // Where workouts are stored
     private RecyclerView runRecycler;
-    private ArrayList<Timer> runTimers; // Array of only timers. (All timers in workout in order)
-    private ArrayList<Timer> nextTimers; // For recycler display
+    ArrayList<Timer> runTimers = new ArrayList<>(); // Array of only timers. (All timers in workout in order)
+    ArrayList<Timer> nextTimers = new ArrayList<>(); // For recycler display
     private ActionBar actionBar;
+    private int position = 0; // Position in runTimers (may not be used)
 
     // Progress Bar vars (essentially just stop watch)
     ProgressBar progressBar;
@@ -67,28 +69,50 @@ public class WorkoutRun extends AppCompatActivity {
         // Getting the index of selected workout from the intent from WorkoutView
         int index = getIntent().getIntExtra("Workout Index", -1);
 
-        // Assertion check that got info from last activity
-        if (index ==  -1){
-            // Bad things have happened
-            // Couldn't retrieve the index passed in intent.
-            // Gracefully fail here
-        }
+        //TODO: Assertion check that got info from last activity
+//        if (index ==  -1){
+//            // Bad things have happened
+//            // Couldn't retrieve the index passed in intent.
+//            // Gracefully fail here
+//        }
 
         // Init workout from list. Index from click
         workout = workoutList.get(index);
         // Set bar title to workout name
         actionBar.setTitle(workout.workoutName);
         // Reset workout may change later if want to be able to pick up where left off
-        workout.restart();
+        //workout.restart();
+
+        // TODO: Verify workout is not empty
 
         // Init runTimers //
         for (int i = 0; i < workout.size(); i++) {
+            TimeUnit timeUnit = workout.get(i);
+            if (timeUnit instanceof Set) {
+                Set set = (Set) timeUnit;
+                for (int j = 0; j < set.size(); j++) {
+                    runTimers.add(set.get(j));
+                }
+            } else {
+                if (timeUnit instanceof Timer) {
+                    Timer timer = (Timer) timeUnit;
+                    runTimers.add(timer);
+                }
 
+                // For Debug
+                else {
+                    Timer t1 = new Timer("Fail Safe", 1, 1);
+                    runTimers.add(t1);
+                }
+            }
         }
 
         // Init Recycler of next timers
-        // get clone of workout timerList with head cut off
-        nextTimers = workout.initNextTimers();
+        // get clone of workout runTimers with head cut off
+        // (surely a better way to do this exists)
+        for (int i = 1; i < runTimers.size(); i++) {
+            nextTimers.add(runTimers.get(i));
+        }
         runRecycler = findViewById(R.id.runNextTimers);
         EditAdapter runAdapter = new EditAdapter(this, nextTimers);
         runRecycler.setAdapter(runAdapter);
@@ -115,17 +139,18 @@ public class WorkoutRun extends AppCompatActivity {
         reset = findViewById(R.id.resetButton);
 
         // Init displays from loaded workout (Current timer, recycler next timers)
-        currentNameDisplay.setText(workout.currentTimer().Name);
-        currentTimerDisplay.setText("" + String.format("%02d", workout.currentTimer().Minutes) + ":" +
-                String.format("%02d", workout.currentTimer().Seconds));
+        Timer firstTimer = runTimers.get(0);
+        currentNameDisplay.setText(firstTimer.Name);
+        currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) + ":" +
+                String.format("%02d", firstTimer.Seconds));
 
         // Init timeBuff for countdown
-        TimeBuff = (workout.currentTimer().Minutes * 60 + workout.currentTimer().Seconds) * 1000;
+        TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
 
         // Init button states
         reset.setEnabled(false);
         // If nothing in the workout. You can't start it. (Prevent Null calls)
-        if (workout.size() == 0) {
+        if (workout.empty()) {
             startStop.setEnabled(false);
         }
 
@@ -171,25 +196,28 @@ public class WorkoutRun extends AppCompatActivity {
             timeRun = (int) (newTime / 1000);
             progressBar.setProgress((timeRun*100)/totalTime);
 
-            // Update Timer
+            // Update Timer vars
             MillisecondTime = SystemClock.elapsedRealtime() - StartTime; // Time passed since start
             UpdateTime = TimeBuff - MillisecondTime;
 
-            // Check if timer is at 0 or close enough :/ (hundreth sec accuracy I think)
+            // Check if timer is at 0 or close enough :/ (hundredth sec accuracy I think)
             if (UpdateTime <= 0) {
                 // If here, current timer has ended
-                Timer timerOrNull = workout.move_and_get(); // Check for another timer
+                Timer timerOrNull = runTimers.get(++position); // Check for another timer
                 if (timerOrNull == null) {
                     // Have reached end of workout
                     twoBeeps.start(); // Completion sound
                     resetRunDisplay();
                 } else { // Found another timer to run. Set and continue
                     shortBeep.start();
+                    // Update vars for new timer
                     TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
                     StartTime = SystemClock.elapsedRealtime();
+                    // Set new display
                     currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
                             ":" + String.format("%02d", timerOrNull.Seconds));
                     currentNameDisplay.setText(timerOrNull.Name);
+                    // Pass new updated runnable
                     handler.postDelayed(this, 0);
                     // Update next timer view
                     nextTimers.remove(0);
@@ -223,8 +251,8 @@ public class WorkoutRun extends AppCompatActivity {
     // Reset workout displays
     public void resetRunDisplay() {
         //////// Reset workout to the start ///////
-        workout.restart(); // Reset position in workout to start
-        Timer firstTimer = workout.currentTimer();
+        position = 0; // Reset position in workout to start
+        Timer firstTimer = runTimers.get(position);
 
         // Change Main Display
         currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
@@ -240,10 +268,8 @@ public class WorkoutRun extends AppCompatActivity {
 
         // Update next Timer display (slow but functional)
         nextTimers.clear(); // Remove all remaining timers
-        int timeLength = workout.timerList.size();
-        // Add all but head if timer to list
-        for (int i = 1; i < timeLength; i++) {
-            nextTimers.add(workout.timerList.get(i));
+        for (int i = 1; i < runTimers.size(); i++) {
+            nextTimers.add(runTimers.get(i));
         }
         runRecycler.getAdapter().notifyDataSetChanged();
 

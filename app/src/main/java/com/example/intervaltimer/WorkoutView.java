@@ -127,7 +127,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
         dragListView.setCanDragHorizontally(false);
-        editDragAdapter itemAdapter = new editDragAdapter(workout.timerList, R.id.timer_swipe_card, true);
+        editDragAdapter itemAdapter = new editDragAdapter(workout.masterList, R.id.timer_swipe_card, true);
         dragListView.setAdapter(itemAdapter, true);
 
 
@@ -139,7 +139,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         // Protect against launching Run activity with no workout
         // Will need further checks with the addition of timer removal functionality
-        if (workout.size() > 0) {
+        if (!workout.empty()) {
             done.setEnabled(true);
         } else {
             done.setEnabled(false);
@@ -159,7 +159,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             @Override
             public void onClick(View v) {
                 // Ensure no empty workouts are saved. Save notification
-                if (workout.size() > 0) {
+                if (!workout.empty()) {
                     saveWorkout();
                     Snackbar.make(v, "Workout Saved", Snackbar.LENGTH_LONG)
                             .show();
@@ -215,7 +215,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         // Add to drag and drop list
         // TODO: Find out how to appease studio so not warning
-        dragListView.getAdapter().addItem(workout.timerList.size(), timer);
+        dragListView.getAdapter().addItem(workout.masterList.size(), timer);
 
         // Update total time display
         int totSec = workout.getTotalTime();
@@ -321,7 +321,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void editSwipe(View view) {
         TextView itemID = view.findViewById(R.id.swipeEdit);
         int pos = Integer.parseInt(itemID.getHint().toString());
-        Timer timer = workout.get(pos);
+
+        // TODO: WARNING ONLY WORKS WHILE EDT/DLT FOR SET NOT IMPLEMENTED
+        Timer timer = (Timer) workout.get(pos);
+
         NewTimerDialog timerDialog = new NewTimerDialog();
         timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), pos);
         timerDialog.show(getSupportFragmentManager(), "Timer creation");
