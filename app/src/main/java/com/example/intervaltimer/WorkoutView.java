@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -215,13 +214,14 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 //        editRecycler.getAdapter().notifyItemInserted((workout.timerList.size()) - 1);
 
         // Add to drag and drop list
+        // TODO: Find out how to appease studio so not warning
         dragListView.getAdapter().addItem(workout.timerList.size(), timer);
 
         // Update total time display
         int totSec = workout.getTotalTime();
         int Min = totSec / 60;
         totSec = totSec % 60;
-        wrkTime.setText("Total Time " + String.format("%02d", Min) +
+        wrkTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
         // Workout now has at least one timer and thus can be run. Enable running
         //done.setEnabled(true);
@@ -238,7 +238,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         int totSec = workout.getTotalTime();
         int Min = totSec / 60;
         totSec = totSec % 60;
-        wrkTime.setText("Total Time " + String.format("%02d", Min) +
+        wrkTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
     }
 

@@ -8,14 +8,14 @@ import java.util.UUID;
 // Made up of Sets and timers
 public class Workout {
     // Set group;
-    //ArrayList<TimeUnit> masterList; // Contains (S)sets and timers
+    ArrayList<TimeUnit> masterList; // Contains (S)sets and timers
 
     // For early dev only using timers. (S)sets not implemented
     protected ArrayList<Timer> timerList; // iterable list of only timers
+
     int position = 0;
     String workoutName = "Workout"; // Default Name
     //String level = "1"; // difficulty level
-    int totalTime; // Total run time of the workout
     UUID ID = UUID.randomUUID(); // Make sure that each workout is unique
 
     /////// Constructors ////////////

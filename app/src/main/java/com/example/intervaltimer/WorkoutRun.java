@@ -29,8 +29,9 @@ import java.util.ArrayList;
 
 public class WorkoutRun extends AppCompatActivity {
 
-    private ArrayList<Workout> workoutList; // Where things stored
+    private ArrayList<Workout> workoutList; // Where workouts are stored
     private RecyclerView runRecycler;
+    private ArrayList<Timer> runTimers; // Array of only timers. (All timers in workout in order)
     private ArrayList<Timer> nextTimers; // For recycler display
     private ActionBar actionBar;
 
@@ -67,11 +68,11 @@ public class WorkoutRun extends AppCompatActivity {
         int index = getIntent().getIntExtra("Workout Index", -1);
 
         // Assertion check that got info from last activity
-//        if (index ==  -1){
-//            // Bad things have happened
-//            // Couldn't retrieve the index passed in intent.
-//            // Gracefully fail here
-//        }
+        if (index ==  -1){
+            // Bad things have happened
+            // Couldn't retrieve the index passed in intent.
+            // Gracefully fail here
+        }
 
         // Init workout from list. Index from click
         workout = workoutList.get(index);
@@ -79,6 +80,11 @@ public class WorkoutRun extends AppCompatActivity {
         actionBar.setTitle(workout.workoutName);
         // Reset workout may change later if want to be able to pick up where left off
         workout.restart();
+
+        // Init runTimers //
+        for (int i = 0; i < workout.size(); i++) {
+
+        }
 
         // Init Recycler of next timers
         // get clone of workout timerList with head cut off

@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 // Iterable groupings of timer objects
 public class Set extends TimeUnit {
-    ArrayList<Timer> setList = new ArrayList<>();
+
+    // Also has name UUID and iterations
+    private ArrayList<Timer> setList = new ArrayList<>();
+
+    //////////////////// Constructors ////////////////////
 
     // Create a Set from 1 timer
     public Set(Timer t1) {
@@ -16,17 +20,14 @@ public class Set extends TimeUnit {
         oldSet.setList.add(t1);
     }
 
-    // Remove a timer from set
-    public Set removeTimer(Set s1, Timer t1) {
-        s1.setList.remove(t1);
-        return s1;
-    }
+    /////////////////// Methods ///////////////////////
 
-    // Change the position of a timer in a set
-    public Set changeTimer(Set s1, Timer t1, int newPos) {
-        s1.setList.remove(t1);
-        s1.setList.add(newPos, t1);
-        return s1;
-    }
+    // Return number of timers in Set
+    public int size() { return setList.size(); }
+
+    // Add a timer to the setList
+    public void add(Timer timer){ setList.add(timer); }
+
+    // Get total time of
 
 }

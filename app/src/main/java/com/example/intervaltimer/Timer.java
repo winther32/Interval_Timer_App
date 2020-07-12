@@ -6,6 +6,10 @@ public class Timer extends TimeUnit {
     // Name and iterations inherited
     int Minutes, Seconds;
 
+    // Vars for set management
+    String parentSet = null; // Name of set if in one else null
+    int myIter, TotalIters; // Iteration of set timer is in and total set iterations.
+
     // Timer obj constructor
     public Timer(String name, int minutes, int seconds) {
         Name = name;
