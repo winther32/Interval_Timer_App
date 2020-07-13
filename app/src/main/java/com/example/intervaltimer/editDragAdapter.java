@@ -11,13 +11,16 @@ import com.woxthebox.draglistview.DragItemAdapter;
 
 import java.util.ArrayList;
 
-public class editDragAdapter extends DragItemAdapter<TimeUnit, DragItemAdapter.ViewHolder> {
+import static com.example.intervaltimer.TimeUnit.TYPE_SET;
+import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
 
-    private ArrayList<TimeUnit> masterList;
+public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapter.ViewHolder> {
+
+    private ArrayList<WorkoutItem> masterList;
     private int mGrabHandleId;
     private boolean mDragOnLongPress;
 
-    public editDragAdapter(ArrayList<TimeUnit> wrkList, int grabID, boolean dragOnLongPress) {
+    public editDragAdapter(ArrayList<WorkoutItem> wrkList, int grabID, boolean dragOnLongPress) {
         masterList = wrkList;
         mGrabHandleId = grabID;
         mDragOnLongPress = dragOnLongPress;
@@ -34,43 +37,45 @@ public class editDragAdapter extends DragItemAdapter<TimeUnit, DragItemAdapter.V
     @NonNull
     @Override
     public editDragAdapter.TimerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.swipe_item, parent, false);
-        return new editDragAdapter.TimerViewHolder(view);
+        // Check for type and use type appropriate layout.
+        if (viewType == TYPE_TIMER) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.swipe_item, parent, false);
+            return new editDragAdapter.TimerViewHolder(view);
+        } else { // if (viewType == TYPE_SET)
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.swipe_set, parent, false);
+            return new editDragAdapter.TimerViewHolder(view);
+        } // TODO: add error catch
     }
 
     @Override
     public void onBindViewHolder(@NonNull DragItemAdapter.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        TimeUnit unit = masterList.get(position);
+        WorkoutItem item = masterList.get(position);
 
-        // TODO: determine if set or timer and bind accordingly
-
-        if (unit instanceof Timer) {
-            // Cast super-classed items to appropriate subclass
-            Timer timer = (Timer) unit;
+        if (item.getType() == TYPE_TIMER) {
             editDragAdapter.TimerViewHolder viewHolder = (editDragAdapter.TimerViewHolder) holder;
             // Assign vars.
-            viewHolder.timerName.setText(timer.Name);
-            viewHolder.timerClock.setText("" + String.format("%02d", timer.Minutes) + ":" +
-                    String.format("%02d", timer.Seconds));
+            viewHolder.timerName.setText(item.getTimer().Name);
+            viewHolder.timerClock.setText("" + String.format("%02d", item.getTimer().Minutes) + ":" +
+                    String.format("%02d", item.getTimer().Seconds));
 
             // Super Cheesy way to pass the pos of view to use for swipe clicks.
             viewHolder.timerPosDel.setHint("" + String.format("%d", position));
             viewHolder.timerPosEdt.setHint("" + String.format("%d", position));
-        } else {
-            // Cast super-classed items to appropriate subclass
-            Set set = (Set) unit;
+        } else if (item.getType() == TYPE_SET){
             editDragAdapter.SetViewHolder viewHolder = (editDragAdapter.SetViewHolder) holder;
             // Assign variables
-            viewHolder.setName.setText(set.Name);
-            viewHolder.totalTime.setText("Total Time" + String.format("%02d", set.Minutes) + ":" +
-                    String.format("%02d", set.Seconds));
+            viewHolder.setName.setText(item.getSet().Name);
+            viewHolder.totalTime.setText("Total Time" + String.format("%02d", item.getSet().Minutes) + ":" +
+                    String.format("%02d", item.getSet().Seconds));
 
             // Cheesy way to pass pos to view for swipe clicks.
             viewHolder.setPosDel.setHint("" + String.format("%d", position));
             viewHolder.setPosEdt.setHint("" + String.format("%d", position));
-        }
+        }  // TODO: add a graceful error catch
+
     }
 
     @Override

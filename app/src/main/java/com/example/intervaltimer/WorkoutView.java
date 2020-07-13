@@ -228,7 +228,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
     // Used by NewTimerDialog to edit timer. Interface func.
-    public  void editTimer(Timer timer, int pos) {
+    public void editTimer(Timer timer, int pos) {
 
         // Rn jut add and new then remove the old timer to "edit"
         dragListView.getAdapter().addItem(pos, timer);
@@ -323,11 +323,11 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         int pos = Integer.parseInt(itemID.getHint().toString());
 
         // TODO: WARNING ONLY WORKS WHILE EDT/DLT FOR SET NOT IMPLEMENTED
-        Timer timer = (Timer) workout.get(pos);
+        Timer timer = workout.get(pos).getTimer();
 
         NewTimerDialog timerDialog = new NewTimerDialog();
         timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), pos);
-        timerDialog.show(getSupportFragmentManager(), "Timer creation");
+        timerDialog.show(getSupportFragmentManager(), "Timer edit");
     }
 
 

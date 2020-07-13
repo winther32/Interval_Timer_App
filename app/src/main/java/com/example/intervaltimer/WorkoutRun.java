@@ -28,6 +28,9 @@ import java.lang.reflect.Type;
 import java.sql.Time;
 import java.util.ArrayList;
 
+import static com.example.intervaltimer.TimeUnit.TYPE_SET;
+import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
+
 public class WorkoutRun extends AppCompatActivity {
 
     private ArrayList<Workout> workoutList; // Where workouts are stored
@@ -87,16 +90,15 @@ public class WorkoutRun extends AppCompatActivity {
 
         // Init runTimers //
         for (int i = 0; i < workout.size(); i++) {
-            TimeUnit timeUnit = workout.get(i);
-            if (timeUnit instanceof Set) {
-                Set set = (Set) timeUnit;
+            WorkoutItem item = workout.get(i);
+            if (item.getType() == TYPE_SET) {
+                Set set = item.getSet();
                 for (int j = 0; j < set.size(); j++) {
                     runTimers.add(set.get(j));
                 }
             } else {
-                if (timeUnit instanceof Timer) {
-                    Timer timer = (Timer) timeUnit;
-                    runTimers.add(timer);
+                if (item.getType() == TYPE_TIMER) {
+                    runTimers.add(item.getTimer());
                 }
 
                 // For Debug
