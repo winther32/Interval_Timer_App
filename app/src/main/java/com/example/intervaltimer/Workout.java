@@ -1,7 +1,6 @@
 package com.example.intervaltimer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.UUID;
 
 // Outtermost obj in arch

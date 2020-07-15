@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -37,6 +39,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     TextView wrkName, wrkTime;
 
     DragListView dragListView;
+
+    FloatingActionButton addFab, newTimer, newSet;
+    Animation rotateForward, rotateBackwards;
+    Boolean isOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +139,12 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         ////////////////////////// Init buttons and onCLicks  //////////////////////////////
 
-        final FloatingActionButton newTimer = findViewById(R.id.newTimer);
+        newTimer = findViewById(R.id.newTimer);
+        addFab = findViewById(R.id.addFab);
+        newSet = findViewById(R.id.newSet);
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotateBackwards = AnimationUtils.loadAnimation(this, R.anim.rotate_backwards);
+
         save = findViewById(R.id.saveButton);
         done = findViewById(R.id.doneEdit);
 
@@ -144,6 +155,35 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         } else {
             done.setEnabled(false);
         }
+
+        editAddAnimation.init(findViewById(R.id.newTimer));
+        editAddAnimation.init(findViewById(R.id.newSet));
+
+        // Expandable fab for new timer and new set
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOpen) {
+                    animateFab();
+                    editAddAnimation.showOut(findViewById(R.id.newTimer));
+                    editAddAnimation.showOut(findViewById(R.id.newSet));
+                    isOpen = false;
+                } else {
+                    animateFab();
+                    editAddAnimation.showIn(findViewById(R.id.newTimer));
+                    editAddAnimation.showIn(findViewById(R.id.newSet));
+                    isOpen = true;
+                }
+            }
+        });
+
+        // Launches new set activity
+        newSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         // Launches new timer info dialog (get info)
         newTimer.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +237,15 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // If no previous workout List array, create a new one
         if (workoutList == null) {
             workoutList = new ArrayList<>();
+        }
+    }
+
+    //Fab animation function
+    public void animateFab() {
+        if (isOpen) {
+            addFab.startAnimation(rotateBackwards);
+        } else {
+            addFab.startAnimation(rotateForward);
         }
     }
 
