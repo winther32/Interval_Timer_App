@@ -90,9 +90,10 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                             }
 
                             Timer timer = new Timer(name, intMinutes, intSeconds);
+                            WorkoutItem item= new WorkoutItem(timer);
                             if (editMode) {
-                                listener.editTimer(timer, position);
-                            } else { listener.addTimer(timer); }
+                                listener.editTimer(item, position);
+                            } else { listener.addTimer(item); }
                         }
                     }
                 });
@@ -114,7 +115,7 @@ public class NewTimerDialog extends AppCompatDialogFragment {
 
     // interface with the class
     public interface NewTimerDialogListener {
-        void addTimer(Timer timer);
-        void editTimer(Timer timer, int pos);
+        void addTimer(WorkoutItem timer);
+        void editTimer(WorkoutItem timer, int pos);
     }
 }

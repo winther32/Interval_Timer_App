@@ -15,7 +15,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -35,7 +34,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     Button save, done;
     Workout workout;
     ArrayList<Workout> workoutList; // Location to save to.
-    RecyclerView editRecycler;
     TextView wrkName, wrkTime;
 
     DragListView dragListView;
@@ -52,8 +50,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         setSupportActionBar(toolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true); // Enable the Up button
 
 
         ////////////////////// Edit View functionality ///////////////////////////////////
@@ -85,50 +82,21 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         }
 
 
-        // Setting up Recycler view
-//        editRecycler = findViewById(R.id.workoutEditRecycler);
-//        EditAdapter editAdapter = new EditAdapter(this, workout.timerList);
-//
-//        editRecycler.setAdapter(editAdapter);
-//        editRecycler.setLayoutManager(new LinearLayoutManager(this));
-
-
         ///////////////////////Set up the drag list ///////////////////////
 
         dragListView = findViewById(R.id.editDragList);
-//        dragListView.setDragListListener(new DragListView.DragListListener() {
-////            @Override
-////            public void onItemDragStarted(int position) {
-////
-////            }
-////
-////            @Override
-////            public void onItemDragging(int itemPosition, float x, float y) {
-////
-////            }
-////
-////            @Override
-////            public void onItemDragEnded(int fromPosition, int toPosition) {
-////
-////            }
-////        });
-        // Swipe listener for edit and delete functionality
-        dragListView.setSwipeListener(new ListSwipeHelper.OnSwipeListenerAdapter() {
+        // Needed for swipe capabilities
+        dragListView.setSwipeListener(new ListSwipeHelper.OnSwipeListener() {
             @Override
             public void onItemSwipeStarted(ListSwipeItem item) {
-                super.onItemSwipeStarted(item);
-
             }
 
             @Override
             public void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection) {
-                super.onItemSwipeEnded(item, swipedDirection);
+            }
 
-                if (swipedDirection == ListSwipeItem.SwipeDirection.RIGHT) {
-//                    Timer timer = (Timer) item.getTag();
-//                    int pos = dragListView.getAdapter().getPositionForItem(timer); // UNSAFE?
-//                    dragListView.getAdapter().removeItem(pos);
-                }
+            @Override
+            public void onItemSwiping(ListSwipeItem item, float swipedDistanceX) {
             }
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
@@ -256,12 +224,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
     // Used by the NewTimerDialog to create timer and put into this context. Interface func.
-    public void addTimer(Timer timer) {
-//        // Add timer to workout list
-//        workout.timerList.add(timer);
-//        // Add timer to the recycler view
-//        editRecycler.getAdapter().notifyItemInserted((workout.timerList.size()) - 1);
-
+    public void addTimer(WorkoutItem timer) {
         // Add to drag and drop list
         // TODO: Find out how to appease studio so not warning
         dragListView.getAdapter().addItem(workout.masterList.size(), timer);
@@ -272,12 +235,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         totSec = totSec % 60;
         wrkTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
-        // Workout now has at least one timer and thus can be run. Enable running
-        //done.setEnabled(true);
     }
 
     // Used by NewTimerDialog to edit timer. Interface func.
-    public void editTimer(Timer timer, int pos) {
+    public void editTimer(WorkoutItem timer, int pos) {
 
         // Rn jut add and new then remove the old timer to "edit"
         dragListView.getAdapter().addItem(pos, timer);
@@ -317,13 +278,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         }
     }
 
-    // Way to get back to home screen from dialog cancel.
-    // Possibly not best way since launches new intent. Could use old?
-    public void toHome() {
-        Intent intent = new Intent(this, MainActivity.class );
-        startActivity(intent);
-    }
-
     // Called onClick of the Done Button
     public void launchRunWorkout(View view) {
         // TODO: Verify that workout exists in workoutList. (prevent null pointers)
@@ -332,8 +286,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
         startActivity(intent);
+        finish();
     }
 
+    //////////////// Delete workout functions //////////////
 
     // Launch function for verify delete workout prompt. Used in edit Menu
     public void launchDeleteWorkout() {
@@ -353,7 +309,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         editor.putString("Workout list", json);
         editor.apply();
         // Return to home screen
-        toHome();
+        Intent intent = new Intent(this, MainActivity.class );
+        startActivity(intent);
+        finish();
     }
 
 
@@ -394,17 +352,21 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_rename) {
-            launchNamePrompt(); // Rename workout
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home: // close activity on up button
+                Intent intent = new Intent(this, MainActivity.class );
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.action_rename:
+                launchNamePrompt(); // Rename workout
+                return true;
+            case R.id.edit_deleteWrk:
+                launchDeleteWorkout();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        if (id == R.id.edit_deleteWrk) {
-            launchDeleteWorkout();
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

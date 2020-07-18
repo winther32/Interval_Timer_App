@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
     public void launchNewWorkout(View view) {
         Intent intent = new Intent(this, WorkoutView.class );
         startActivity(intent);
+        finish();
     }
 
     // Starts Run workout activity

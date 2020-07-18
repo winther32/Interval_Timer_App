@@ -31,4 +31,8 @@
     <string name="Edit">EDIT</string>
     <string name="Delete">DELETE</string>
     <string name="set_name">Set Name</string>
+    <string name="edit_set">Edit Set</string>
+    <string name="set">Set</string>
+    <string name="rep_time">Rep Time</string>
+    <string name="base_rep_display">X1</string>
 </resources>

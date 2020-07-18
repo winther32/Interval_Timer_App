@@ -24,6 +24,14 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".SetEdit"
+            android:label="Set Edit"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".WorkoutView" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:label="@string/my_workouts"
             android:theme="@style/AppTheme.NoActionBar" >

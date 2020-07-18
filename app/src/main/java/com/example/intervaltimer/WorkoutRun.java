@@ -1,11 +1,5 @@
 package com.example.intervaltimer;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -21,11 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.sql.Time;
 import java.util.ArrayList;
 
 import static com.example.intervaltimer.TimeUnit.TYPE_SET;
@@ -289,6 +288,7 @@ public class WorkoutRun extends AppCompatActivity {
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
         startActivity(intent);
+        finish(); // End this run activity
     }
 
     @Override
@@ -303,14 +303,25 @@ public class WorkoutRun extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.runToEdit) {
+//            launchEditWorkout(workout);
+//            return true;
+//        }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.runToEdit) {
-            launchEditWorkout(workout);
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(this, MainActivity.class );
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.runToEdit:
+                launchEditWorkout(workout);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -35,8 +35,7 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
                 .setNegativeButton("", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Launch to home screen.
-                        //listener.toHome();
+
                     }
                 })
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
@@ -67,7 +66,5 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
     // interface with the class
     public interface WorkoutNameDialogListener {
        void passTitle(String title);
-       void toHome();
     }
-
 }
