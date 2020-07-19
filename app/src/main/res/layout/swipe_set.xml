@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.woxthebox.draglistview.swipe.ListSwipeItem
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.woxthebox.draglistview.swipe.ListSwipeItem xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/setSwipe"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     app:leftViewId="@+id/setSwipeDelete"
     app:rightViewId="@+id/setSwipeEdit"
-    app:swipeViewId="@+id/setSwipeView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    app:swipeViewId="@+id/set_item_layout">
 
     <TextView
         android:id="@+id/setSwipeDelete"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignTop="@+id/item_layout"
-        android:layout_alignBottom="@+id/item_layout"
+        android:layout_alignTop="@id/set_item_layout"
+        android:layout_alignBottom="@id/set_item_layout"
         android:background="#ff0000"
         android:gravity="start|center_vertical"
-        android:onClick="deleteSwipe"
         android:padding="16dp"
         android:text="@string/Delete"
         android:textColor="@android:color/white"
@@ -29,18 +26,17 @@
         android:id="@+id/setSwipeEdit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignTop="@+id/item_layout"
-        android:layout_alignBottom="@+id/item_layout"
+        android:layout_alignTop="@id/set_item_layout"
+        android:layout_alignBottom="@id/set_item_layout"
         android:background="#0000ff"
         android:gravity="end|center_vertical"
-        android:onClick="editSwipe"
         android:padding="16dp"
         android:text="@string/Edit"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
     <LinearLayout
-        android:id="@id/item_layout"
+        android:id="@+id/set_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

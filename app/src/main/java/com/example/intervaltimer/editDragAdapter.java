@@ -73,6 +73,11 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
                     String.format("%02d", item.getSet().Seconds));
             viewHolder.timerCount.setText(Integer.toString(item.getSet().size()));
 
+            int totSec = item.getSet().getTotalTime();
+            int min = totSec / 60;
+            totSec = totSec % 60;
+            viewHolder.totalTime.setText("" + String.format("%02d", min) + ":" +
+                    String.format("%02d", totSec));
 
             // Cheesy way to pass pos to view for swipe clicks.
             viewHolder.setPosDel.setHint("" + String.format("%d", position));
@@ -116,4 +121,5 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             setPosEdt = itemView.findViewById(R.id.setSwipeEdit);
         }
     }
+
 }
