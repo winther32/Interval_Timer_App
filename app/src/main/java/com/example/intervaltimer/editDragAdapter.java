@@ -17,12 +17,13 @@ import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
 public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapter.ViewHolder> {
 
     private ArrayList<WorkoutItem> masterList;
-    private int mGrabHandleId;
+    private int grabSet, grabTimer;
     private boolean mDragOnLongPress;
 
     public editDragAdapter(ArrayList<WorkoutItem> wrkList, int grabID, boolean dragOnLongPress) {
         masterList = wrkList;
-        mGrabHandleId = grabID;
+        grabSet = grabID;
+        grabTimer= R.id.timer_swipe_card;
         mDragOnLongPress = dragOnLongPress;
         setItemList(masterList);
     }
@@ -36,16 +37,16 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
 
     @NonNull
     @Override
-    public editDragAdapter.TimerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DragItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Check for type and use type appropriate layout.
         if (viewType == TYPE_TIMER) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.swipe_item, parent, false);
             return new editDragAdapter.TimerViewHolder(view);
-        } else { // if (viewType == TYPE_SET)
+        } else {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.swipe_set, parent, false);
-            return new editDragAdapter.TimerViewHolder(view);
+            return new editDragAdapter.SetViewHolder(view);
         } // TODO: add error catch
     }
 
@@ -88,7 +89,7 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
         public TextView timerName, timerClock, timerPosDel, timerPosEdt;
 
         public TimerViewHolder(final View itemView) {
-            super(itemView, mGrabHandleId, mDragOnLongPress);
+            super(itemView, grabTimer , mDragOnLongPress);
 
             timerName = itemView.findViewById(R.id.swipeTimerName);
             timerClock = itemView.findViewById(R.id.swipeTimerClock);
@@ -102,7 +103,7 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
         TextView setName, timerCount, iterations, totalTime, repTime, setPosDel, setPosEdt;
 
         public SetViewHolder(View itemView) {
-            super(itemView, mGrabHandleId, mDragOnLongPress);
+            super(itemView, grabSet, mDragOnLongPress);
 
             setName = itemView.findViewById(R.id.swipeSetName);
             timerCount = itemView.findViewById(R.id.setTimerCount);

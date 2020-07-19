@@ -204,7 +204,16 @@ public class WorkoutRun extends AppCompatActivity {
             // Check if timer is at 0 or close enough :/ (hundredth sec accuracy I think)
             if (UpdateTime <= 0) {
                 // If here, current timer has ended
-                Timer timerOrNull = runTimers.get(++position); // Check for another timer
+
+                // Index check
+                Timer timerOrNull;
+                position++;
+                if (position < runTimers.size()) {
+                    timerOrNull = runTimers.get(position); // Check for another timer
+                } else {
+                    timerOrNull = null;
+                }
+
                 if (timerOrNull == null) {
                     // Have reached end of workout
                     twoBeeps.start(); // Completion sound

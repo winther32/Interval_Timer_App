@@ -67,7 +67,7 @@
                     android:layout_marginLeft="37dp"
                     android:layout_marginTop="5dp"
                     android:text="@string/set_name"
-                    android:textSize="14sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="X timers in Set"
-                    android:textSize="12dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/swipeSetName"
                     app:layout_constraintTop_toBottomOf="@+id/swipeSetName" />
@@ -90,6 +90,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:text="x1"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -102,7 +103,7 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginLeft="25dp"
                     android:text="Tot time"
-                    android:textSize="12dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/swipeSetName"
                     app:layout_constraintStart_toEndOf="@+id/swipeSetName"
                     app:layout_constraintTop_toTopOf="@+id/swipeSetName" />
@@ -114,7 +115,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
                     android:text="Rep Time"
-                    android:textSize="12dp"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toEndOf="@+id/setTimerCount"
                     app:layout_constraintTop_toTopOf="@+id/setTimerCount" />
 

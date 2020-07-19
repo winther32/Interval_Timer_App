@@ -101,11 +101,11 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
         dragListView.setCanDragHorizontally(false);
-        editDragAdapter itemAdapter = new editDragAdapter(workout.masterList, R.id.timer_swipe_card, true);
+        editDragAdapter itemAdapter = new editDragAdapter(workout.masterList, R.id.set_swipe_card, true);
         dragListView.setAdapter(itemAdapter, true);
 
 
-        ////////////////////////// Init buttons and onCLicks  //////////////////////////////
+        ////////////////////////// Init buttons and onClicks  //////////////////////////////
 
         newTimer = findViewById(R.id.newTimer);
         addFab = findViewById(R.id.addFab);

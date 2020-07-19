@@ -5,22 +5,16 @@ import java.util.ArrayList;
 // Iterable groupings of timer objects
 public class Set extends TimeUnit {
 
-    // Also has name UUID, iterations, min and sec
+    // Also has name, UUID, iterations, min and sec
     private ArrayList<Timer> setList = new ArrayList<>();
 
-    //////////////////// Constructors ////////////////////
-
-    // Create a Set from 1 timer
-    public Set(Timer t1) {
-        setList.add(t1);
+    public Set() {
+        Name = "Set";
     }
-//
-//    // add a timer onto an existing Set
-//    public Set(Set oldSet, Timer t1) {
-//        oldSet.setList.add(t1);
-//    }
 
-    /////////////////// Methods ///////////////////////
+    public Set(String name) {
+        Name = name;
+    }
 
     // Return number of timers in Set
     public int size() { return setList.size(); }
