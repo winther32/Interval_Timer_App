@@ -61,27 +61,30 @@
 
                 <TextView
                     android:id="@+id/swipeSetName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="37dp"
-                    android:layout_marginLeft="37dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
                     android:text="@string/set_name"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/setTimerCount"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/setTimerCount"
+                    android:id="@+id/setTimerCountText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="X timers in Set"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/swipeSetName"
-                    app:layout_constraintTop_toBottomOf="@+id/swipeSetName" />
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
+                    android:text="@string/timers"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toStartOf="@+id/setIters"
+                    app:layout_constraintTop_toTopOf="@+id/setTimerCount" />
 
                 <TextView
                     android:id="@+id/setIters"
@@ -100,24 +103,55 @@
                     android:id="@+id/setTotalTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:text="Tot time"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/swipeSetName"
-                    app:layout_constraintStart_toEndOf="@+id/swipeSetName"
-                    app:layout_constraintTop_toTopOf="@+id/swipeSetName" />
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/total_time"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toStartOf="@+id/setSwipeTotTime"
+                    app:layout_constraintTop_toTopOf="@+id/setSwipeTotTime" />
 
                 <TextView
                     android:id="@+id/setRepTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/rep_time"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/swipeSetName"
+                    app:layout_constraintTop_toBottomOf="@+id/swipeSetName" />
+
+                <TextView
+                    android:id="@+id/setSwipeRepTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:text="Rep Time"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toEndOf="@+id/setTimerCount"
-                    app:layout_constraintTop_toTopOf="@+id/setTimerCount" />
+                    android:text="@string/empty_timer_display"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/setRepTime"
+                    app:layout_constraintTop_toTopOf="@+id/setRepTime" />
+
+                <TextView
+                    android:id="@+id/setSwipeTotTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/empty_timer_display"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/setTimerCountText"
+                    app:layout_constraintTop_toBottomOf="@+id/swipeSetName" />
+
+                <TextView
+                    android:id="@+id/setTimerCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/zero_numb"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/swipeSetName"
+                    app:layout_constraintEnd_toStartOf="@+id/setTimerCountText"
+                    app:layout_constraintTop_toTopOf="@+id/swipeSetName" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

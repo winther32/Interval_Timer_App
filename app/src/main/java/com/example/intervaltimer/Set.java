@@ -31,6 +31,12 @@ public class Set extends TimeUnit {
         Minutes += (totSec / 60) + timer.Minutes;
     }
 
+    public int getTotalTime() {
+        int totSec = Seconds * Iterations;
+        totSec += Minutes * 60;
+        return totSec;
+    }
+
     // Type method for adapter
     @Override
     public int getType() {

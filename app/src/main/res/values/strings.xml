@@ -35,4 +35,6 @@
     <string name="set">Set</string>
     <string name="rep_time">Rep Time</string>
     <string name="base_rep_display">X1</string>
+    <string name="timers">Timers</string>
+    <string name="zero_numb">0</string>
 </resources>

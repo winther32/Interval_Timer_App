@@ -69,8 +69,10 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             editDragAdapter.SetViewHolder viewHolder = (editDragAdapter.SetViewHolder) holder;
             // Assign variables
             viewHolder.setName.setText(item.getSet().Name);
-            viewHolder.totalTime.setText("Total Time" + String.format("%02d", item.getSet().Minutes) + ":" +
+            viewHolder.repTime.setText("" + String.format("%02d", item.getSet().Minutes) + ":" +
                     String.format("%02d", item.getSet().Seconds));
+            viewHolder.timerCount.setText(Integer.toString(item.getSet().size()));
+
 
             // Cheesy way to pass pos to view for swipe clicks.
             viewHolder.setPosDel.setHint("" + String.format("%d", position));
@@ -108,8 +110,8 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             setName = itemView.findViewById(R.id.swipeSetName);
             timerCount = itemView.findViewById(R.id.setTimerCount);
             iterations = itemView.findViewById(R.id.setIters);
-            totalTime = itemView.findViewById(R.id.setTotalTime);
-            repTime = itemView.findViewById(R.id.setRepTime);
+            totalTime = itemView.findViewById(R.id.setSwipeTotTime);
+            repTime = itemView.findViewById(R.id.setSwipeRepTime);
             setPosDel = itemView.findViewById(R.id.setSwipeDelete);
             setPosEdt = itemView.findViewById(R.id.setSwipeEdit);
         }
