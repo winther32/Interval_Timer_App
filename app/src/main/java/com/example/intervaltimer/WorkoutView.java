@@ -217,6 +217,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         }
     }
 
+    //////////////// NewTimerDialog Interface funcs //////////////////////
+
     // Launches the new dialog to prompt for new timer info. Part of edit screen
     public void openTimerCreation() {
         NewTimerDialog timerDialog = new NewTimerDialog();
@@ -225,7 +227,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     // Used by the NewTimerDialog to create timer and put into this context. Interface func.
     public void addTimer(WorkoutItem timer) {
-        // Add to drag and drop list
         // TODO: Find out how to appease studio so not warning
         dragListView.getAdapter().addItem(workout.masterList.size(), timer);
 
@@ -251,6 +252,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         wrkTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
     }
+
+
+    //////////////////// WorkoutNameDialog Interface funcs //////////////////////////
 
     // Launch function for Workout names dialog
     private void launchNamePrompt() {
@@ -289,7 +293,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         finish();
     }
 
-    //////////////// Delete workout functions //////////////
+
+    /////////////// DeleteWorkoutDialog Interface funcs ////////////////////
 
     // Launch function for verify delete workout prompt. Used in edit Menu
     public void launchDeleteWorkout() {
@@ -314,6 +319,10 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         finish();
     }
 
+    public void deleteSet(int position) {
+        dragListView.getAdapter().removeItem(position);
+    }
+
 
     //////////// Edit and delete functions on click after swipe /////////////
 
@@ -328,13 +337,31 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void editSwipe(View view) {
         TextView itemID = view.findViewById(R.id.swipeEdit);
         int pos = Integer.parseInt(itemID.getHint().toString());
-
-        // TODO: WARNING ONLY WORKS WHILE EDT/DLT FOR SET NOT IMPLEMENTED
         Timer timer = workout.get(pos).getTimer();
-
         NewTimerDialog timerDialog = new NewTimerDialog();
         timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), pos);
         timerDialog.show(getSupportFragmentManager(), "Timer edit");
+    }
+
+    // Delete swiped set item onClick of delete
+    public void deleteSetSwipe(View view) {
+        TextView itemID = view.findViewById(R.id.setSwipeDelete);
+        int pos = Integer.parseInt(itemID.getHint().toString());
+        DeleteWorkoutDialog deleteDialog = new DeleteWorkoutDialog();
+        deleteDialog.setMode(pos);
+        deleteDialog.show(getSupportFragmentManager(), "Set Delete Verify");
+    }
+
+    // Launch new set Edit activity on swipe and click of set item
+    public void editSetSwipe(View view) {
+        TextView itemID = view.findViewById(R.id.setSwipeEdit);
+        int pos = Integer.parseInt(itemID.getHint().toString());
+        Intent intent = new Intent(this, SetEdit.class );
+        // Pass the index of the workout in workoutList to new activity.
+        intent.putExtra("Workout Index", workoutList.indexOf(workout));
+        intent.putExtra("Set Index", pos);
+        startActivity(intent);
+        finish();
     }
 
 

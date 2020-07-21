@@ -15,7 +15,15 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 public class DeleteWorkoutDialog extends AppCompatDialogFragment {
 
     DeleteWorkoutDialogListener listener;
+    String mode = "Workout"; // To help det title;
+    int pos; // For set mode
 
+    public void setMode(int position) {
+        mode = "Set";
+        pos = position;
+    }
+
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -24,7 +32,6 @@ public class DeleteWorkoutDialog extends AppCompatDialogFragment {
 
 
         builder.setView(view)
-                .setTitle("Delete Workout?")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -34,9 +41,20 @@ public class DeleteWorkoutDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.deleteWorkout();
+                        if ("Set".equals(mode)) {
+                            listener.deleteSet(pos);
+                        } else {
+                            listener.deleteWorkout();
+                        }
                     }
                 });
+
+        if ("Set".equals(mode)) {
+            builder.setTitle("Delete Set?");
+        } else {
+            builder.setTitle("Delete Workout?");
+        }
+
         return builder.create();
     }
 
@@ -56,6 +74,7 @@ public class DeleteWorkoutDialog extends AppCompatDialogFragment {
     // interface with the class
     public interface DeleteWorkoutDialogListener {
         void deleteWorkout();
+        void deleteSet(int position);
     }
 
 }

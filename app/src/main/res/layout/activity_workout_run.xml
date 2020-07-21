@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EFEFEF"
     tools:context=".WorkoutRun">
 
     <Button
@@ -79,13 +80,13 @@
     <ProgressBar
         android:id="@+id/runProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:theme="@style/My_Progress_Bar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        android:theme="@style/My_Progress_Bar"
         app:layout_constraintBottom_toTopOf="@+id/currentName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.915"

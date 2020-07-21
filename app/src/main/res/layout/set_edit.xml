@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#EFEFEF">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/setToolbar"
@@ -31,8 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editSetIterations"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/editSetRepTimeText" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/setAddFab"
@@ -57,32 +57,32 @@
         android:id="@+id/editSetTotTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/empty_timer_display"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/editSetIterations"
-        app:layout_constraintTop_toBottomOf="@+id/editSetName" />
+        app:layout_constraintBottom_toBottomOf="@+id/editSetRepTimeText"
+        app:layout_constraintStart_toEndOf="@+id/editSetTotText" />
 
     <TextView
         android:id="@+id/editSetTotText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:text="@string/total_time"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/editSetTotTime"
-        app:layout_constraintEnd_toStartOf="@+id/editSetTotTime" />
+        app:layout_constraintBottom_toBottomOf="@+id/editSetRepTimeText"
+        app:layout_constraintStart_toEndOf="@+id/editSetRepTime" />
 
     <TextView
         android:id="@+id/editSetName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
@@ -117,12 +117,12 @@
 
     <TextView
         android:id="@+id/editSetIterations"
-        android:layout_width="69dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/base_rep_display"
-        android:textSize="36sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/editSetTotTime"
         app:layout_constraintEnd_toEndOf="parent"

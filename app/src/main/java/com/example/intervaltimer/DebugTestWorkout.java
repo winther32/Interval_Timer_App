@@ -32,9 +32,9 @@ public class DebugTestWorkout {
         testWorkout.workoutName = "Debug Workout";
 
         // Add timers to set
-        s1.add(t1);
-        s1.add(t2);
-        s1.add(t3);
+        s1.add(w1);
+        s1.add(w2);
+        s1.add(w3);
         WorkoutItem w11 = new WorkoutItem(s1);
         // Add set
         testWorkout.add(w11);

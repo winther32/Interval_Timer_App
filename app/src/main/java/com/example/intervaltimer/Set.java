@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Set extends TimeUnit {
 
     // Also has name, UUID, iterations, min and sec
-    private ArrayList<Timer> setList = new ArrayList<>();
+    ArrayList<WorkoutItem> setList = new ArrayList<>();
 
     public Set() {
         Name = "Set";
@@ -20,15 +20,15 @@ public class Set extends TimeUnit {
     public int size() { return setList.size(); }
 
     public Timer get(int index) {
-        return setList.get(index);
+        return setList.get(index).getTimer();
     }
 
     // Add a timer to the setList
-    public void add(Timer timer){
+    public void add(WorkoutItem timer){
         setList.add(timer);
-        int totSec = Seconds + timer.Seconds;
+        int totSec = Seconds + timer.getTimer().Seconds;
         Seconds = totSec % 60;
-        Minutes += (totSec / 60) + timer.Minutes;
+        Minutes += (totSec / 60) + timer.getTimer().Minutes;
     }
 
     public int getTotalTime() {

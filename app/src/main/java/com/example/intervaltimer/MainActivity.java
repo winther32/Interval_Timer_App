@@ -77,27 +77,23 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         finish();
     }
 
-    // Starts Run workout activity
-    public void launchWorkout(Workout workout) {
+    // Call onClick of recycler workout item.
+    @Override
+    public void workoutClicked(Workout workout) {
+        // What to do when recycler item is clicked ie run selected workout
         // TODO: Verify that workout exists in workoutList. (prevent null pointers)
         Intent intent = new Intent(this, WorkoutRun.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
         startActivity(intent);
-    }
-
-    // Call onClick of recycler workout list
-    @Override
-    public void workoutClicked(Workout workout) {
-        // What to do when recycler item is clicked ie run selected workout
-        launchWorkout(workout);
+        finish();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
