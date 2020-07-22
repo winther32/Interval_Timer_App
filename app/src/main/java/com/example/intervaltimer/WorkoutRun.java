@@ -227,8 +227,8 @@ public class WorkoutRun extends AppCompatActivity {
                     currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
                             ":" + String.format("%02d", timerOrNull.Seconds));
                     currentNameDisplay.setText(timerOrNull.Name);
-                    // Pass new updated runnable
-                    handler.postDelayed(this, 0);
+                    // Pass new updated runnable (pause briefly before start user can see init numb)
+                    handler.postDelayed(this, 50);
                     // Update next timer view
                     nextTimers.remove(0);
                     runRecycler.getAdapter().notifyItemRemoved(0);

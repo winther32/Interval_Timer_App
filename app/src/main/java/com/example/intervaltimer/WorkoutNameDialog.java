@@ -19,8 +19,14 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class WorkoutNameDialog extends AppCompatDialogFragment {
 
-    EditText wrkNameText;
-    WorkoutNameDialogListener listener;
+    private EditText wrkNameText;
+    private WorkoutNameDialogListener listener;
+    private Boolean mode_set = false;
+
+    // Method to change what title is shown and what hint is
+    public void setNameChange() {
+        mode_set = true;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -31,25 +37,27 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
         wrkNameText = view.findViewById(R.id.editWorkoutName);
 
         builder.setView(view)
-                .setTitle("Name Your Workout")
                 .setNegativeButton("", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 })
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.Done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Save the workout and init as empty timer list
-                        //TODO: Save workout, fix recyclers and displays to handle empty wrkouts
                         String wrkName = wrkNameText.getText().toString().trim();
                         listener.passTitle(wrkName);
                     }
                 });
+        if (mode_set) {
+            builder.setTitle(getString(R.string.name_your_set));
+            wrkNameText.setHint(getString(R.string.set_name));
+        } else {
+            builder.setTitle(getString(R.string.name_your_workout));
+        }
         return builder.create();
     }
-
 
     @Override
     public void onAttach(@NonNull Context context) {

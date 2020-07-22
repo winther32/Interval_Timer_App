@@ -42,7 +42,7 @@ public class DeleteWorkoutDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if ("Set".equals(mode)) {
-                            listener.deleteSet(pos);
+                            listener.delete_dialog_Set(pos);
                         } else {
                             listener.deleteWorkout();
                         }
@@ -74,7 +74,7 @@ public class DeleteWorkoutDialog extends AppCompatDialogFragment {
     // interface with the class
     public interface DeleteWorkoutDialogListener {
         void deleteWorkout();
-        void deleteSet(int position);
+        void delete_dialog_Set(int position);
     }
 
 }

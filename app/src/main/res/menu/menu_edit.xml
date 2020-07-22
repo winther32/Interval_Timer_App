@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/action_rename"
-        android:title="Rename Workout" />
+        android:title="@string/rename_workout" />
     <item
         android:id="@+id/edit_deleteWrk"
-        android:title="Delete Workout" />
+        android:title="@string/delete_workout" />
 </menu>

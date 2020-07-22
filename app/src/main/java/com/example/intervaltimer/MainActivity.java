@@ -81,12 +81,19 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
     @Override
     public void workoutClicked(Workout workout) {
         // What to do when recycler item is clicked ie run selected workout
-        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
-        Intent intent = new Intent(this, WorkoutRun.class );
-        // Pass the index of the workout in workoutList to new activity.
-        intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
-        startActivity(intent);
-        finish();
+        if (!workout.empty()) {
+            Intent intent = new Intent(this, WorkoutRun.class);
+            // Pass the index of the workout in workoutList to new activity.
+            intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = new Intent(this, WorkoutView.class);
+            // Pass the index of the workout in workoutList to new activity.
+            intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+            startActivity(intent);
+            finish();
+        }
     }
 
 

@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,16 +30,16 @@ import java.util.ArrayList;
 
 
 public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener,
-        WorkoutNameDialog.WorkoutNameDialogListener, DeleteWorkoutDialog.DeleteWorkoutDialogListener {
+        WorkoutNameDialog.WorkoutNameDialogListener, DeleteWorkoutDialog.DeleteWorkoutDialogListener,
+        editDragAdapter.dragAdapterClickListener {
 
-    Button save, done;
     Workout workout;
     ArrayList<Workout> workoutList; // Location to save to.
     TextView wrkName, wrkTime;
 
     DragListView dragListView;
 
-    FloatingActionButton addFab, newTimer, newSet;
+    FloatingActionButton addFab, newTimer, newSet, doneSave;
     Animation rotateForward, rotateBackwards;
     Boolean isOpen = false;
 
@@ -101,7 +102,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
         dragListView.setCanDragHorizontally(false);
-        editDragAdapter itemAdapter = new editDragAdapter(workout.masterList, R.id.set_swipe_card, true);
+        editDragAdapter itemAdapter = new editDragAdapter(workout.masterList, R.id.set_swipe_card, true, this);
         dragListView.setAdapter(itemAdapter, true);
 
 
@@ -110,18 +111,16 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         newTimer = findViewById(R.id.newTimer);
         addFab = findViewById(R.id.addFab);
         newSet = findViewById(R.id.newSet);
+        doneSave = findViewById(R.id.editFinishFab);
         rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
         rotateBackwards = AnimationUtils.loadAnimation(this, R.anim.rotate_backwards);
-
-        save = findViewById(R.id.saveButton);
-        done = findViewById(R.id.doneEdit);
 
         // Protect against launching Run activity with no workout
         // Will need further checks with the addition of timer removal functionality
         if (!workout.empty()) {
-            done.setEnabled(true);
+            doneSave.setVisibility(View.VISIBLE);
         } else {
-            done.setEnabled(false);
+            doneSave.setVisibility(View.GONE);
         }
 
         editAddAnimation.init(findViewById(R.id.newTimer));
@@ -149,7 +148,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         newSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                launchSetActivity();
             }
         });
 
@@ -161,23 +160,54 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             }
         });
 
-        // TODO: rethink possibility of saving empty workouts
-        // Save button click listener
-        save.setOnClickListener(new View.OnClickListener() {
+        doneSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Ensure no empty workouts are saved. Save notification
+                saveWorkout();
                 if (!workout.empty()) {
-                    saveWorkout();
-                    Snackbar.make(v, "Workout Saved", Snackbar.LENGTH_LONG)
-                            .show();
+                    launchRunWorkout();
                 } else {
-                    Snackbar.make(v, "Cannot Save Empty Workout", Snackbar.LENGTH_LONG)
-                            .show();
+                    // Toast notification
+                    Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_SHORT)
+                    .show();
                 }
             }
         });
+
     }
+
+    //Fab animation function
+    public void animateFab() {
+        if (isOpen) {
+            addFab.startAnimation(rotateBackwards);
+        } else {
+            addFab.startAnimation(rotateForward);
+        }
+    }
+
+    // Called onClick of the doneSave Button
+    public void launchRunWorkout() {
+        // Double check if workout not empty
+        if (!workout.empty()) {
+            Intent intent = new Intent(this, WorkoutRun.class);
+            // Pass the index of the workout in workoutList to new activity.
+            intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    // Create a new set item and add it to the workout
+    public void launchSetActivity() {
+        Intent intent = new Intent(this, SetEdit.class );
+        // Pass the index of the workout in workoutList to new activity.
+        intent.putExtra("Workout Index", workoutList.indexOf(workout));
+        startActivity(intent);
+        finish();
+    }
+
+
+    ////////////////// I/O /////////////////////////
 
     // Function to save to shared Prefs
     private void saveWorkout(){
@@ -190,9 +220,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         String json = gson.toJson(workoutList);
         editor.putString("Workout list", json);
         editor.apply();
-
-        // For now workout must be saved in order to be run
-        done.setEnabled(true);
     }
 
     // Load the saved workout list from Shared Prefs.
@@ -205,15 +232,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // If no previous workout List array, create a new one
         if (workoutList == null) {
             workoutList = new ArrayList<>();
-        }
-    }
-
-    //Fab animation function
-    public void animateFab() {
-        if (isOpen) {
-            addFab.startAnimation(rotateBackwards);
-        } else {
-            addFab.startAnimation(rotateForward);
         }
     }
 
@@ -236,6 +254,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         totSec = totSec % 60;
         wrkTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
+
+        // Make complete button visible
+        doneSave.setVisibility(View.VISIBLE);
     }
 
     // Used by NewTimerDialog to edit timer. Interface func.
@@ -282,17 +303,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         }
     }
 
-    // Called onClick of the Done Button
-    public void launchRunWorkout(View view) {
-        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
-        // TODO: Save after every edit
-        Intent intent = new Intent(this, WorkoutRun.class );
-        // Pass the index of the workout in workoutList to new activity.
-        intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
-        startActivity(intent);
-        finish();
-    }
-
 
     /////////////// DeleteWorkoutDialog Interface funcs ////////////////////
 
@@ -319,47 +329,45 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         finish();
     }
 
-    public void deleteSet(int position) {
+    public void delete_dialog_Set(int position) {
         dragListView.getAdapter().removeItem(position);
+        if (workout.empty()) {
+            doneSave.setVisibility(View.GONE);
+        }
     }
 
 
-    //////////// Edit and delete functions on click after swipe /////////////
+    //////////// Edit and delete functions drag adapter interface  /////////////
 
-    // Delete the swiped item on click of delete text onClick of swipeDelete
-    public void deleteSwipe(View view) {
-        TextView itemID = view.findViewById(R.id.swipeDelete);
-        int pos = Integer.parseInt(itemID.getHint().toString());
-        dragListView.getAdapter().removeItem(pos);
+    @Override
+    public void deleteTimer_dAdapter(int position) {
+        dragListView.getAdapter().removeItem(position);
+        if (workout.empty()){
+            doneSave.setVisibility(View.GONE);
+        }
     }
 
-    // Launch edit timer dialog on click of edit swipe
-    public void editSwipe(View view) {
-        TextView itemID = view.findViewById(R.id.swipeEdit);
-        int pos = Integer.parseInt(itemID.getHint().toString());
-        Timer timer = workout.get(pos).getTimer();
+    @Override
+    public void editTimer_dAdapter(int position) {
+        Timer timer = workout.get(position).getTimer();
         NewTimerDialog timerDialog = new NewTimerDialog();
-        timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), pos);
+        timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), position);
         timerDialog.show(getSupportFragmentManager(), "Timer edit");
     }
 
-    // Delete swiped set item onClick of delete
-    public void deleteSetSwipe(View view) {
-        TextView itemID = view.findViewById(R.id.setSwipeDelete);
-        int pos = Integer.parseInt(itemID.getHint().toString());
+    @Override
+    public void deleteSet_dAdapter(int position) {
         DeleteWorkoutDialog deleteDialog = new DeleteWorkoutDialog();
-        deleteDialog.setMode(pos);
+        deleteDialog.setMode(position);
         deleteDialog.show(getSupportFragmentManager(), "Set Delete Verify");
     }
 
-    // Launch new set Edit activity on swipe and click of set item
-    public void editSetSwipe(View view) {
-        TextView itemID = view.findViewById(R.id.setSwipeEdit);
-        int pos = Integer.parseInt(itemID.getHint().toString());
+    @Override
+    public void editSet_dAdapter(int position) {
         Intent intent = new Intent(this, SetEdit.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout));
-        intent.putExtra("Set Index", pos);
+        intent.putExtra("Set Index", position);
         startActivity(intent);
         finish();
     }
@@ -396,4 +404,5 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

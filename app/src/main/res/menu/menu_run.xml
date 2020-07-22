@@ -3,5 +3,5 @@
 
     <item
         android:id="@+id/runToEdit"
-        android:title="Edit Workout" />
+        android:title="@string/edit_workout" />
 </menu>

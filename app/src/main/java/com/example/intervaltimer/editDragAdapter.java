@@ -19,13 +19,16 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
     private ArrayList<WorkoutItem> masterList;
     private int grabSet, grabTimer;
     private boolean mDragOnLongPress;
+    private dragAdapterClickListener clickListener;
 
-    public editDragAdapter(ArrayList<WorkoutItem> wrkList, int grabID, boolean dragOnLongPress) {
+    public editDragAdapter(ArrayList<WorkoutItem> wrkList, int grabID, boolean dragOnLongPress,
+                           dragAdapterClickListener clkListener) {
         masterList = wrkList;
         grabSet = grabID;
-        grabTimer= R.id.timer_swipe_card;
+        grabTimer = R.id.timer_swipe_card;
         mDragOnLongPress = dragOnLongPress;
         setItemList(masterList);
+        clickListener = clkListener;
     }
 
     @Override
@@ -42,11 +45,11 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
         if (viewType == TYPE_TIMER) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.swipe_item, parent, false);
-            return new editDragAdapter.TimerViewHolder(view);
+            return new editDragAdapter.TimerViewHolder(view, clickListener);
         } else {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.swipe_set, parent, false);
-            return new editDragAdapter.SetViewHolder(view);
+            return new editDragAdapter.SetViewHolder(view, clickListener);
         } // TODO: add error catch
     }
 
@@ -72,6 +75,11 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             viewHolder.repTime.setText("" + String.format("%02d", item.getSet().Minutes) + ":" +
                     String.format("%02d", item.getSet().Seconds));
             viewHolder.timerCount.setText(Integer.toString(item.getSet().size()));
+            if (item.getSet().size() == 1) {
+                viewHolder.timerCountText.setText(R.string.timer);
+            } else {
+                viewHolder.timerCountText.setText(R.string.timers);
+            }
 
             int totSec = item.getSet().getTotalTime();
             int min = totSec / 60;
@@ -95,31 +103,69 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
 
         public TextView timerName, timerClock, timerPosDel, timerPosEdt;
 
-        public TimerViewHolder(final View itemView) {
+        public TimerViewHolder(final View itemView, final dragAdapterClickListener listener) {
             super(itemView, grabTimer , mDragOnLongPress);
 
             timerName = itemView.findViewById(R.id.swipeTimerName);
             timerClock = itemView.findViewById(R.id.swipeTimerClock);
-            timerPosDel = itemView.findViewById(R.id.swipeDelete);
-            timerPosEdt = itemView.findViewById(R.id.swipeEdit);
+            timerPosDel = itemView.findViewById(R.id.swipeDeleteTimer);
+            timerPosEdt = itemView.findViewById(R.id.swipeEditTimer);
+
+            timerPosDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.deleteTimer_dAdapter(getAdapterPosition());
+                }
+            });
+
+            timerPosEdt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.editTimer_dAdapter(getAdapterPosition());
+                }
+            });
         }
     }
 
     public class SetViewHolder extends DragItemAdapter.ViewHolder {
 
-        TextView setName, timerCount, iterations, totalTime, repTime, setPosDel, setPosEdt;
+        TextView setName, timerCount, timerCountText, iterations, totalTime, repTime, setPosDel,
+                setPosEdt;
 
-        public SetViewHolder(View itemView) {
+        public SetViewHolder(View itemView, final dragAdapterClickListener listener) {
             super(itemView, grabSet, mDragOnLongPress);
 
             setName = itemView.findViewById(R.id.swipeSetName);
             timerCount = itemView.findViewById(R.id.setTimerCount);
+            timerCountText = itemView.findViewById(R.id.setTimerCountText);
             iterations = itemView.findViewById(R.id.setIters);
             totalTime = itemView.findViewById(R.id.setSwipeTotTime);
             repTime = itemView.findViewById(R.id.setSwipeRepTime);
             setPosDel = itemView.findViewById(R.id.setSwipeDelete);
             setPosEdt = itemView.findViewById(R.id.setSwipeEdit);
+
+            // Set swipe and click funcs to have interface click funcs.
+            setPosDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.deleteSet_dAdapter(getAdapterPosition());
+                }
+            });
+
+            setPosEdt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   listener.editSet_dAdapter(getAdapterPosition());
+                }
+            });
         }
+    }
+
+    public interface dragAdapterClickListener {
+        void deleteTimer_dAdapter(int position);
+        void editTimer_dAdapter(int position);
+        void deleteSet_dAdapter(int position);
+        void editSet_dAdapter(int position);
     }
 
 }

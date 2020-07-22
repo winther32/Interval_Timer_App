@@ -25,6 +25,7 @@
     <string name="total_time">Total Time</string>
     <string name="Save">SAVE</string>
     <string name="Done">DONE</string>
+    <string name="Cancel">CANCEL</string>
     <string name="Reset">RESET</string>
     <string name="Start">START</string>
     <string name="Stop">STOP</string>
@@ -32,9 +33,19 @@
     <string name="Delete">DELETE</string>
     <string name="set_name">Set Name</string>
     <string name="edit_set">Edit Set</string>
+    <string name="edit_timer">Edit Timer</string>
+    <string name="edit_workout">Edit Workout</string>
     <string name="set">Set</string>
     <string name="rep_time">Rep Time</string>
     <string name="base_rep_display">X1</string>
     <string name="timers">Timers</string>
+    <string name="timer">Timer</string>
     <string name="zero_numb">0</string>
+    <string name="name_your_workout">Name Your Workout</string>
+    <string name="name_your_set">Name Your Set</string>
+    <string name="new_timer">New Timer</string>
+    <string name="rename_set">Rename Set</string>
+    <string name="delete_set">Delete Set</string>
+    <string name="rename_workout">Rename Workout</string>
+    <string name="delete_workout">Delete Workout</string>
 </resources>

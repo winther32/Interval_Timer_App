@@ -25,27 +25,32 @@ import com.woxthebox.draglistview.swipe.ListSwipeItem;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener{
+public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener,
+        editDragAdapter.dragAdapterClickListener, WorkoutNameDialog.WorkoutNameDialogListener,
+        DeleteWorkoutDialog.DeleteWorkoutDialogListener {
 
-    TextView setName, repTime, totTime, iterations, deleteSwipe, editSwipe;
+    TextView setName, repTime, totTime, iterations;
     DragListView dragListView;
     Workout workout;
     Set set;
+    WorkoutItem workoutItem;
     FloatingActionButton addTimer, done;
+    Boolean newSet;
 
     ArrayList<Workout> workoutList; // Save/Load location (Probably better way to do this
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ////////// Init all vars w/views ///////////
+
         setContentView(R.layout.set_edit);
         Toolbar toolbar = findViewById(R.id.setToolbar);
         setSupportActionBar(toolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true); // Enable the Up button
-
-        ////////// Init all vars w/views ///////////
 
         setName = findViewById(R.id.editSetName);
         repTime = findViewById(R.id.editSetRepTime);
@@ -68,22 +73,28 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         // Get the set from workout
         int setIndex = getIntent().getIntExtra("Set Index", -1);
         if (setIndex == -1) {
+            newSet = true;
             set = new Set();
-//            WorkoutItem workoutItem = new WorkoutItem(set);
-//            workout.add(workoutItem);
-//            launchSetName();
+            workoutItem = new WorkoutItem(set);
+            set = workoutItem.getSet();
+            launchSetName();
         } else {
+            newSet = false;
+            workoutItem = workout.get(setIndex);
             set = workout.get(setIndex).getSet();
         }
 
 
         /////////// Init Display Times //////////////
 
+        setName.setText(set.Name);
+
         repTime.setText("" + String.format("%02d", set.Minutes) +
                 ":" + String.format("%02d", set.Seconds));
         int totSec = set.getTotalTime();
         int Min = totSec / 60;
         totSec = totSec % 60;
+
         totTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
 
@@ -106,7 +117,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
         dragListView.setCanDragHorizontally(false);
-        editDragAdapter itemAdapter = new editDragAdapter(set.setList, R.id.timer_swipe_card, true);
+        editDragAdapter itemAdapter = new editDragAdapter(set.setList, R.id.timer_swipe_card, true, this);
         dragListView.setAdapter(itemAdapter, true);
 
         /////// Buttons ///////////
@@ -121,6 +132,17 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (newSet){
+                    // If making a new set and set not empty, add set to workout
+                    if (!set.empty()) {
+                        workout.add(workoutItem);
+                    }
+                } else {
+                    // If editing existing set and set is empty remove from workout
+                    if (set.empty()) {
+                        workout.remove(workoutItem);
+                    }
+                }
                 saveWorkout();
                 backToEditWorkout();
             }
@@ -163,12 +185,13 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         finish();
     }
 
+
     /////////////////// Menu functions ////////////////
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_edit, menu);
+        getMenuInflater().inflate(R.menu.menu_set_edit, menu);
         return true;
     }
 
@@ -180,7 +203,19 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
 
         switch (item.getItemId()) {
             case android.R.id.home: // close activity on up button
+                if (set.empty()) {
+                    workout.remove(workoutItem);
+                }
                 backToEditWorkout();
+                return true;
+            case R.id.editSetRename:
+                launchSetName();
+                return true;
+            case R.id.editSetDelete:
+                // Create a deletion verification dialog
+                DeleteWorkoutDialog deleteWorkoutDialog = new DeleteWorkoutDialog();
+                deleteWorkoutDialog.setMode(workout.masterList.indexOf(workoutItem));
+                deleteWorkoutDialog.show(getSupportFragmentManager(), "Set Menu Delete Verify");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -201,7 +236,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         dragListView.getAdapter().addItem(set.setList.size(), item);
 
         // Update set values (rep time)
-        int totSec = set.Seconds + item.getTimer().Seconds;
+        int totSec = set.getRepTime();
         set.Seconds = totSec % 60;
         set.Minutes += totSec / 60;
 
@@ -224,7 +259,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         dragListView.getAdapter().removeItem(pos+1);
 
         // Update set values (rep time)
-        int totSec = set.Seconds + item.getTimer().Seconds;
+        int totSec = set.getRepTime();
         set.Seconds = totSec % 60;
         set.Minutes += totSec / 60;
 
@@ -238,5 +273,78 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         totSec = totSec % 60;
         totTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
+    }
+
+
+    /////////////////////// Edit Adapter interface funcs /////////////////////
+
+    @Override
+    public void deleteTimer_dAdapter(int position) {
+        // Update set values (rep time)
+        dragListView.getAdapter().removeItem(position);
+        int totSec = set.getRepTime();
+        set.Seconds = totSec % 60;
+        set.Minutes -= totSec / 60;
+
+        // Update rep time display
+        repTime.setText("" + String.format("%02d", set.Minutes) +
+                ":" + String.format("%02d", set.Seconds));
+
+        // Update total time display
+        totSec = set.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        totTime.setText("" + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
+    }
+
+    @Override
+    public void editTimer_dAdapter(int position) {
+        Timer timer = set.get(position);
+        NewTimerDialog timerDialog = new NewTimerDialog();
+        timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), position);
+        timerDialog.show(getSupportFragmentManager(), "Timer edit");
+    }
+
+    // Currently not used since no Sets in Sets
+    @Override
+    public void deleteSet_dAdapter(int position) {
+
+    }
+    @Override
+    public void editSet_dAdapter(int position) {
+
+    }
+
+
+    ///////////  Set Rename interface (WorkoutNameDialog) //////////
+
+    public void launchSetName() {
+        WorkoutNameDialog nameDialog = new WorkoutNameDialog();
+        nameDialog.setNameChange();
+        nameDialog.show(getSupportFragmentManager(), "Set Name Prompt");
+    }
+
+    @Override
+    public void passTitle(String title) {
+        if (!title.equals("")) {
+            set.Name = title;
+            setName.setText(title);
+        }
+    }
+
+
+    /////////// Delete Set dialog interface //////////////
+
+    // Should never be called form this activity;
+    @Override
+    public void deleteWorkout() {
+    }
+
+    @Override
+    public void delete_dialog_Set(int position) {
+        workout.remove(position);
+        saveWorkout();
+        backToEditWorkout();
     }
 }

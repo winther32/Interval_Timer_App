@@ -31,9 +31,22 @@ public class Set extends TimeUnit {
         Minutes += (totSec / 60) + timer.getTimer().Minutes;
     }
 
+    public boolean empty() {
+        return setList.isEmpty();
+    }
+
+    // Return rep time in Seconds
+    public int getRepTime() {
+        int totSec = 0;
+        for (int i = 0; i < setList.size(); i++) {
+            totSec += setList.get(i).getTimer().Seconds;
+        }
+        return totSec;
+    }
+
+    // Retunrn total time of set in seconds
     public int getTotalTime() {
-        int totSec = Seconds * Iterations;
-        totSec += Minutes * 60;
+        int totSec = getRepTime() * Iterations;
         return totSec;
     }
 
