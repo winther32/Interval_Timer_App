@@ -9,7 +9,8 @@ public class Timer extends TimeUnit {
 
     // Vars for set management
     String parentName = null; // Name of set if in one else null
-    int myIter, TotalIters; // Iteration of set timer is in and total set iterations.
+    // Used to hold number of iterations the parent has for running timer list
+    int parentIterations, parentTimerCount;
 
     // Timer obj constructor
     public Timer(String name, int minutes, int seconds) {

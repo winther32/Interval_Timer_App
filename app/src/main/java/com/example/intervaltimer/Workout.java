@@ -27,15 +27,12 @@ public class Workout {
 
     // Returns the total run time of workout in SECONDS.
     public int getTotalTime() {
-        int countMin = 0;
-        int countSec = 0;
+        int totSec = 0;
         // Get all times from all timers in workout
         for (int i = 0; i  < masterList.size(); i++) {
-            countMin += masterList.get(i).getMin();
-            countSec += masterList.get(i).getSec();
+            totSec += masterList.get(i).getTotalTime();
         }
-        countSec += (countMin * 60); // Convert to sec
-        return countSec;
+        return totSec;
     }
 
     // Add timer to end of list

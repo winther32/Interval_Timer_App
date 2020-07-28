@@ -65,9 +65,6 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             viewHolder.timerClock.setText("" + String.format("%02d", item.getTimer().Minutes) + ":" +
                     String.format("%02d", item.getTimer().Seconds));
 
-            // Super Cheesy way to pass the pos of view to use for swipe clicks.
-            viewHolder.timerPosDel.setHint("" + String.format("%d", position));
-            viewHolder.timerPosEdt.setHint("" + String.format("%d", position));
         } else if (item.getType() == TYPE_SET){
             editDragAdapter.SetViewHolder viewHolder = (editDragAdapter.SetViewHolder) holder;
             // Assign variables
@@ -75,21 +72,20 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             viewHolder.repTime.setText("" + String.format("%02d", item.getSet().Minutes) + ":" +
                     String.format("%02d", item.getSet().Seconds));
             viewHolder.timerCount.setText(Integer.toString(item.getSet().size()));
+            // Grammar for 1 or multiple timer(s)
             if (item.getSet().size() == 1) {
                 viewHolder.timerCountText.setText(R.string.timer);
             } else {
                 viewHolder.timerCountText.setText(R.string.timers);
             }
-
+            viewHolder.iterations.setText("X" + Integer.toString(item.getSet().Iterations));
+            // Set total time
             int totSec = item.getSet().getTotalTime();
             int min = totSec / 60;
             totSec = totSec % 60;
             viewHolder.totalTime.setText("" + String.format("%02d", min) + ":" +
                     String.format("%02d", totSec));
 
-            // Cheesy way to pass pos to view for swipe clicks.
-            viewHolder.setPosDel.setHint("" + String.format("%d", position));
-            viewHolder.setPosEdt.setHint("" + String.format("%d", position));
         }  // TODO: add a graceful error catch
 
     }

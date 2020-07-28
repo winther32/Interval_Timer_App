@@ -92,18 +92,14 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         }
 
 
-        /////////// Init Display Times //////////////
+        /////////// Init Display Times and iterations //////////////
 
         setName.setText(set.Name);
 
         repTime.setText("" + String.format("%02d", set.Minutes) +
                 ":" + String.format("%02d", set.Seconds));
-        int totSec = set.getTotalTime();
-        int Min = totSec / 60;
-        totSec = totSec % 60;
-
-        totTime.setText("" + String.format("%02d", Min) +
-                ":" + String.format("%02d", totSec));
+        setTotTime();
+        iterations.setText(Integer.toString(set.Iterations));
 
 
         ////////// Init Drag List ////////////
@@ -167,6 +163,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                             set.Iterations++;
                         }
                         iterations.setText(Integer.toString(set.Iterations));
+                        setTotTime();
                         // If held for a second trigger fast increase
                         handler.postDelayed(fastUp, 1000);
                         return true;
@@ -189,6 +186,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                             set.Iterations--;
                         }
                         iterations.setText(Integer.toString(set.Iterations));
+                        setTotTime();
                         // If held for one second then fast decrease
                         handler.postDelayed(fastDown, 1000);
                         return true;
@@ -202,6 +200,14 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
 
     }
 
+    // Function to set the total time display
+    public void setTotTime() {
+        int totSec = set.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        totTime.setText("" + String.format("%02d", Min) + ":" + String.format("%02d", totSec));
+    }
+
     // Runnable for the repeat increase action
     public Runnable fastUp = new Runnable() {
         @Override
@@ -210,6 +216,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                 set.Iterations++;
             }
             iterations.setText(Integer.toString(set.Iterations));
+            setTotTime();
             handler.postDelayed(this, 100);
         }
     };
@@ -222,6 +229,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                 set.Iterations--;
             }
             iterations.setText(Integer.toString(set.Iterations));
+            setTotTime();
             handler.postDelayed(this, 100);
         }
     };
@@ -259,43 +267,6 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         intent.putExtra("Workout Index", workoutList.indexOf(workout));
         startActivity(intent);
         finish();
-    }
-
-
-    /////////////////// Menu functions ////////////////
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_set_edit, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        switch (item.getItemId()) {
-            case android.R.id.home: // close activity on up button
-                if (set.empty()) {
-                    workout.remove(workoutItem);
-                }
-                backToEditWorkout();
-                return true;
-            case R.id.editSetRename:
-                launchSetName();
-                return true;
-            case R.id.editSetDelete:
-                // Create a deletion verification dialog
-                DeleteWorkoutDialog deleteWorkoutDialog = new DeleteWorkoutDialog();
-                deleteWorkoutDialog.setMode(workout.masterList.indexOf(workoutItem));
-                deleteWorkoutDialog.show(getSupportFragmentManager(), "Set Menu Delete Verify");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
 
@@ -431,4 +402,42 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         saveWorkout();
         backToEditWorkout();
     }
+
+    /////////////////// Menu functions ////////////////
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_set_edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()) {
+            case android.R.id.home: // close activity on up button
+                if (set.empty()) {
+                    workout.remove(workoutItem);
+                }
+                backToEditWorkout();
+                return true;
+            case R.id.editSetRename:
+                launchSetName();
+                return true;
+            case R.id.editSetDelete:
+                // Create a deletion verification dialog
+                DeleteWorkoutDialog deleteWorkoutDialog = new DeleteWorkoutDialog();
+                deleteWorkoutDialog.setMode(workout.masterList.indexOf(workoutItem));
+                deleteWorkoutDialog.show(getSupportFragmentManager(), "Set Menu Delete Verify");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
+

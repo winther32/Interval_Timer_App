@@ -390,6 +390,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         switch (item.getItemId()) {
             case android.R.id.home: // close activity on up button
+                saveWorkout(); // Save workout on the up button
                 Intent intent = new Intent(this, MainActivity.class );
                 startActivity(intent);
                 finish();
