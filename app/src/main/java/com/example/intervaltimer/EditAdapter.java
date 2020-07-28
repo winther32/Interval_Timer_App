@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+//  Note that this adapter is only used in the run workout activity now.
 public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder> {
 
     private ArrayList<Timer> timerList;
@@ -36,6 +37,11 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
         holder.timerName.setText(timer.Name);
         holder.timerClock.setText("" + String.format("%02d", timer.Minutes) + ":" +
                 String.format("%02d", timer.Seconds));
+        if (timer.parentName == null) {
+            holder.parentSet.setText("");
+        } else {
+            holder.parentSet.setText(timer.parentName);
+        }
     }
 
     @Override
@@ -45,12 +51,13 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
 
     public static class EditViewHolder extends RecyclerView.ViewHolder {
 
-        TextView timerName, timerClock;
+        TextView timerName, timerClock, parentSet;
 
         public EditViewHolder(@NonNull View itemView) {
             super(itemView);
             timerName = itemView.findViewById(R.id.editTimerName);
             timerClock = itemView.findViewById(R.id.editTimerClock);
+            parentSet = itemView.findViewById(R.id.timerCardSetName);
         }
     }
 }

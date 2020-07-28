@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,7 +47,8 @@ public class WorkoutRun extends AppCompatActivity {
     long MilliUp, totStart, newTime, upBuff = 0L;
 
     // Vars for basic timer
-    TextView currentTimerDisplay, currentNameDisplay;
+    ConstraintLayout setBox, repBox;
+    TextView currentTimerDisplay, currentNameDisplay, setName;
     Workout workout;
     ToggleButton startStop;
     Button reset;
@@ -136,14 +139,24 @@ public class WorkoutRun extends AppCompatActivity {
         twoBeeps = MediaPlayer.create(this, R.raw.beeps2);
         currentTimerDisplay = findViewById(R.id.topTimerDisplay);
         currentNameDisplay = findViewById(R.id.currentName);
+        setName = findViewById(R.id.runSetName);
+        setBox = findViewById(R.id.runSetNameConstraint);
+        repBox = findViewById(R.id.runRepConstraint);
         startStop = findViewById(R.id.startStopButton);
         reset = findViewById(R.id.resetButton);
 
         // Init displays from loaded workout (Current timer, recycler next timers)
         Timer firstTimer = runTimers.get(0);
         currentNameDisplay.setText(firstTimer.Name);
+        currentNameDisplay.setMovementMethod(new ScrollingMovementMethod());
         currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) + ":" +
                 String.format("%02d", firstTimer.Seconds));
+
+        // Set the parent set name if timer in set.
+        updateSetName(firstTimer);
+
+        // TODO: implement rep iterations?
+        repBox.setVisibility(View.GONE);
 
         // Init timeBuff for countdown
         TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
@@ -227,6 +240,7 @@ public class WorkoutRun extends AppCompatActivity {
                     currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
                             ":" + String.format("%02d", timerOrNull.Seconds));
                     currentNameDisplay.setText(timerOrNull.Name);
+                    updateSetName(timerOrNull);
                     // Pass new updated runnable (pause briefly before start user can see init numb)
                     handler.postDelayed(this, 50);
                     // Update next timer view
@@ -268,6 +282,7 @@ public class WorkoutRun extends AppCompatActivity {
         currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
                 ":" + String.format("%02d", firstTimer.Seconds));
         currentNameDisplay.setText(firstTimer.Name);
+        updateSetName(firstTimer); // Set name box update
 
         // Reset timer buff to countdown time
         MillisecondTime = 0L;
@@ -287,6 +302,17 @@ public class WorkoutRun extends AppCompatActivity {
         MilliUp = 0L;
         upBuff = 0L;
         progressBar.setProgress(0);
+    }
+
+    // Function to update the set name display next to running timer
+    public void updateSetName(Timer timer) {
+        if (timer.parentName == null) {
+            setBox.setVisibility(View.GONE);
+            setName.setText("");
+        } else {
+            setBox.setVisibility(View.VISIBLE);
+            setName.setText(timer.parentName);
+        }
     }
 
     // Launch edit view with given workout

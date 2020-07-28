@@ -26,6 +26,8 @@ public class Set extends TimeUnit {
     // Add a timer to the setList
     public void add(WorkoutItem timer){
         setList.add(timer);
+        timer.getTimer().parentName = Name; // Set the timer's parent as this Set with its ID.
+        // Update the rep Min and sec total.
         int totSec = Seconds + timer.getTimer().Seconds;
         Seconds = totSec % 60;
         Minutes += (totSec / 60) + timer.getTimer().Minutes;
@@ -44,7 +46,7 @@ public class Set extends TimeUnit {
         return totSec;
     }
 
-    // Retunrn total time of set in seconds
+    // Return total time of set in seconds
     public int getTotalTime() {
         int totSec = getRepTime() * Iterations;
         return totSec;

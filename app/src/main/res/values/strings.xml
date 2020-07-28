@@ -37,7 +37,7 @@
     <string name="edit_workout">Edit Workout</string>
     <string name="set">Set</string>
     <string name="rep_time">Rep Time</string>
-    <string name="base_rep_display">X1</string>
+    <string name="one">1</string>
     <string name="timers">Timers</string>
     <string name="timer">Timer</string>
     <string name="zero_numb">0</string>
@@ -48,4 +48,7 @@
     <string name="delete_set">Delete Set</string>
     <string name="rename_workout">Rename Workout</string>
     <string name="delete_workout">Delete Workout</string>
+    <string name="of">of</string>
+    <string name="rep_number">Rep Number</string>
+
 </resources>

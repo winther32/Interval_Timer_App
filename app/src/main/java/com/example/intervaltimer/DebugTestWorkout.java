@@ -40,11 +40,11 @@ public class DebugTestWorkout {
         testWorkout.add(w11);
 
         // Add timers
-        testWorkout.add(w1);
-        testWorkout.add(w2);
-        testWorkout.add(w3);
         testWorkout.add(w4);
         testWorkout.add(w5);
+        testWorkout.add(w6);
+        testWorkout.add(w7);
+        testWorkout.add(w8);
 //        testWorkout.add(w6);
 //        testWorkout.add(w7);
 //        testWorkout.add(w8);

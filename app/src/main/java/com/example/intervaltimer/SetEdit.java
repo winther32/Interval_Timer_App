@@ -3,10 +3,12 @@ package com.example.intervaltimer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -29,6 +31,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         editDragAdapter.dragAdapterClickListener, WorkoutNameDialog.WorkoutNameDialogListener,
         DeleteWorkoutDialog.DeleteWorkoutDialogListener {
 
+    ImageButton iterUp, iterDown;
     TextView setName, repTime, totTime, iterations;
     DragListView dragListView;
     Workout workout;
@@ -38,6 +41,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
     Boolean newSet;
 
     ArrayList<Workout> workoutList; // Save/Load location (Probably better way to do this
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +64,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         dragListView = findViewById(R.id.setDragList);
         addTimer = findViewById(R.id.setAddFab);
         done = findViewById(R.id.setDone);
+        iterUp = findViewById(R.id.setIterUp);
+        iterDown = findViewById(R.id.setIterDown);
 
         loadData(); // Load all workouts into workoutList
 
@@ -132,7 +139,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (newSet){
+                if (newSet) {
                     // If making a new set and set not empty, add set to workout
                     if (!set.empty()) {
                         workout.add(workoutItem);
@@ -148,7 +155,76 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
             }
         });
 
+
+        // Touch listeners for the up and down arrows on the set iterations
+        iterUp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Initial iterate up one
+                        if (set.Iterations < 99) {
+                            set.Iterations++;
+                        }
+                        iterations.setText(Integer.toString(set.Iterations));
+                        // If held for a second trigger fast increase
+                        handler.postDelayed(fastUp, 1000);
+                        return true;
+                    case (MotionEvent.ACTION_UP):
+                        // On release stop the fast up runnable;
+                        handler.removeCallbacks(fastUp);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        iterDown.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Initial decrement on first click
+                        if (set.Iterations > 1) {
+                            set.Iterations--;
+                        }
+                        iterations.setText(Integer.toString(set.Iterations));
+                        // If held for one second then fast decrease
+                        handler.postDelayed(fastDown, 1000);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        handler.removeCallbacks(fastDown);
+                        return true;
+                }
+                return false;
+            }
+        });
+
     }
+
+    // Runnable for the repeat increase action
+    public Runnable fastUp = new Runnable() {
+        @Override
+        public void run() {
+            if (set.Iterations < 99) {
+                set.Iterations++;
+            }
+            iterations.setText(Integer.toString(set.Iterations));
+            handler.postDelayed(this, 100);
+        }
+    };
+
+    // Runnable for the repeat decrease action
+    public Runnable fastDown = new Runnable() {
+        @Override
+        public void run() {
+            if (set.Iterations > 1) {
+                set.Iterations--;
+            }
+            iterations.setText(Integer.toString(set.Iterations));
+            handler.postDelayed(this, 100);
+        }
+    };
 
     // Function to save to shared Prefs
     private void saveWorkout() {
@@ -234,6 +310,9 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
     @Override
     public void addTimer(WorkoutItem item) {
         dragListView.getAdapter().addItem(set.setList.size(), item);
+
+        // Assign the set as the parent of the Timer being added to the set
+        item.getTimer().parentName = set.Name;
 
         // Update set values (rep time)
         int totSec = set.getRepTime();
@@ -330,6 +409,11 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         if (!title.equals("")) {
             set.Name = title;
             setName.setText(title);
+            // Change parent name for all timers in the Set
+            // Would be better if all timers could have a single reference to the set as the parent
+            for (int i = 0; i < set.setList.size(); i++) {
+                set.get(i).parentName = title;
+            }
         }
     }
 

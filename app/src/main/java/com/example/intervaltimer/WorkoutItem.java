@@ -63,6 +63,7 @@ public class WorkoutItem {
         }
     }
 
+    // Returns the type int of the WorkoutItem
     public int getType() {
         return active;
     }
@@ -74,10 +75,20 @@ public class WorkoutItem {
         } else { return null; }
     }
 
+    // Returns the set value of the item (can return null)
     public Set getSet() {
         if (active == TYPE_SET) {
             return set;
         } else { return null; }
+    }
+
+    // Used to get the generics or null;
+    public TimeUnit getActive() {
+        if (active == TYPE_TIMER) {
+            return timer;
+        } else { // (active == TYPE_SET) {
+            return set;
+        }
     }
 
 }
