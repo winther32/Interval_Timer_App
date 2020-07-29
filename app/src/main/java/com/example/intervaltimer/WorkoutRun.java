@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,6 +72,11 @@ public class WorkoutRun extends AppCompatActivity {
         // Enable the Up button
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+
+        // Set Run preference booleans from prefs set in settings
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String signature = sharedPreferences.getString("signature", "");
+
         // Loading in workoutList (probs faster way to init workout)
         loadData();
         // Getting the index of selected workout from the intent from WorkoutView
@@ -87,6 +93,7 @@ public class WorkoutRun extends AppCompatActivity {
         workout = workoutList.get(index);
         // Set bar title to workout name
         actionBar.setTitle(workout.workoutName);
+
 
         // TODO: Verify workout is not empty
 
