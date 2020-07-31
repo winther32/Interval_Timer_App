@@ -306,6 +306,9 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
     public void editTimer(WorkoutItem item, int pos) {
         // Rn jut add and new then remove the old timer to "edit"
         dragListView.getAdapter().addItem(pos, item);
+        // Assign the set as the parent of the Timer being added to the set
+        item.getTimer().parentName = set.Name;
+        // get rid of the old one
         dragListView.getAdapter().removeItem(pos+1);
 
         // Update set values (rep time)
@@ -380,14 +383,19 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         if (!title.equals("")) {
             set.Name = title;
             setName.setText(title);
-            // Change parent name for all timers in the Set
-            // Would be better if all timers could have a single reference to the set as the parent
-            for (int i = 0; i < set.setList.size(); i++) {
-                set.get(i).parentName = title;
-            }
+            // Change parent name for all timers in the Set based on set.Name
+            assignParentName();
         }
     }
 
+    // Assigning parent name for all timers in Set function
+    // Not ideal way to do this but will work
+    public void assignParentName() {
+        // Would be better if all timers could have a single reference to the set as the parent
+        for (int i = 0; i < set.setList.size(); i++) {
+            set.get(i).parentName = set.Name;
+        }
+    }
 
     /////////// Delete Set dialog interface //////////////
 

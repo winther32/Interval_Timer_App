@@ -44,6 +44,8 @@ public class NewTimerDialog extends AppCompatDialogFragment {
         Sec = view.findViewById(R.id.inSec);
 
         builder.setView(view);
+
+        // Change mode based on if Editing a timer or making a new one
         if (editMode) {
             builder.setTitle(getString(R.string.edit_timer));
             WorkoutName.setText(mName);
