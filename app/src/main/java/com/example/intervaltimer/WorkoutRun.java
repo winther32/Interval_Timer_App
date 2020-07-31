@@ -182,6 +182,10 @@ public class WorkoutRun extends AppCompatActivity {
         updateSetName(firstTimer);
         setCurrIter.setText("1"); // Will always start on first iter;
         setTotIter.setText(Integer.toString(firstTimer.parentIterations));
+        // Init of set position variable if the first timer is in a set
+        if (firstTimer.parentName != null) {
+            setPosition = 1;
+        }
 
         // TODO: implement rep iterations?
         repBox.setVisibility(View.GONE);
@@ -265,6 +269,20 @@ public class WorkoutRun extends AppCompatActivity {
                         delay = false;
                         endOfSet = true;
                     }
+
+                    // Parent Set rep info and iteration
+                    if (timerOrNull.parentName != null) { // Next timer in a set
+                        setPosition++;
+                        int currIter = (setPosition / timerOrNull.parentTimerCount);
+                        if (currIter == 0) { currIter = 1; } // Can never be on 0th rep
+                        setCurrIter.setText(Integer.toString(currIter));
+                        // Check if set is completed. If so reset setPos.
+                        if (setPosition >= (timerOrNull.parentTimerCount * timerOrNull.parentIterations)) {
+                            setPosition = 0;
+                            delay = true;
+                        }
+                    }
+
                     // Check if settings dictate a pause
                     if (tPause) { // Pause after every Timer
                         startStop.setChecked(false);
@@ -291,18 +309,6 @@ public class WorkoutRun extends AppCompatActivity {
                     // Set set info display
                     updateSetName(timerOrNull); // Name and box visibility
                     setTotIter.setText(Integer.toString(timerOrNull.parentIterations));
-                    // Parent Set rep info and iteration
-                    if (timerOrNull.parentName != null) { // Next timer in a set
-                        setPosition++;
-                        int currIter = (setPosition / timerOrNull.parentTimerCount);
-                        if (currIter == 0) { currIter = 1; } // Can never be on 0th rep
-                        setCurrIter.setText(Integer.toString(currIter));
-                        // Check if set is completed. If so reset setPos.
-                        if (setPosition >= (timerOrNull.parentTimerCount * timerOrNull.parentIterations)) {
-                            setPosition = 0;
-                            delay = true;
-                        }
-                    }
                 }
             } else { // Continue countdown, timer not done
                 Seconds = (int) (UpdateTime / 1000);
@@ -339,8 +345,16 @@ public class WorkoutRun extends AppCompatActivity {
         currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
                 ":" + String.format("%02d", firstTimer.Seconds));
         currentNameDisplay.setText(firstTimer.Name);
+
+        // Reset set information
         updateSetName(firstTimer); // Set name box update
-        setPosition = 0; // Reset Set position
+        setCurrIter.setText("1");
+        if (firstTimer.parentName != null) {
+            setPosition = 1;
+            setTotIter.setText(Integer.toString(firstTimer.parentIterations));
+        } else {
+            setPosition = 0; // Reset Set position
+        }
 
         // Reset timer buff to countdown time
         MillisecondTime = 0L;
