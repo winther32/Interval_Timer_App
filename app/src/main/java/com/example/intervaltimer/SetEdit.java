@@ -1,5 +1,6 @@
 package com.example.intervaltimer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
 
     Handler handler = new Handler();
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +97,6 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         /////////// Init Display Times and iterations //////////////
 
         setName.setText(set.Name);
-
         repTime.setText("" + String.format("%02d", set.Minutes) +
                 ":" + String.format("%02d", set.Seconds));
         setTotTime();
@@ -300,6 +301,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         totSec = totSec % 60;
         totTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
+
+        saveWorkout();
     }
 
     @Override
@@ -326,6 +329,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         totSec = totSec % 60;
         totTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
+
+        saveWorkout();
     }
 
 
@@ -349,6 +354,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         totSec = totSec % 60;
         totTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
+
+        saveWorkout();
     }
 
     @Override
@@ -357,6 +364,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         NewTimerDialog timerDialog = new NewTimerDialog();
         timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), position);
         timerDialog.show(getSupportFragmentManager(), "Timer edit");
+
+        saveWorkout();
     }
 
     // Currently not used since no Sets in Sets
@@ -386,6 +395,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
             // Change parent name for all timers in the Set based on set.Name
             assignParentName();
         }
+        saveWorkout();
     }
 
     // Assigning parent name for all timers in Set function
@@ -431,6 +441,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                 if (set.empty()) {
                     workout.remove(workoutItem);
                 }
+                saveWorkout();
                 backToEditWorkout();
                 return true;
             case R.id.editSetRename:

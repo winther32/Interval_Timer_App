@@ -51,6 +51,7 @@
     <string name="of">of</string>
     <string name="rep_number">Rep Number</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="set_edit">Set Edit</string>
 
     <!-- Settings Strings -->
     <string name="auto_pause">Automatic Pausing</string>

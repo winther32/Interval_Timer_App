@@ -199,6 +199,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     // Create a new set item and add it to the workout
     public void launchSetActivity() {
+        saveWorkout();
         Intent intent = new Intent(this, SetEdit.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout));
@@ -257,6 +258,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
         // Make complete button visible
         doneSave.setVisibility(View.VISIBLE);
+
+        saveWorkout();
     }
 
     // Used by NewTimerDialog to edit timer. Interface func.
@@ -272,6 +275,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         totSec = totSec % 60;
         wrkTime.setText("" + String.format("%02d", Min) +
                 ":" + String.format("%02d", totSec));
+
+        saveWorkout();
     }
 
 
@@ -301,6 +306,8 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             workout.workoutName = title;
             wrkName.setText(title);
         }
+
+        saveWorkout();
     }
 
 
@@ -316,7 +323,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     public void deleteWorkout() {
         // remove from workoutList array
         workoutList.remove(workout);
-        // Save updated array
+        // Save updated array ( dont use save workout since would add workout back in)
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -345,11 +352,14 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         if (workout.empty()){
             doneSave.setVisibility(View.GONE);
         }
+
+        saveWorkout();
     }
 
     @Override
     public void editTimer_dAdapter(int position) {
         Timer timer = workout.get(position).getTimer();
+        // Launch the newTimerDialog in edit mode. Save happens after edit completed in dialog
         NewTimerDialog timerDialog = new NewTimerDialog();
         timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), position);
         timerDialog.show(getSupportFragmentManager(), "Timer edit");
@@ -357,6 +367,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     @Override
     public void deleteSet_dAdapter(int position) {
+        // Launch delete workout dialog in set mode. Save occurs after confirmation
         DeleteWorkoutDialog deleteDialog = new DeleteWorkoutDialog();
         deleteDialog.setMode(position);
         deleteDialog.show(getSupportFragmentManager(), "Set Delete Verify");
@@ -364,6 +375,9 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     @Override
     public void editSet_dAdapter(int position) {
+        // Save workout before launch new activity
+        saveWorkout();
+        // Launch new activity for set management
         Intent intent = new Intent(this, SetEdit.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout));

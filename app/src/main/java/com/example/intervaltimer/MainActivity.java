@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+
+        // Set title of the toolbar
+        actionBar.setTitle(getResources().getString(R.string.my_workouts));
 
         // Load and set up recycler view
         loadData(); // Load any previously saved workouts into workoutList

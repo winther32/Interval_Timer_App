@@ -29,7 +29,7 @@ public class DebugTestWorkout {
 
     public DebugTestWorkout(){
         testWorkout = new Workout();
-        testWorkout.workoutName = "Debug Workout";
+        testWorkout.workoutName = "Example Workout";
 
         // Add timers to set
         s1.add(w1);
