@@ -66,7 +66,7 @@ public class WorkoutItem {
     // Method to get total time in sec of active. Takes iterations into account
     public int getTotalTime() {
         if (active == TYPE_TIMER) {
-            return timer.Seconds + (timer.Minutes * timer.Iterations);
+            return timer.Seconds + (timer.Minutes * 60); // potential to add timer iterations in here
         } else if (active == TYPE_SET) {
             return set.getTotalTime();
         } else {

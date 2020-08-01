@@ -146,7 +146,7 @@ public class WorkoutRun extends AppCompatActivity {
 
         // init Progress bar
         progressBar = findViewById(R.id.runProgressBar);
-        totalTime = workout.getTotalTime(); // total time in sec
+        totalTime = workout.getTotalTime() * 1000; // total time in milli sec.
         timeRun = 0;
 
         //////////////////////// Pertaining to Running Timer Functionality ////////////////////////
@@ -239,7 +239,7 @@ public class WorkoutRun extends AppCompatActivity {
             // Update Prog Bar
             MilliUp = SystemClock.elapsedRealtime() - totStart;
             newTime = upBuff + MilliUp;
-            timeRun = (int) (newTime / 1000);
+            timeRun = (int) (newTime); // / 1000);
             progressBar.setProgress((timeRun*100)/totalTime);
 
             // Update Timer vars

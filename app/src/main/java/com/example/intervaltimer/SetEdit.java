@@ -289,7 +289,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         // Update set values (rep time)
         int totSec = set.getRepTime();
         set.Seconds = totSec % 60;
-        set.Minutes += totSec / 60;
+        set.Minutes = totSec / 60;
 
         // Update rep time display
         repTime.setText("" + String.format("%02d", set.Minutes) +
@@ -317,7 +317,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         // Update set values (rep time)
         int totSec = set.getRepTime();
         set.Seconds = totSec % 60;
-        set.Minutes += totSec / 60;
+        set.Minutes = totSec / 60;
 
         // Update rep time display
         repTime.setText("" + String.format("%02d", set.Minutes) +
@@ -342,7 +342,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         dragListView.getAdapter().removeItem(position);
         int totSec = set.getRepTime();
         set.Seconds = totSec % 60;
-        set.Minutes -= totSec / 60;
+        set.Minutes = totSec / 60;
 
         // Update rep time display
         repTime.setText("" + String.format("%02d", set.Minutes) +

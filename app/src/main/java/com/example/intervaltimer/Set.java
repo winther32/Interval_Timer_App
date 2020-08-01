@@ -41,8 +41,11 @@ public class Set extends TimeUnit {
     public int getRepTime() {
         int totSec = 0;
         for (int i = 0; i < setList.size(); i++) {
-            totSec += setList.get(i).getTimer().Seconds;
+            totSec += setList.get(i).getTimer().Seconds + (setList.get(i).getTimer().Minutes * 60);
         }
+        // Done typically right after call of this function
+//        Seconds = totSec % 60;
+//        Minutes = totSec / 60;
         return totSec;
     }
 

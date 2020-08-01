@@ -236,49 +236,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         }
     }
 
-    //////////////// NewTimerDialog Interface funcs //////////////////////
-
-    // Launches the new dialog to prompt for new timer info. Part of edit screen
-    public void openTimerCreation() {
-        NewTimerDialog timerDialog = new NewTimerDialog();
-        timerDialog.show(getSupportFragmentManager(), "Timer creation");
-    }
-
-    // Used by the NewTimerDialog to create timer and put into this context. Interface func.
-    public void addTimer(WorkoutItem timer) {
-        // TODO: Find out how to appease studio so not warning
-        dragListView.getAdapter().addItem(workout.masterList.size(), timer);
-
-        // Update total time display
-        int totSec = workout.getTotalTime();
-        int Min = totSec / 60;
-        totSec = totSec % 60;
-        wrkTime.setText("" + String.format("%02d", Min) +
-                ":" + String.format("%02d", totSec));
-
-        // Make complete button visible
-        doneSave.setVisibility(View.VISIBLE);
-
-        saveWorkout();
-    }
-
-    // Used by NewTimerDialog to edit timer. Interface func.
-    public void editTimer(WorkoutItem timer, int pos) {
-
-        // Rn jut add and new then remove the old timer to "edit"
-        dragListView.getAdapter().addItem(pos, timer);
-        dragListView.getAdapter().removeItem(pos+1);
-
-        // Update total time display
-        int totSec = workout.getTotalTime();
-        int Min = totSec / 60;
-        totSec = totSec % 60;
-        wrkTime.setText("" + String.format("%02d", Min) +
-                ":" + String.format("%02d", totSec));
-
-        saveWorkout();
-    }
-
 
     //////////////////// WorkoutNameDialog Interface funcs //////////////////////////
 
@@ -336,11 +293,65 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         finish();
     }
 
+    // Variation on workout deletion dialog for set deletion.
     public void delete_dialog_Set(int position) {
         dragListView.getAdapter().removeItem(position);
         if (workout.empty()) {
             doneSave.setVisibility(View.GONE);
         }
+
+        // Update total time display
+        int totSec = workout.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        wrkTime.setText("" + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
+
+        saveWorkout();
+    }
+
+
+    //////////////// NewTimerDialog Interface funcs //////////////////////
+
+    // Launches the new dialog to prompt for new timer info. Part of edit screen
+    public void openTimerCreation() {
+        NewTimerDialog timerDialog = new NewTimerDialog();
+        timerDialog.show(getSupportFragmentManager(), "Timer creation");
+    }
+
+    // Used by the NewTimerDialog to create timer and put into this context. Interface func.
+    public void addTimer(WorkoutItem timer) {
+        // TODO: Find out how to appease studio so not warning
+        dragListView.getAdapter().addItem(workout.masterList.size(), timer);
+
+        // Update total time display
+        int totSec = workout.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        wrkTime.setText("" + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
+
+        // Make complete button visible
+        doneSave.setVisibility(View.VISIBLE);
+
+        saveWorkout();
+    }
+
+    // Used by NewTimerDialog to edit timer. Interface func.
+    public void editTimer(WorkoutItem timer, int pos) {
+
+        // Rn jut add and new then remove the old timer to "edit"
+        dragListView.getAdapter().addItem(pos, timer);
+        dragListView.getAdapter().removeItem(pos+1);
+
+        // Update total time display
+        int totSec = workout.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        wrkTime.setText("" + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
+
+        saveWorkout();
     }
 
 
@@ -352,6 +363,13 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         if (workout.empty()){
             doneSave.setVisibility(View.GONE);
         }
+
+        // Update total time display
+        int totSec = workout.getTotalTime();
+        int Min = totSec / 60;
+        totSec = totSec % 60;
+        wrkTime.setText("" + String.format("%02d", Min) +
+                ":" + String.format("%02d", totSec));
 
         saveWorkout();
     }
