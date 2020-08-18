@@ -1,8 +1,5 @@
 package com.example.intervaltimer;
 
-import android.os.Debug;
-import android.util.Log;
-
 import java.util.UUID;
 
 import static com.example.intervaltimer.TimeUnit.TYPE_SET;

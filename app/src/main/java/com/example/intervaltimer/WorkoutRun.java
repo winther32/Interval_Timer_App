@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 import static com.example.intervaltimer.TimeUnit.TYPE_SET;
 import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
-import static java.lang.StrictMath.floor;
 
 public class WorkoutRun extends AppCompatActivity {
 
