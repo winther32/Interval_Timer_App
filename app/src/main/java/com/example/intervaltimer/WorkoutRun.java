@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +41,7 @@ public class WorkoutRun extends AppCompatActivity {
     ArrayList<Timer> nextTimers = new ArrayList<>(); // For recycler display
     private ActionBar actionBar;
     private int position = 0; // Position in runTimers (may not be used)
+    private int setPosition = 0; // Used to track position in a set
 
     // Progress Bar vars (essentially just stop watch)
     ProgressBar progressBar;
@@ -45,7 +49,8 @@ public class WorkoutRun extends AppCompatActivity {
     long MilliUp, totStart, newTime, upBuff = 0L;
 
     // Vars for basic timer
-    TextView currentTimerDisplay, currentNameDisplay;
+    ConstraintLayout setBox, repBox;
+    TextView currentTimerDisplay, currentNameDisplay, setName, setCurrIter, setTotIter;
     Workout workout;
     ToggleButton startStop;
     Button reset;
@@ -53,7 +58,10 @@ public class WorkoutRun extends AppCompatActivity {
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     int Seconds, Minutes, MilliSeconds ;
     MediaPlayer shortBeep, twoBeeps;
+    Timer timerOrNull;
 
+    // Settings Booleans
+    Boolean tPause, sPause, endOfSet = false, delay = false; // Pause after timer/set automatically
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +73,7 @@ public class WorkoutRun extends AppCompatActivity {
         actionBar = getSupportActionBar();
         // Enable the Up button
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         // Loading in workoutList (probs faster way to init workout)
         loadData();
@@ -78,31 +87,45 @@ public class WorkoutRun extends AppCompatActivity {
 //            // Gracefully fail here
 //        }
 
+        // Init setting booleans
+        // Set Run preference booleans from prefs set in settings
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        tPause = sharedPreferences.getBoolean("timer pause", false);
+        sPause = sharedPreferences.getBoolean("set pause", false);
+
         // Init workout from list. Index from click
         workout = workoutList.get(index);
         // Set bar title to workout name
         actionBar.setTitle(workout.workoutName);
-        // Reset workout may change later if want to be able to pick up where left off
-        //workout.restart();
+
 
         // TODO: Verify workout is not empty
 
         // Init runTimers //
+        // For all items in the workout
         for (int i = 0; i < workout.size(); i++) {
             WorkoutItem item = workout.get(i);
+
             if (item.getType() == TYPE_SET) {
                 Set set = item.getSet();
-                for (int j = 0; j < set.size(); j++) {
-                    runTimers.add(set.get(j));
+                // For iterations of the set
+                for (int j = 1; j <= set.Iterations; j++) {
+                    // Add all timers in the Set
+                    for (int k = 0; k < set.size(); k++) {
+                        // Pass parent info to the timers being added
+                        set.get(k).parentIterations = set.Iterations;
+                        set.get(k).parentTimerCount = set.size();
+                        runTimers.add(set.get(k));
+                    }
                 }
+
             } else {
                 if (item.getType() == TYPE_TIMER) {
                     runTimers.add(item.getTimer());
                 }
-
                 // For Debug
                 else {
-                    Timer t1 = new Timer("Fail Safe", 1, 1);
+                    Timer t1 = new Timer("Item Type Error", 1, 1);
                     runTimers.add(t1);
                 }
             }
@@ -122,7 +145,7 @@ public class WorkoutRun extends AppCompatActivity {
 
         // init Progress bar
         progressBar = findViewById(R.id.runProgressBar);
-        totalTime = workout.getTotalTime(); // total time in sec
+        totalTime = workout.getTotalTime() * 1000; // total time in milli sec.
         timeRun = 0;
 
         //////////////////////// Pertaining to Running Timer Functionality ////////////////////////
@@ -136,14 +159,35 @@ public class WorkoutRun extends AppCompatActivity {
         twoBeeps = MediaPlayer.create(this, R.raw.beeps2);
         currentTimerDisplay = findViewById(R.id.topTimerDisplay);
         currentNameDisplay = findViewById(R.id.currentName);
+
+        // Set iteration Variables
+        setBox = findViewById(R.id.runSetNameConstraint);
+        setName = findViewById(R.id.runSetName);
+        setCurrIter = findViewById(R.id.runSetCurrentIter);
+        setTotIter = findViewById(R.id.runSetTotalIter);
+
+        repBox = findViewById(R.id.runRepConstraint);
         startStop = findViewById(R.id.startStopButton);
         reset = findViewById(R.id.resetButton);
 
         // Init displays from loaded workout (Current timer, recycler next timers)
         Timer firstTimer = runTimers.get(0);
         currentNameDisplay.setText(firstTimer.Name);
+        currentNameDisplay.setMovementMethod(new ScrollingMovementMethod());
         currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) + ":" +
                 String.format("%02d", firstTimer.Seconds));
+
+        // Set the the init Set info display
+        updateSetName(firstTimer);
+        setCurrIter.setText("1"); // Will always start on first iter;
+        setTotIter.setText(Integer.toString(firstTimer.parentIterations));
+        // Init of set position variable if the first timer is in a set
+        if (firstTimer.parentName != null) {
+            setPosition = 1;
+        }
+
+        // TODO: implement rep iterations?
+        repBox.setVisibility(View.GONE);
 
         // Init timeBuff for countdown
         TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
@@ -194,7 +238,7 @@ public class WorkoutRun extends AppCompatActivity {
             // Update Prog Bar
             MilliUp = SystemClock.elapsedRealtime() - totStart;
             newTime = upBuff + MilliUp;
-            timeRun = (int) (newTime / 1000);
+            timeRun = (int) (newTime); // / 1000);
             progressBar.setProgress((timeRun*100)/totalTime);
 
             // Update Timer vars
@@ -204,13 +248,53 @@ public class WorkoutRun extends AppCompatActivity {
             // Check if timer is at 0 or close enough :/ (hundredth sec accuracy I think)
             if (UpdateTime <= 0) {
                 // If here, current timer has ended
-                Timer timerOrNull = runTimers.get(++position); // Check for another timer
+
+                // Move to next position in runTimers
+                position++;
+                // Assigning the next timer or null if out of range;
+                if (position < runTimers.size()) {
+                    timerOrNull = runTimers.get(position); // Check for another timer
+                } else {
+                    timerOrNull = null;
+                }
+
                 if (timerOrNull == null) {
                     // Have reached end of workout
                     twoBeeps.start(); // Completion sound
                     resetRunDisplay();
-                } else { // Found another timer to run. Set and continue
-                    shortBeep.start();
+                } else { // Found another timer to run. Set and continue/pause
+                    // Delay end of set bool by 1 timer (ex. must complete last timer 5/5)
+                    if (delay) {
+                        delay = false;
+                        endOfSet = true;
+                    }
+
+                    // Parent Set rep info and iteration
+                    if (timerOrNull.parentName != null) { // Next timer in a set
+                        setPosition++;
+                        int currIter = (setPosition / timerOrNull.parentTimerCount);
+                        if (currIter == 0) { currIter = 1; } // Can never be on 0th rep
+                        setCurrIter.setText(Integer.toString(currIter));
+                        // Check if set is completed. If so reset setPos.
+                        if (setPosition >= (timerOrNull.parentTimerCount * timerOrNull.parentIterations)) {
+                            setPosition = 0;
+                            delay = true;
+                        }
+                    }
+
+                    // Check if settings dictate a pause
+                    if (tPause) { // Pause after every Timer
+                        startStop.setChecked(false);
+                    } else if (sPause && endOfSet) { // Pause on set completion
+                        startStop.setChecked(false);
+                        endOfSet = false;
+                    } else { // No Pauses active, continue with next timer
+                        // Pass new updated runnable (pause briefly before start user can see init numb)
+                        handler.postDelayed(this, 50);
+                    }
+
+                    // Updating Display for new Timer
+                    shortBeep.start(); // End of timer sound
                     // Update vars for new timer
                     TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
                     StartTime = SystemClock.elapsedRealtime();
@@ -218,11 +302,12 @@ public class WorkoutRun extends AppCompatActivity {
                     currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
                             ":" + String.format("%02d", timerOrNull.Seconds));
                     currentNameDisplay.setText(timerOrNull.Name);
-                    // Pass new updated runnable
-                    handler.postDelayed(this, 0);
                     // Update next timer view
                     nextTimers.remove(0);
                     runRecycler.getAdapter().notifyItemRemoved(0);
+                    // Set set info display
+                    updateSetName(timerOrNull); // Name and box visibility
+                    setTotIter.setText(Integer.toString(timerOrNull.parentIterations));
                 }
             } else { // Continue countdown, timer not done
                 Seconds = (int) (UpdateTime / 1000);
@@ -260,6 +345,16 @@ public class WorkoutRun extends AppCompatActivity {
                 ":" + String.format("%02d", firstTimer.Seconds));
         currentNameDisplay.setText(firstTimer.Name);
 
+        // Reset set information
+        updateSetName(firstTimer); // Set name box update
+        setCurrIter.setText("1");
+        if (firstTimer.parentName != null) {
+            setPosition = 1;
+            setTotIter.setText(Integer.toString(firstTimer.parentIterations));
+        } else {
+            setPosition = 0; // Reset Set position
+        }
+
         // Reset timer buff to countdown time
         MillisecondTime = 0L;
         TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
@@ -278,6 +373,17 @@ public class WorkoutRun extends AppCompatActivity {
         MilliUp = 0L;
         upBuff = 0L;
         progressBar.setProgress(0);
+    }
+
+    // Function to update the set name display next to running timer
+    public void updateSetName(Timer timer) {
+        if (timer.parentName == null) {
+            setBox.setVisibility(View.GONE);
+            setName.setText("");
+        } else {
+            setBox.setVisibility(View.VISIBLE);
+            setName.setText(timer.parentName);
+        }
     }
 
     // Launch edit view with given workout

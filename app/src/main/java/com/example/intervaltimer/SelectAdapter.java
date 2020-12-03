@@ -67,6 +67,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
         public void onClick(View v) {
             workoutClickListener.workoutClicked(allWorkouts.get(getAdapterPosition()));
         }
+
     }
 
     // Interface for clicking the recycler view

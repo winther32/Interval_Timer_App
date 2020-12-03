@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.woxthebox.draglistview.swipe.ListSwipeItem
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.woxthebox.draglistview.swipe.ListSwipeItem xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:leftViewId="@+id/swipeDelete"
-    app:rightViewId="@+id/swipeEdit"
+    app:leftViewId="@+id/swipeDeleteTimer"
+    app:rightViewId="@+id/swipeEditTimer"
     app:swipeViewId="@+id/item_layout">
 
     <TextView
-        android:id="@+id/swipeDelete"
+        android:id="@+id/swipeDeleteTimer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignTop="@+id/item_layout"
         android:layout_alignBottom="@+id/item_layout"
         android:background="#ff0000"
         android:gravity="start|center_vertical"
-        android:onClick="deleteSwipe"
         android:padding="16dp"
         android:text="@string/Delete"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/swipeEdit"
+        android:id="@+id/swipeEditTimer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignTop="@+id/item_layout"
         android:layout_alignBottom="@+id/item_layout"
         android:background="#0000ff"
         android:gravity="end|center_vertical"
-        android:onClick="editSwipe"
         android:padding="16dp"
         android:text="@string/Edit"
         android:textColor="@android:color/white"
@@ -50,7 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp">
+            android:layout_marginBottom="0dp"
+            app:cardCornerRadius="5dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/timer_swipe_card"
@@ -73,8 +71,8 @@
                     android:id="@+id/swipeTimerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="37dp"
-                    android:layout_marginLeft="37dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="5dp"
                     android:text="@string/timer_name"
                     android:textSize="14sp"

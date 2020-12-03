@@ -44,22 +44,24 @@ public class NewTimerDialog extends AppCompatDialogFragment {
         Sec = view.findViewById(R.id.inSec);
 
         builder.setView(view);
+
+        // Change mode based on if Editing a timer or making a new one
         if (editMode) {
-            builder.setTitle("Edit Timer");
+            builder.setTitle(getString(R.string.edit_timer));
             WorkoutName.setText(mName);
             Min.setText(mMin);
             Sec.setText(mSec);
         } else {
-            builder.setTitle("New Timer");
+            builder.setTitle(getString(R.string.new_timer));
         }
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Want nothing to happen so nothing here
                     }
                 })
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.Done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Where pass editText info back to underlying activity (workout view)

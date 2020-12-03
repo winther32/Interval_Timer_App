@@ -27,15 +27,12 @@ public class Workout {
 
     // Returns the total run time of workout in SECONDS.
     public int getTotalTime() {
-        int countMin = 0;
-        int countSec = 0;
+        int totSec = 0;
         // Get all times from all timers in workout
         for (int i = 0; i  < masterList.size(); i++) {
-            countMin += masterList.get(i).getMin();
-            countSec += masterList.get(i).getSec();
+            totSec += masterList.get(i).getTotalTime();
         }
-        countSec += (countMin * 60); // Convert to sec
-        return countSec;
+        return totSec;
     }
 
     // Add timer to end of list
@@ -43,38 +40,10 @@ public class Workout {
         masterList.add(item);
     }
 
-    // Remove timer at given index
-    public void remove(int position) { masterList.remove(position);}
+    // Remove timer at given index or given obj.
+    public void remove(WorkoutItem item) { masterList.remove(item);}
+    public  void remove(int position) { masterList.remove(position); }
 
-    ////// All following commented methods functionality is moving to Run activity
-
-//    // Iterate the position in workout
-//    public void next() {
-//        // Check to ensure use of next() will not create out of range index
-//        if (position < (timerList.size()-1)) {
-//            position++;
-//        }
-//    }
-//    // Gets the timer at current position
-//    public Timer currentTimer() {
-//        // Good idea to have a check like below
-//        //assert (0 <= position && position < masterList.size());
-//        return timerList.get(position);
-//    }
-//
-//    // Tries to return the next timer and iterate position. If no timer next, returns null.
-//    public Timer move_and_get() {
-//        if (position + 1 >= timerList.size()) {
-//            return null;
-//        } else {
-//            return timerList.get(++position);
-//        }
-//    }
-//
-//    // Resets the position of the workout to the start
-//    public void restart() {
-//        position = 0;
-//    }
 
     // Get a TimeUnit at a given pos
     public WorkoutItem get(int index) {

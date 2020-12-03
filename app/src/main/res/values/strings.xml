@@ -11,7 +11,7 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
-<!--    Strings used in display layouts-->
+    <!--    Strings used in display layouts-->
     <string name="my_workouts">My Workouts</string>
     <string name="progress">Progress</string>
     <string name="empty_timer_display">00:00</string>
@@ -25,6 +25,7 @@
     <string name="total_time">Total Time</string>
     <string name="Save">SAVE</string>
     <string name="Done">DONE</string>
+    <string name="Cancel">CANCEL</string>
     <string name="Reset">RESET</string>
     <string name="Start">START</string>
     <string name="Stop">STOP</string>
@@ -32,7 +33,45 @@
     <string name="Delete">DELETE</string>
     <string name="set_name">Set Name</string>
     <string name="edit_set">Edit Set</string>
+    <string name="edit_timer">Edit Timer</string>
+    <string name="edit_workout">Edit Workout</string>
     <string name="set">Set</string>
     <string name="rep_time">Rep Time</string>
-    <string name="base_rep_display">X1</string>
+    <string name="one">1</string>
+    <string name="timers">Timers</string>
+    <string name="timer">Timer</string>
+    <string name="zero_numb">0</string>
+    <string name="name_your_workout">Name Your Workout</string>
+    <string name="name_your_set">Name Your Set</string>
+    <string name="new_timer">New Timer</string>
+    <string name="rename_set">Rename Set</string>
+    <string name="delete_set">Delete Set</string>
+    <string name="rename_workout">Rename Workout</string>
+    <string name="delete_workout">Delete Workout</string>
+    <string name="of">of</string>
+    <string name="rep_number">Rep Number</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="set_edit">Set Edit</string>
+
+    <!-- Settings Strings -->
+    <string name="auto_pause">Automatic Pausing</string>
+    <string name="set_pause">Pause on set completion</string>
+    <string name="timer_pause">Pause on timer completion</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
 </resources>

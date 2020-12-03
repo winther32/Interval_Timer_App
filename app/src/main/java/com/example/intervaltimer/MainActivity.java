@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+
+        // Set title of the toolbar
+        actionBar.setTitle(getResources().getString(R.string.my_workouts));
 
         // Load and set up recycler view
         loadData(); // Load any previously saved workouts into workoutList
@@ -77,20 +83,23 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         finish();
     }
 
-    // Starts Run workout activity
-    public void launchWorkout(Workout workout) {
-        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
-        Intent intent = new Intent(this, WorkoutRun.class );
-        // Pass the index of the workout in workoutList to new activity.
-        intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
-        startActivity(intent);
-    }
-
-    // Call onClick of recycler workout list
+    // Call onClick of recycler workout item.
     @Override
     public void workoutClicked(Workout workout) {
         // What to do when recycler item is clicked ie run selected workout
-        launchWorkout(workout);
+        if (!workout.empty()) {
+            Intent intent = new Intent(this, WorkoutRun.class);
+            // Pass the index of the workout in workoutList to new activity.
+            intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = new Intent(this, WorkoutView.class);
+            // Pass the index of the workout in workoutList to new activity.
+            intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
+            startActivity(intent);
+            finish();
+        }
     }
 
 
@@ -110,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 

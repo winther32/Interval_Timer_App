@@ -5,36 +5,54 @@ import java.util.ArrayList;
 // Iterable groupings of timer objects
 public class Set extends TimeUnit {
 
-    // Also has name UUID, iterations, min and sec
-    private ArrayList<Timer> setList = new ArrayList<>();
+    // Also has name, UUID, iterations, min and sec
+    ArrayList<WorkoutItem> setList = new ArrayList<>();
 
-    //////////////////// Constructors ////////////////////
-
-    // Create a Set from 1 timer
-    public Set(Timer t1) {
-        setList.add(t1);
+    public Set() {
+        Name = "Set";
     }
-//
-//    // add a timer onto an existing Set
-//    public Set(Set oldSet, Timer t1) {
-//        oldSet.setList.add(t1);
-//    }
 
-    /////////////////// Methods ///////////////////////
+    public Set(String name) {
+        Name = name;
+    }
 
     // Return number of timers in Set
     public int size() { return setList.size(); }
 
     public Timer get(int index) {
-        return setList.get(index);
+        return setList.get(index).getTimer();
     }
 
     // Add a timer to the setList
-    public void add(Timer timer){
+    public void add(WorkoutItem timer){
         setList.add(timer);
-        int totSec = Seconds + timer.Seconds;
+        timer.getTimer().parentName = Name; // Set the timer's parent as this Set with its ID.
+        // Update the rep Min and sec total.
+        int totSec = Seconds + timer.getTimer().Seconds;
         Seconds = totSec % 60;
-        Minutes += (totSec / 60) + timer.Minutes;
+        Minutes += (totSec / 60) + timer.getTimer().Minutes;
+    }
+
+    public boolean empty() {
+        return setList.isEmpty();
+    }
+
+    // Return rep time in Seconds
+    public int getRepTime() {
+        int totSec = 0;
+        for (int i = 0; i < setList.size(); i++) {
+            totSec += setList.get(i).getTimer().Seconds + (setList.get(i).getTimer().Minutes * 60);
+        }
+        // Done typically right after call of this function
+//        Seconds = totSec % 60;
+//        Minutes = totSec / 60;
+        return totSec;
+    }
+
+    // Return total time of set in seconds
+    public int getTotalTime() {
+        int totSec = getRepTime() * Iterations;
+        return totSec;
     }
 
     // Type method for adapter

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EFEFEF"
+    android:scrollbars="horizontal"
     tools:context=".WorkoutRun">
 
     <Button
@@ -32,23 +34,25 @@
 
     <TextView
         android:id="@+id/currentName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:scrollbars="vertical"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/topTimerDisplay"
+        app:layout_constraintEnd_toEndOf="@+id/topTimerDisplay"
         app:layout_constraintStart_toStartOf="@+id/topTimerDisplay"
+        app:layout_constraintTop_toBottomOf="@+id/runProgressBar"
         tools:text="@string/timer_name" />
 
     <TextView
         android:id="@+id/topTimerDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
         android:text="@string/empty_timer_display"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/currentName" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/RunToolbar"
@@ -67,7 +71,6 @@
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="1dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
@@ -79,26 +82,144 @@
     <ProgressBar
         android:id="@+id/runProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:theme="@style/My_Progress_Bar"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/currentName"
+        android:theme="@style/My_Progress_Bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.915"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toEndOf="@+id/runProgressText"
         app:layout_constraintTop_toBottomOf="@+id/RunToolbar" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/runProgressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:text="@string/progress"
-        app:layout_constraintBottom_toTopOf="@+id/currentName"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/runProgressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/runProgressBar" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/runRepConstraint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@id/runNextTimers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/topTimerDisplay"
+        app:layout_constraintTop_toBottomOf="@id/runProgressBar">
+
+        <TextView
+            android:id="@+id/runCurrentRepIter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/one"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/runRepNumberText"
+            app:layout_constraintTop_toBottomOf="@+id/runRepNumberText" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/of"
+            app:layout_constraintBottom_toBottomOf="@+id/runCurrentRepIter"
+            app:layout_constraintStart_toEndOf="@+id/runCurrentRepIter"
+            app:layout_constraintTop_toTopOf="@+id/runCurrentRepIter" />
+
+        <TextView
+            android:id="@+id/runRepTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/one"
+            app:layout_constraintBottom_toBottomOf="@+id/textView12"
+            app:layout_constraintStart_toEndOf="@+id/textView12" />
+
+        <TextView
+            android:id="@+id/runRepNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rep_number"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/runSetNameConstraint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintBottom_toTopOf="@id/runNextTimers"
+        app:layout_constraintEnd_toStartOf="@+id/topTimerDisplay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/runProgressBar">
+
+        <TextView
+            android:id="@+id/runSetCurrentIter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/one"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/runSetName"
+            app:layout_constraintTop_toBottomOf="@+id/runSetName" />
+
+        <TextView
+            android:id="@+id/runSetofText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/of"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/runSetCurrentIter"
+            app:layout_constraintStart_toEndOf="@+id/runSetCurrentIter"
+            app:layout_constraintTop_toTopOf="@+id/runSetCurrentIter" />
+
+        <TextView
+            android:id="@+id/runSetTotalIter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/one"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/runSetofText"
+            app:layout_constraintStart_toEndOf="@+id/runSetofText" />
+
+        <TextView
+            android:id="@+id/runSetName"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="@string/set_name"
+            android:textSize="18sp"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

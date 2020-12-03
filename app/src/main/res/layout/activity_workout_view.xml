@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|center"
             android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="#C1C1C1"
+            app:backgroundTint="#00BCD4"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_baseline_format_list_bulleted_24" />
 
@@ -43,7 +43,7 @@
             android:id="@+id/newTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="#C1C1C1"
+            app:backgroundTint="#B388FF"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_baseline_timer_24" />
 
@@ -53,15 +53,21 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="#0F7463"
+            app:backgroundTint="#D81B60"
             app:rippleColor="#FFFFFF"
             app:srcCompat="@drawable/ic_outline_add_24" />
 
     </LinearLayout>
 
-
-
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/editFinishFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorGreen"
+        app:srcCompat="@drawable/ic_baseline_check_24" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

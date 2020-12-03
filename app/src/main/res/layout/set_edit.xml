@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#EFEFEF">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/setToolbar"
@@ -22,22 +23,22 @@
         android:id="@+id/setDragList"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:background="#EFEFEF"
         app:layout_constraintBottom_toTopOf="@+id/setAddFab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editSetIterations"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/editSetTotText">
+
+    </com.woxthebox.draglistview.DragListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/setAddFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_outline_add_24" />
@@ -56,39 +57,39 @@
         android:id="@+id/editSetTotTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/empty_timer_display"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/editSetIterations"
-        app:layout_constraintTop_toBottomOf="@+id/editSetName" />
+        app:layout_constraintBottom_toBottomOf="@+id/editSetRepTimeText"
+        app:layout_constraintStart_toEndOf="@+id/editSetTotText" />
 
     <TextView
         android:id="@+id/editSetTotText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:text="@string/total_time"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/editSetTotTime"
-        app:layout_constraintEnd_toStartOf="@+id/editSetTotTime" />
+        app:layout_constraintBottom_toBottomOf="@+id/editSetRepTimeText"
+        app:layout_constraintStart_toEndOf="@+id/editSetRepTime" />
 
     <TextView
         android:id="@+id/editSetName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:text="@string/set"
+        android:text="@string/set_name"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/editSetIterations"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setToolbar" />
 
@@ -114,18 +115,68 @@
         app:layout_constraintBottom_toBottomOf="@+id/editSetRepTimeText"
         app:layout_constraintStart_toEndOf="@+id/editSetRepTimeText" />
 
-    <TextView
-        android:id="@+id/editSetIterations"
-        android:layout_width="69dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:text="@string/base_rep_display"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/editSetTotTime"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/setDragList"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editSetName" />
+        app:layout_constraintStart_toEndOf="@+id/editSetTotTime"
+        app:layout_constraintTop_toTopOf="@+id/editSetName">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/editSetIterations"
+            app:layout_constraintEnd_toStartOf="@+id/editSetIterations" />
+
+        <TextView
+            android:id="@+id/editSetIterations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/one"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@id/constraintLayout"
+            app:layout_constraintStart_toStartOf="@id/constraintLayout"
+            app:layout_constraintTop_toTopOf="@id/constraintLayout" />
+
+        <ImageButton
+            android:id="@+id/setIterUp"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:background="#EFEFEF"
+            android:contentDescription="TODO"
+            android:longClickable="true"
+            android:tint="@color/colorGreen"
+            app:layout_constraintBottom_toTopOf="@+id/editSetIterations"
+            app:layout_constraintEnd_toEndOf="@+id/editSetIterations"
+            app:layout_constraintStart_toStartOf="@+id/editSetIterations"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/arrow_up_float" />
+
+        <ImageButton
+            android:id="@+id/setIterDown"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:background="#EFEFEF"
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editSetIterations"
+            app:layout_constraintStart_toStartOf="@+id/editSetIterations"
+            app:layout_constraintTop_toBottomOf="@id/editSetIterations"
+            app:srcCompat="@android:drawable/arrow_down_float" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

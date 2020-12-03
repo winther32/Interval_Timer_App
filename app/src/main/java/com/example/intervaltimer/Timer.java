@@ -1,13 +1,16 @@
 package com.example.intervaltimer;
 
+import java.util.UUID;
+
 // Basic Timer class
 public class Timer extends TimeUnit {
 
     // Name, iterations, UUID, Min, and Sec inherited
 
     // Vars for set management
-    String parentSet = null; // Name of set if in one else null
-    int myIter, TotalIters; // Iteration of set timer is in and total set iterations.
+    String parentName = null; // Name of set if in one else null
+    // Used to hold number of iterations the parent has for running timer list
+    int parentIterations, parentTimerCount;
 
     // Timer obj constructor
     public Timer(String name, int minutes, int seconds) {
