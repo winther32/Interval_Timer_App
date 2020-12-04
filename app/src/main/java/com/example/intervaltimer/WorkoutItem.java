@@ -5,8 +5,10 @@ import java.util.UUID;
 import static com.example.intervaltimer.TimeUnit.TYPE_SET;
 import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
 
+// This is a wrapper class for Timers and Sets so they can both be in the same ArrayList
+// A workoutItem cannot contain both a Timer and Set. But must contain exactly one timer or set
 public class WorkoutItem {
-    UUID ID = UUID.randomUUID();
+    public UUID ID = UUID.randomUUID();
     public Timer timer;
     public Set set;
     public int active;

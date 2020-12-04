@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceFragmentCompat;
 
+
+// Activity which holds all of the setting options
 public class SettingsActivity extends AppCompatActivity {
 
     @Override

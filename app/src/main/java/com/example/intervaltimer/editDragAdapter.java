@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import static com.example.intervaltimer.TimeUnit.TYPE_SET;
 import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
 
+// Adapter for workout edit view. Allows items to be dragged to reorder them as well as
+// side to side to expose the edit/delete options. This also holds both Set and Timer items in
+// different holders.
+// Taken from https://github.com/woxblom/DragListView
 public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapter.ViewHolder> {
 
     private ArrayList<WorkoutItem> masterList;
@@ -34,14 +38,18 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
     @Override
     public long getUniqueItemId(int position) {
         // Bit manipulation should give good enough ID to (unlikely to get collision)
-        // Should probably account for rare collision
         return ((int) masterList.get(position).ID.getMostSignificantBits() & Long.MAX_VALUE);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return masterList.get(position).getType();
     }
 
     @NonNull
     @Override
     public DragItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Check for type and use type appropriate layout.
+        // Check for type and use type appropriate layout (Set or Timer).
         if (viewType == TYPE_TIMER) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.swipe_item, parent, false);
@@ -50,22 +58,21 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.swipe_set, parent, false);
             return new editDragAdapter.SetViewHolder(view, clickListener);
-        } // TODO: add error catch
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull DragItemAdapter.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         WorkoutItem item = masterList.get(position);
-
+        // Build/Fill in if Timer
         if (item.getType() == TYPE_TIMER) {
             editDragAdapter.TimerViewHolder viewHolder = (editDragAdapter.TimerViewHolder) holder;
             // Assign vars.
             viewHolder.timerName.setText(item.getTimer().Name);
             viewHolder.timerClock.setText("" + String.format("%02d", item.getTimer().Minutes) + ":" +
                     String.format("%02d", item.getTimer().Seconds));
-
-        } else if (item.getType() == TYPE_SET){
+        } else if (item.getType() == TYPE_SET){ // Build if Set item
             editDragAdapter.SetViewHolder viewHolder = (editDragAdapter.SetViewHolder) holder;
             // Assign variables
             viewHolder.setName.setText(item.getSet().Name);
@@ -78,6 +85,7 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             } else {
                 viewHolder.timerCountText.setText(R.string.timers);
             }
+            // Set iteration text
             viewHolder.iterations.setText("X" + Integer.toString(item.getSet().Iterations));
             // Set total time
             int totSec = item.getSet().getTotalTime();
@@ -85,18 +93,11 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
             totSec = totSec % 60;
             viewHolder.totalTime.setText("" + String.format("%02d", min) + ":" +
                     String.format("%02d", totSec));
-
-        }  // TODO: add a graceful error catch
-
+        }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return masterList.get(position).getType();
-    }
-
+    // Holder for Timers
     public class TimerViewHolder extends DragItemAdapter.ViewHolder {
-
         public TextView timerName, timerClock, timerPosDel, timerPosEdt;
 
         public TimerViewHolder(final View itemView, final dragAdapterClickListener listener) {
@@ -113,7 +114,6 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
                     listener.deleteTimer_dAdapter(getAdapterPosition());
                 }
             });
-
             timerPosEdt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,9 +123,9 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
         }
     }
 
+    // Holder for set items
     public class SetViewHolder extends DragItemAdapter.ViewHolder {
-
-        TextView setName, timerCount, timerCountText, iterations, totalTime, repTime, setPosDel,
+        public TextView setName, timerCount, timerCountText, iterations, totalTime, repTime, setPosDel,
                 setPosEdt;
 
         public SetViewHolder(View itemView, final dragAdapterClickListener listener) {
@@ -147,7 +147,6 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
                     listener.deleteSet_dAdapter(getAdapterPosition());
                 }
             });
-
             setPosEdt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

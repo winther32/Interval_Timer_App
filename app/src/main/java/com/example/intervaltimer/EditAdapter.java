@@ -12,16 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-//  Note that this adapter is only used in the run workout activity now.
+// This adapter is only used in the run workout activity and only holds timers.
+// Holds the upcoming timers displayed while the workout is running.
+// TODO: refactor to change name to something more appropriate
 public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder> {
-
     private ArrayList<Timer> timerList;
-    Context context;
+    private Context context;
 
     public EditAdapter(Context ct, ArrayList<Timer> tList) {
         context = ct;
         timerList = tList;
     }
+
 
     @NonNull
     @Override
@@ -30,6 +32,7 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
         View view = inflater.inflate(R.layout.edit_row_timer, parent, false);
         return new EditViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull EditViewHolder holder, int position) {
@@ -49,8 +52,8 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
         return timerList.size();
     }
 
+    // holder for a row in the recyclerview
     public static class EditViewHolder extends RecyclerView.ViewHolder {
-
         TextView timerName, timerClock, parentSet;
 
         public EditViewHolder(@NonNull View itemView) {

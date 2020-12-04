@@ -12,18 +12,17 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+// Dialog used to get input for a new timer obj. as well as edit timer info
 public class NewTimerDialog extends AppCompatDialogFragment {
 
-    // Variables
-    EditText WorkoutName;
-    EditText Min, Sec;
-    NewTimerDialogListener listener;
+    private EditText WorkoutName;
+    private EditText Min, Sec;
+    private NewTimerDialogListener listener;
+    private boolean editMode = false;
+    private String mName, mMin, mSec;
+    private int position;
 
-    boolean editMode = false;
-    String mName, mMin, mSec;
-    int position;
-
-    // Potential use for loading in info of a given timer
+    // Used for loading in info of a given timer. Particularly for when editing a timer
     public void editInstance(String tName, String tMin, String tSec, int pos) {
         editMode = true;
         mName = tName;
@@ -35,7 +34,6 @@ public class NewTimerDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_timer_creation, null);
 
@@ -45,7 +43,7 @@ public class NewTimerDialog extends AppCompatDialogFragment {
 
         builder.setView(view);
 
-        // Change mode based on if Editing a timer or making a new one
+        // Change mode based on if editing a timer or making a new one
         if (editMode) {
             builder.setTitle(getString(R.string.edit_timer));
             WorkoutName.setText(mName);
@@ -58,21 +56,20 @@ public class NewTimerDialog extends AppCompatDialogFragment {
         builder.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Want nothing to happen so nothing here
+                        // Do nothing and close
                     }
                 })
                 .setPositiveButton(getString(R.string.Done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Where pass editText info back to underlying activity (workout view)
-                        // Will make new/edit the timer at this point
                         String name = WorkoutName.getText().toString();
                         String minutes = Min.getText().toString();
                         String seconds = Sec.getText().toString();
                         int intMinutes;
                         int intSeconds;
 
-                        // Null pointer checks on user number input
+                        // Null pointer checks on user number input. Default to 0
                         if (minutes.trim().length() == 0) {
                             intMinutes = 0;
                         } else {intMinutes = Integer.parseInt(minutes);}
@@ -86,11 +83,12 @@ public class NewTimerDialog extends AppCompatDialogFragment {
                             intMinutes += intSeconds / 60;
                             intSeconds = intSeconds % 60;
 
-                            // Set a maximum min size for display.
+                            // Set a maximum minute size for display.
                             if (intMinutes > 99) {
                                 intMinutes = 99;
                             }
 
+                            // Create a new item with new info.
                             Timer timer = new Timer(name, intMinutes, intSeconds);
                             WorkoutItem item= new WorkoutItem(timer);
                             if (editMode) {
@@ -106,7 +104,6 @@ public class NewTimerDialog extends AppCompatDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         try {
             listener = (NewTimerDialogListener) context;
         } catch (ClassCastException e){
@@ -115,7 +112,7 @@ public class NewTimerDialog extends AppCompatDialogFragment {
         }
     }
 
-    // interface with the class
+    // Note that this dialog passes the new timer item via this interface.
     public interface NewTimerDialogListener {
         void addTimer(WorkoutItem timer);
         void editTimer(WorkoutItem timer, int pos);

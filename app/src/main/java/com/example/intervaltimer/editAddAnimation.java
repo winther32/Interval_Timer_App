@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.view.View;
 
+// Define animation of + button into the add timer/set buttons in workout edit mode
 public class editAddAnimation {
     public static void showIn(final View v) {
         v.setVisibility(View.VISIBLE);

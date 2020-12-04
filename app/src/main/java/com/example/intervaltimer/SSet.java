@@ -2,7 +2,8 @@ package com.example.intervaltimer;
 
 import java.util.ArrayList;
 
-// Groups of set objects arranged in an ArrayList
+// Currently not implemented.
+// Class one level higher that set class. Is an iterable ArrayList that contains both sets and timers
 public class SSet extends TimeUnit {
     ArrayList<Set> ssList = new ArrayList<>();
 

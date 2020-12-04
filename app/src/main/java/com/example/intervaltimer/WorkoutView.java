@@ -26,20 +26,18 @@ import com.woxthebox.draglistview.swipe.ListSwipeItem;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-
+// This activity is the edit mode for workouts.
 public class WorkoutView extends AppCompatActivity implements NewTimerDialog.NewTimerDialogListener,
         WorkoutNameDialog.WorkoutNameDialogListener, DeleteWorkoutDialog.DeleteWorkoutDialogListener,
         editDragAdapter.dragAdapterClickListener {
 
-    Workout workout;
-    ArrayList<Workout> workoutList; // Location to save to.
-    TextView wrkName, wrkTime;
-
-    DragListView dragListView;
-
-    FloatingActionButton addFab, newTimer, newSet, doneSave;
-    Animation rotateForward, rotateBackwards;
-    Boolean isOpen = false;
+    private Workout workout;
+    private ArrayList<Workout> workoutList; // Location to save to.
+    private TextView wrkName, wrkTime;
+    private DragListView dragListView;
+    private FloatingActionButton addFab, newTimer, newSet, doneSave;
+    private Animation rotateForward, rotateBackwards;
+    private Boolean isOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +48,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true); // Enable the Up button
-
-
-        ////////////////////// Edit View functionality ///////////////////////////////////
-        // To Contain: recycler view of all timers in workout, save button and add
-        // timer and later set FAB.
 
         ////////////////////// Init workout and header labels ///////////////////////////
         wrkName = findViewById(R.id.dispWrkName);
@@ -84,7 +77,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         ///////////////////////Set up the drag list ///////////////////////
 
         dragListView = findViewById(R.id.editDragList);
-        // Needed for swipe capabilities
+        // Swipe listener needed for swipe capabilities
         dragListView.setSwipeListener(new ListSwipeHelper.OnSwipeListener() {
             @Override
             public void onItemSwipeStarted(ListSwipeItem item) {
@@ -158,6 +151,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
             }
         });
 
+        // Finished with edit mode. Launch run workout or empty notification.
         doneSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,12 +160,11 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
                     launchRunWorkout();
                 } else {
                     // Toast notification
-                    Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_SHORT)
+                    Toast.makeText(getApplicationContext(), "Workout is empty!", Toast.LENGTH_SHORT)
                     .show();
                 }
             }
         });
-
     }
 
     //Fab animation function
@@ -235,7 +228,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
 
-    //////////////////// WorkoutNameDialog Interface funcs //////////////////////////
+    //////////////////// WorkoutNameDialog Interface //////////////////////////
 
     // Launch function for Workout names dialog
     private void launchNamePrompt() {
@@ -250,23 +243,21 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Notification in background OK for now but not the best. (commented out)
         // Assert Something had been input
         if (title.length() == 0) {
-//            Snackbar.make(findViewById(android.R.id.content), "Workouts Must Have a Name", Snackbar.LENGTH_SHORT)
-//                    .show();
-//            launchNamePrompt();
+            title = workout.workoutName; // Use the previous or default name
         } else {
             // Workout name length cap
             if (title.length() > 64) {
                 title = title.substring(0,64);
             }
             workout.workoutName = title;
-            wrkName.setText(title);
         }
+        wrkName.setText(title);
 
         saveWorkout();
     }
 
 
-    /////////////// DeleteWorkoutDialog Interface funcs ////////////////////
+    /////////////// DeleteWorkoutDialog Interface ////////////////////
 
     // Launch function for verify delete workout prompt. Used in edit Menu
     public void launchDeleteWorkout() {
@@ -297,7 +288,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         if (workout.empty()) {
             doneSave.setVisibility(View.GONE);
         }
-
         // Update total time display
         int totSec = workout.getTotalTime();
         int Min = totSec / 60;
@@ -309,7 +299,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
 
-    //////////////// NewTimerDialog Interface funcs //////////////////////
+    //////////////// NewTimerDialog Interface //////////////////////
 
     // Launches the new dialog to prompt for new timer info. Part of edit screen
     public void openTimerCreation() {
@@ -319,7 +309,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     // Used by the NewTimerDialog to create timer and put into this context. Interface func.
     public void addTimer(WorkoutItem timer) {
-        // TODO: Find out how to appease studio so not warning
         dragListView.getAdapter().addItem(workout.masterList.size(), timer);
 
         // Update total time display
@@ -353,7 +342,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
     }
 
 
-    //////////// Edit and delete functions drag adapter interface  /////////////
+    //////////// editDrag adapter interface  /////////////
 
     @Override
     public void deleteTimer_dAdapter(int position) {
@@ -361,7 +350,6 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         if (workout.empty()){
             doneSave.setVisibility(View.GONE);
         }
-
         // Update total time display
         int totSec = workout.getTotalTime();
         int Min = totSec / 60;
@@ -435,5 +423,4 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

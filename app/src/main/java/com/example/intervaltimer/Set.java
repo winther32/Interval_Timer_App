@@ -19,6 +19,7 @@ public class Set extends TimeUnit {
     // Return number of timers in Set
     public int size() { return setList.size(); }
 
+    // Return Timer obj by index
     public Timer get(int index) {
         return setList.get(index).getTimer();
     }
@@ -33,19 +34,17 @@ public class Set extends TimeUnit {
         Minutes += (totSec / 60) + timer.getTimer().Minutes;
     }
 
+    // Return if set is empty
     public boolean empty() {
         return setList.isEmpty();
     }
 
-    // Return rep time in Seconds
+    // Return time of 1 full set rep in Seconds
     public int getRepTime() {
         int totSec = 0;
         for (int i = 0; i < setList.size(); i++) {
             totSec += setList.get(i).getTimer().Seconds + (setList.get(i).getTimer().Minutes * 60);
         }
-        // Done typically right after call of this function
-//        Seconds = totSec % 60;
-//        Minutes = totSec / 60;
         return totSec;
     }
 
@@ -55,7 +54,7 @@ public class Set extends TimeUnit {
         return totSec;
     }
 
-    // Type method for adapter
+    // Type method for drag adapter
     @Override
     public int getType() {
         return TYPE_SET;
