@@ -2,9 +2,9 @@ package com.example.intervaltimer;
 
 import java.util.UUID;
 
-// Basic Timer class
+// Basic Timer class. Holds the name, id, time, and parent set name if exists.
+// Note: This class must be put into a WorkoutItem in order to be put into a workout.
 public class Timer extends TimeUnit {
-
     // Name, iterations, UUID, Min, and Sec inherited
 
     // Vars for set management

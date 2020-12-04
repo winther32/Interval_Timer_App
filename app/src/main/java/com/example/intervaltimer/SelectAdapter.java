@@ -11,16 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+// This is the adapter for the RecyclerView of all workouts in the home page. Holds workout items
 public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectViewHolder> {
 
     private ArrayList<Workout> allWorkouts;
-    Context context;
+    private Context context;
     private OnWorkoutClickListener workoutClickListener;
 
-    // Constructor
     public SelectAdapter(Context ct, ArrayList<Workout> workouts, OnWorkoutClickListener clickListener) {
-        // Pull info from the workout list and arrange into more manageable arrays
-        // ie names, length first timer, difficulty
         context = ct;
         allWorkouts = workouts;
         workoutClickListener = clickListener;
@@ -36,7 +34,9 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
 
     @Override
     public void onBindViewHolder(@NonNull SelectViewHolder holder, int position) {
+        // Set name
         holder.wrkName.setText(allWorkouts.get(position).workoutName);
+        // Set total time of workout
         int totSec = allWorkouts.get(position).getTotalTime();
         int Min = totSec / 60;
         totSec = totSec % 60;
@@ -49,10 +49,9 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
         return allWorkouts.size();
     }
 
+    // Holder for workout items
     public class SelectViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        TextView wrkName, wrkRun;
-        OnWorkoutClickListener workoutClickListener;
+        public TextView wrkName, wrkRun;
 
         public SelectViewHolder(@NonNull View itemView, OnWorkoutClickListener listener) {
             super(itemView);
@@ -67,7 +66,6 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
         public void onClick(View v) {
             workoutClickListener.workoutClicked(allWorkouts.get(getAdapterPosition()));
         }
-
     }
 
     // Interface for clicking the recycler view

@@ -16,9 +16,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
-
+// Dialog box to prompt name change of either a workout or set. Like the delete dialog the
+// default mode is to prompt for Workout name. Can use the setNameChange method to convert to set name prompt
 public class WorkoutNameDialog extends AppCompatDialogFragment {
-
     private EditText wrkNameText;
     private WorkoutNameDialogListener listener;
     private Boolean mode_set = false;
@@ -40,7 +40,7 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
                 .setNegativeButton("", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        // Do nothing and close
                     }
                 })
                 .setPositiveButton(getString(R.string.Done), new DialogInterface.OnClickListener() {
@@ -50,6 +50,7 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
                         listener.passTitle(wrkName);
                     }
                 });
+
         if (mode_set) {
             builder.setTitle(getString(R.string.name_your_set));
             wrkNameText.setHint(getString(R.string.set_name));
@@ -62,7 +63,6 @@ public class WorkoutNameDialog extends AppCompatDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         try {
             listener = (WorkoutNameDialog.WorkoutNameDialogListener) context;
         } catch (ClassCastException e){

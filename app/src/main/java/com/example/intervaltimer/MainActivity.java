@@ -21,11 +21,12 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-
+// This constitutes the landing page activity when app is first opened.
+// Displays all workouts currently saved locally in recyclerView. Click to launch them.
 public class MainActivity extends AppCompatActivity implements SelectAdapter.OnWorkoutClickListener{
 
-    RecyclerView workoutRecycler;
-    ArrayList<Workout> workoutList;
+    private RecyclerView workoutRecycler;
+    private ArrayList<Workout> workoutList; // Local list of all workouts
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,23 +49,29 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
 
 
     // Load the saved workout list from Shared Prefs.
+    // Data is stored as a GSON file converted from JSON
     private void loadData(){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("Workout list", null);
         Type type = new TypeToken<ArrayList<Workout>>() {}.getType();
+
+        // Set local list from loaded workout list
         workoutList = gson.fromJson(json, type);
-        // If nothing saved create an empty list to use.
+
+        // Protocol for first time instantiation.
+        // If nothing has been saved before (first time load) instance
         if (workoutList == null) {
+            // Create a new list to store data
             workoutList = new ArrayList<>();
 
-            // Default for Testing
+            // Save a the default/example workout to display.
             saveWorkout(new DebugTestWorkout().testWorkout);
         }
     }
 
-    // Here for debug Test addition
     // Function to save to shared Prefs
+    // Saves ArrayList as JSON converted to GSON
     private void saveWorkout(Workout workout){
         workoutList.add(workout); // add newly created workout to save array
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -77,16 +84,19 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
 
 
     // Called onClick of the newWorkout Button
+    // Launches workout edit view of new empty workout
     public void launchNewWorkout(View view) {
         Intent intent = new Intent(this, WorkoutView.class );
         startActivity(intent);
         finish();
     }
 
-    // Call onClick of recycler workout item.
+    // Call onClick of recycler workout item. Interface of select adapter
+    // This should launch into the workout clicked
     @Override
     public void workoutClicked(Workout workout) {
-        // What to do when recycler item is clicked ie run selected workout
+        // What to do when recycler item is clicked ie run selected workout if exists
+        // If the workout is empty launch into edit view
         if (!workout.empty()) {
             Intent intent = new Intent(this, WorkoutRun.class);
             // Pass the index of the workout in workoutList to new activity.
@@ -102,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         }
     }
 
-
+    // Main activity menu methods
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -117,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SelectAdapter.OnW
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // Handle selection of the menu options
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);

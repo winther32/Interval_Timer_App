@@ -1,6 +1,9 @@
 package com.example.intervaltimer;
 
+//This class is the default/example workout that is automatically loaded on app's first load.
+
 public class DebugTestWorkout {
+    // Instantiate new timers
     Timer t1 = new Timer("1", 0, 1);
     Timer t2 = new Timer("2", 0, 2);
     Timer t3 = new Timer("3", 0, 3);
@@ -12,8 +15,10 @@ public class DebugTestWorkout {
     Timer t9 = new Timer("9", 0, 9);
     Timer t10 = new Timer("10", 0, 10);
 
+    // Instantiate new set
     Set s1 = new Set();
 
+    // Create workoutItem objs. w/timers
     WorkoutItem w1 = new WorkoutItem(t1);
     WorkoutItem w2 = new WorkoutItem(t2);
     WorkoutItem w3 = new WorkoutItem(t3);
@@ -27,6 +32,7 @@ public class DebugTestWorkout {
 
     Workout testWorkout;
 
+    // Create workout obj.
     public DebugTestWorkout(){
         testWorkout = new Workout();
         testWorkout.workoutName = "Example Workout";
