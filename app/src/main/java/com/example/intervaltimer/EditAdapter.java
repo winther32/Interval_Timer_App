@@ -37,13 +37,13 @@ public class EditAdapter extends RecyclerView.Adapter<EditAdapter.EditViewHolder
     @Override
     public void onBindViewHolder(@NonNull EditViewHolder holder, int position) {
         Timer timer = timerList.get(position);
-        holder.timerName.setText(timer.Name);
-        holder.timerClock.setText("" + String.format("%02d", timer.Minutes) + ":" +
-                String.format("%02d", timer.Seconds));
-        if (timer.parentName == null) {
+        holder.timerName.setText(timer.getName());
+        holder.timerClock.setText("" + String.format("%02d", timer.getMinutes()) + ":" +
+                String.format("%02d", timer.getSeconds()));
+        if (timer.getParentName() == null) {
             holder.parentSet.setText("");
         } else {
-            holder.parentSet.setText(timer.parentName);
+            holder.parentSet.setText(timer.getParentName());
         }
     }
 

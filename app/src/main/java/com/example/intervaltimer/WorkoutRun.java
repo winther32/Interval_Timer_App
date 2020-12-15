@@ -100,7 +100,7 @@ public class WorkoutRun extends AppCompatActivity {
         // Init workout from list. Index from click
         workout = workoutList.get(index);
         // Set bar title to workout name
-        actionBar.setTitle(workout.workoutName);
+        actionBar.setTitle(workout.getWorkoutName());
 
         // Verify workout is not empty. If empty launch edit activity
         if (workout.empty()) {
@@ -124,8 +124,8 @@ public class WorkoutRun extends AppCompatActivity {
                     // Add all timers in the Set
                     for (int k = 0; k < set.size(); k++) {
                         // Pass parent info to the timers being added
-                        set.get(k).parentIterations = set.Iterations;
-                        set.get(k).parentTimerCount = set.size();
+                        set.get(k).setParentIterations(set.getIterations()); ;
+                        set.get(k).setParentTimerCount(set.size());
                         runTimers.add(set.get(k));
                     }
                 }
@@ -183,17 +183,17 @@ public class WorkoutRun extends AppCompatActivity {
 
         // Init displays from loaded workout (Current timer, recycler next timers)
         Timer firstTimer = runTimers.get(0);
-        currentNameDisplay.setText(firstTimer.Name);
+        currentNameDisplay.setText(firstTimer.getName());
         currentNameDisplay.setMovementMethod(new ScrollingMovementMethod());
-        currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) + ":" +
-                String.format("%02d", firstTimer.Seconds));
+        currentTimerDisplay.setText("" + String.format("%02d", firstTimer.getMinutes()) + ":" +
+                String.format("%02d", firstTimer.getSeconds()));
 
         // Set the the init Set info display
         updateSetName(firstTimer);
         setCurrIter.setText("1"); // Will always start on first iter;
-        setTotIter.setText(Integer.toString(firstTimer.parentIterations));
+        setTotIter.setText(Integer.toString(firstTimer.getParentIterations()));
         // Init of set position variable if the first timer is in a set
-        if (firstTimer.parentName != null) {
+        if (firstTimer.getParentName() != null) {
             setPosition = 1;
         }
 
@@ -201,7 +201,7 @@ public class WorkoutRun extends AppCompatActivity {
         repBox.setVisibility(View.GONE);
 
         // Init timeBuff for countdown
-        TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
+        TimeBuff = (firstTimer.getMinutes() * 60 + firstTimer.getSeconds()) * 1000;
         // Init button states
         reset.setEnabled(false);
 
@@ -275,13 +275,13 @@ public class WorkoutRun extends AppCompatActivity {
                     }
 
                     // Update Parent Set rep info and iteration
-                    if (timerOrNull.parentName != null) { // Next timer is in a set
+                    if (timerOrNull.getParentName() != null) { // Next timer is in a set
                         setPosition++;
-                        int currIter = (setPosition / timerOrNull.parentTimerCount);
+                        int currIter = (setPosition / timerOrNull.getParentTimerCount());
                         if (currIter == 0) { currIter = 1; } // Can never be on 0th rep
                         setCurrIter.setText(Integer.toString(currIter));
                         // Check if set is completed. If so reset setPos.
-                        if (setPosition >= (timerOrNull.parentTimerCount * timerOrNull.parentIterations)) {
+                        if (setPosition >= (timerOrNull.getParentTimerCount() * timerOrNull.getParentIterations())) {
                             setPosition = 0;
                             delay = true;
                         }
@@ -301,18 +301,18 @@ public class WorkoutRun extends AppCompatActivity {
                     // Updating Display for new Timer
                     shortBeep.start(); // End of timer sound
                     // Update vars for new timer
-                    TimeBuff = (timerOrNull.Minutes * 60 + timerOrNull.Seconds) * 1000;
+                    TimeBuff = (timerOrNull.getMinutes() * 60 + timerOrNull.getSeconds()) * 1000;
                     StartTime = SystemClock.elapsedRealtime();
                     // Set new display
-                    currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.Minutes) +
-                            ":" + String.format("%02d", timerOrNull.Seconds));
-                    currentNameDisplay.setText(timerOrNull.Name);
+                    currentTimerDisplay.setText("" + String.format("%02d", timerOrNull.getMinutes()) +
+                            ":" + String.format("%02d", timerOrNull.getSeconds()));
+                    currentNameDisplay.setText(timerOrNull.getName());
                     // Update next timer view
                     nextTimers.remove(0);
                     runRecycler.getAdapter().notifyItemRemoved(0);
                     // Set set info display
                     updateSetName(timerOrNull); // Name and box visibility
-                    setTotIter.setText(Integer.toString(timerOrNull.parentIterations));
+                    setTotIter.setText(Integer.toString(timerOrNull.getParentIterations()));
                 }
             } else { // Continue countdown, timer not done
                 Seconds = (int) (UpdateTime / 1000);
@@ -346,23 +346,23 @@ public class WorkoutRun extends AppCompatActivity {
         Timer firstTimer = runTimers.get(position);
 
         // Change Main Display
-        currentTimerDisplay.setText("" + String.format("%02d", firstTimer.Minutes) +
-                ":" + String.format("%02d", firstTimer.Seconds));
-        currentNameDisplay.setText(firstTimer.Name);
+        currentTimerDisplay.setText("" + String.format("%02d", firstTimer.getMinutes()) +
+                ":" + String.format("%02d", firstTimer.getSeconds()));
+        currentNameDisplay.setText(firstTimer.getName());
 
         // Reset set information
         updateSetName(firstTimer); // Set name box update
         setCurrIter.setText("1");
-        if (firstTimer.parentName != null) {
+        if (firstTimer.getParentName() != null) {
             setPosition = 1;
-            setTotIter.setText(Integer.toString(firstTimer.parentIterations));
+            setTotIter.setText(Integer.toString(firstTimer.getParentIterations()));
         } else {
             setPosition = 0; // Reset Set position
         }
 
         // Reset timer buff to countdown time
         MillisecondTime = 0L;
-        TimeBuff = (firstTimer.Minutes * 60 + firstTimer.Seconds) * 1000;
+        TimeBuff = (firstTimer.getMinutes() * 60 + firstTimer.getSeconds()) * 1000;
         startStop.setChecked(false); // Reset start/stop toggle to "START"
         reset.setEnabled(false); // Reset disabled since already at start
         handler.removeCallbacks(runnable); // Remove runnable from Q
@@ -382,19 +382,18 @@ public class WorkoutRun extends AppCompatActivity {
 
     // Function to update the set name display next to running timer
     public void updateSetName(Timer timer) {
-        if (timer.parentName == null) {
+        if (timer.getParentName() == null) {
             setBox.setVisibility(View.GONE);
             setName.setText("");
         } else {
             setBox.setVisibility(View.VISIBLE);
-            setName.setText(timer.parentName);
+            setName.setText(timer.getParentName());
         }
     }
 
     // Launch edit view with given workout
     // Called onClick of the edit Button in Run menu
     public void launchEditWorkout(Workout workout) {
-        // TODO: Verify that workout exists in workoutList. (prevent null pointers)
         Intent intent = new Intent(this, WorkoutView.class );
         // Pass the index of the workout in workoutList to new activity.
         intent.putExtra("Workout Index", workoutList.indexOf(workout)); // DANGER workout needs to be saved before launch as of now.
