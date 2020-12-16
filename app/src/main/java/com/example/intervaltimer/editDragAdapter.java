@@ -38,7 +38,7 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
     @Override
     public long getUniqueItemId(int position) {
         // Bit manipulation should give good enough ID to (unlikely to get collision)
-        return ((int) masterList.get(position).ID.getMostSignificantBits() & Long.MAX_VALUE);
+        return ((int) masterList.get(position).getID().getMostSignificantBits() & Long.MAX_VALUE);
     }
 
     @Override
@@ -69,15 +69,15 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
         if (item.getType() == TYPE_TIMER) {
             editDragAdapter.TimerViewHolder viewHolder = (editDragAdapter.TimerViewHolder) holder;
             // Assign vars.
-            viewHolder.timerName.setText(item.getTimer().Name);
-            viewHolder.timerClock.setText("" + String.format("%02d", item.getTimer().Minutes) + ":" +
-                    String.format("%02d", item.getTimer().Seconds));
+            viewHolder.timerName.setText(item.getTimer().getName());
+            viewHolder.timerClock.setText("" + String.format("%02d", item.getMinutes()) + ":" +
+                    String.format("%02d", item.getSeconds()));
         } else if (item.getType() == TYPE_SET){ // Build if Set item
             editDragAdapter.SetViewHolder viewHolder = (editDragAdapter.SetViewHolder) holder;
             // Assign variables
-            viewHolder.setName.setText(item.getSet().Name);
-            viewHolder.repTime.setText("" + String.format("%02d", item.getSet().Minutes) + ":" +
-                    String.format("%02d", item.getSet().Seconds));
+            viewHolder.setName.setText(item.getSet().getName());
+            viewHolder.repTime.setText("" + String.format("%02d", item.getMinutes()) + ":" +
+                    String.format("%02d", item.getSeconds()));
             viewHolder.timerCount.setText(Integer.toString(item.getSet().size()));
             // Grammar for 1 or multiple timer(s)
             if (item.getSet().size() == 1) {
@@ -86,7 +86,7 @@ public class editDragAdapter extends DragItemAdapter<WorkoutItem, DragItemAdapte
                 viewHolder.timerCountText.setText(R.string.timers);
             }
             // Set iteration text
-            viewHolder.iterations.setText("X" + Integer.toString(item.getSet().Iterations));
+            viewHolder.iterations.setText("X" + Integer.toString(item.getSet().getIterations()));
             // Set total time
             int totSec = item.getSet().getTotalTime();
             int min = totSec / 60;

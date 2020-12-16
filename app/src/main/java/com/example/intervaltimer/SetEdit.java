@@ -77,8 +77,8 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         // Get appropriate workout from list
         int workoutIndex = getIntent().getIntExtra("Workout Index", -1);
         if (workoutIndex == -1) {
-            // TODO: add error to log
             Log.e("Debug", "SetEdit error: Unable to get workout from intent.");
+            // TODO: Add UI action on failure to get workout. Launch to home?
         } else {
             workout = workoutList.get(workoutIndex);
         }
@@ -101,11 +101,11 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
 
         /////////// Init Display Times and iterations //////////////
 
-        setName.setText(set.Name);
-        repTime.setText("" + String.format("%02d", set.Minutes) +
-                ":" + String.format("%02d", set.Seconds));
+        setName.setText(set.getName());
+        repTime.setText("" + String.format("%02d", set.getMinutes()) +
+                ":" + String.format("%02d", set.getSeconds()));
         setTotTime();
-        iterations.setText(Integer.toString(set.Iterations));
+        iterations.setText(Integer.toString(set.getIterations()));
 
 
         ////////// Init Drag List ////////////
@@ -126,7 +126,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         });
         dragListView.setLayoutManager(new LinearLayoutManager(this));
         dragListView.setCanDragHorizontally(false);
-        editDragAdapter itemAdapter = new editDragAdapter(set.setList, R.id.timer_swipe_card, true, this);
+        editDragAdapter itemAdapter = new editDragAdapter(set.getSetList(), R.id.timer_swipe_card, true, this);
         dragListView.setAdapter(itemAdapter, true);
 
 
@@ -169,7 +169,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                         if (set.Iterations < 99) {
                             set.Iterations++;
                         }
-                        iterations.setText(Integer.toString(set.Iterations));
+                        iterations.setText(Integer.toString(set.getIterations()));
                         setTotTime();
                         // If held for a second trigger fast increase
                         handler.postDelayed(fastUp, 1000);
@@ -191,7 +191,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
                         if (set.Iterations > 1) {
                             set.Iterations--;
                         }
-                        iterations.setText(Integer.toString(set.Iterations));
+                        iterations.setText(Integer.toString(set.getIterations()));
                         setTotTime();
                         // If held for one second then fast decrease
                         handler.postDelayed(fastDown, 1000);
@@ -223,7 +223,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
             if (set.Iterations < 99) {
                 set.Iterations++;
             }
-            iterations.setText(Integer.toString(set.Iterations));
+            iterations.setText(Integer.toString(set.getIterations()));
             setTotTime();
             handler.postDelayed(this, 100);
         }
@@ -236,7 +236,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
             if (set.Iterations > 1) {
                 set.Iterations--;
             }
-            iterations.setText(Integer.toString(set.Iterations));
+            iterations.setText(Integer.toString(set.getIterations()));
             setTotTime();
             handler.postDelayed(this, 100);
         }
@@ -288,19 +288,19 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
 
     @Override
     public void addTimer(WorkoutItem item) {
-        dragListView.getAdapter().addItem(set.setList.size(), item);
+        dragListView.getAdapter().addItem(set.size(), item);
 
         // Assign the set as the parent of the Timer being added to the set
-        item.getTimer().parentName = set.Name;
+        item.getTimer().setParentName(set.getName());
 
         // Update set values (rep time)
         int totSec = set.getRepTime();
-        set.Seconds = totSec % 60;
-        set.Minutes = totSec / 60;
+        set.setSeconds(totSec % 60);
+        set.setMinutes(totSec / 60);
 
         // Update rep time display
-        repTime.setText("" + String.format("%02d", set.Minutes) +
-                ":" + String.format("%02d", set.Seconds));
+        repTime.setText("" + String.format("%02d", set.getMinutes()) +
+                ":" + String.format("%02d", set.getSeconds()));
 
         // Update total time display
         totSec = set.getTotalTime();
@@ -317,18 +317,18 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         // Add the new then remove the old timer to "edit"
         dragListView.getAdapter().addItem(pos, item);
         // Assign the set as the parent of the Timer being added to the set
-        item.getTimer().parentName = set.Name;
+        item.getTimer().setParentName(set.getName());
         // get rid of the old one
         dragListView.getAdapter().removeItem(pos+1);
 
         // Update set values (rep time)
         int totSec = set.getRepTime();
-        set.Seconds = totSec % 60;
-        set.Minutes = totSec / 60;
+        set.setSeconds(totSec % 60);
+        set.setMinutes(totSec / 60);
 
         // Update rep time display
-        repTime.setText("" + String.format("%02d", set.Minutes) +
-                ":" + String.format("%02d", set.Seconds));
+        repTime.setText("" + String.format("%02d", set.getMinutes()) +
+                ":" + String.format("%02d", set.getSeconds()));
 
         // Update total time display
         totSec = set.getTotalTime();
@@ -348,12 +348,12 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
         // Update set values (rep time)
         dragListView.getAdapter().removeItem(position);
         int totSec = set.getRepTime();
-        set.Seconds = totSec % 60;
-        set.Minutes = totSec / 60;
+        set.setSeconds(totSec % 60);
+        set.setMinutes(totSec / 60);
 
         // Update rep time display
-        repTime.setText("" + String.format("%02d", set.Minutes) +
-                ":" + String.format("%02d", set.Seconds));
+        repTime.setText("" + String.format("%02d", set.getMinutes()) +
+                ":" + String.format("%02d", set.getSeconds()));
 
         // Update total time display
         totSec = set.getTotalTime();
@@ -369,7 +369,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
     public void editTimer_dAdapter(int position) {
         Timer timer = set.get(position);
         NewTimerDialog timerDialog = new NewTimerDialog();
-        timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), position);
+        timerDialog.editInstance(timer.getName(), String.valueOf(timer.getMinutes()) , String.valueOf(timer.getSeconds()), position);
         timerDialog.show(getSupportFragmentManager(), "Timer edit");
 
         saveWorkout();
@@ -396,7 +396,7 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
     @Override
     public void passTitle(String title) {
         if (!title.equals("")) {
-            set.Name = title; // Set in set obj info
+            set.setName(title); // Set in set obj info
             setName.setText(title); // Set new display name
             // Change parent name for all timers in the Set based on set.Name
             assignParentName();
@@ -408,8 +408,9 @@ public class SetEdit extends AppCompatActivity implements NewTimerDialog.NewTime
     // Not ideal way to do this but will work for now
     public void assignParentName() {
         // Would be better if all timers could have a single reference to the set as the parent
-        for (int i = 0; i < set.setList.size(); i++) {
-            set.get(i).parentName = set.Name;
+        String parentName = set.getName();
+        for (int i = 0; i < set.size(); i++) {
+            set.get(i).setParentName(parentName);
         }
     }
 

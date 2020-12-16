@@ -65,7 +65,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         } else {
             // Init workout from list. Index from click
             workout = workoutList.get(index);
-            wrkName.setText(workout.workoutName);
+            wrkName.setText(workout.getWorkoutName());
             int totSec = workout.getTotalTime();
             int Min = totSec / 60;
             totSec = totSec % 60;
@@ -243,13 +243,13 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         // Notification in background OK for now but not the best. (commented out)
         // Assert Something had been input
         if (title.length() == 0) {
-            title = workout.workoutName; // Use the previous or default name
+            title = workout.getWorkoutName(); // Use the previous or default name
         } else {
             // Workout name length cap
             if (title.length() > 64) {
                 title = title.substring(0,64);
             }
-            workout.workoutName = title;
+            workout.setWorkoutName(title);
         }
         wrkName.setText(title);
 
@@ -309,7 +309,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
 
     // Used by the NewTimerDialog to create timer and put into this context. Interface func.
     public void addTimer(WorkoutItem timer) {
-        dragListView.getAdapter().addItem(workout.masterList.size(), timer);
+        dragListView.getAdapter().addItem(workout.size(), timer);
 
         // Update total time display
         int totSec = workout.getTotalTime();
@@ -365,7 +365,7 @@ public class WorkoutView extends AppCompatActivity implements NewTimerDialog.New
         Timer timer = workout.get(position).getTimer();
         // Launch the newTimerDialog in edit mode. Save happens after edit completed in dialog
         NewTimerDialog timerDialog = new NewTimerDialog();
-        timerDialog.editInstance(timer.Name, String.valueOf(timer.Minutes) , String.valueOf(timer.Seconds), position);
+        timerDialog.editInstance(timer.getName(), String.valueOf(timer.getMinutes()) , String.valueOf(timer.getSeconds()), position);
         timerDialog.show(getSupportFragmentManager(), "Timer edit");
     }
 

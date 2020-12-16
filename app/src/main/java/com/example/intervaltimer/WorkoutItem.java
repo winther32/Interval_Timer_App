@@ -8,10 +8,10 @@ import static com.example.intervaltimer.TimeUnit.TYPE_TIMER;
 // This is a wrapper class for Timers and Sets so they can both be in the same ArrayList
 // A workoutItem cannot contain both a Timer and Set. But must contain exactly one timer or set
 public class WorkoutItem {
-    public UUID ID = UUID.randomUUID();
-    public Timer timer;
-    public Set set;
-    public int active;
+    private UUID ID = UUID.randomUUID();
+    private Timer timer;
+    private Set set;
+    private int active; // Boolean esk var to determine what is in the item, set or Timer
 
     // Basic Constructors
     public WorkoutItem(Timer T) {
@@ -27,36 +27,36 @@ public class WorkoutItem {
     }
 
 
-    // Methods to change type
-    public void setItem(Timer T) {
-        timer = T;
-        set = null;
-        active = TYPE_TIMER;
-    }
-
-    public void setItem(Set S) {
-        set = S;
-        timer = null;
-        active = TYPE_SET;
-    }
+    // Methods to change type (probably not needed)
+//    public void setItem(Timer T) {
+//        timer = T;
+//        set = null;
+//        active = TYPE_TIMER;
+//    }
+//
+//    public void setItem(Set S) {
+//        set = S;
+//        timer = null;
+//        active = TYPE_SET;
+//    }
 
     // method to retrieve minutes from the held non-null item
-    public int getMin(){
+    public int getMinutes(){
         if (active == TYPE_SET) {
-            return set.Minutes;
+            return set.getMinutes();
         } else if (active == TYPE_TIMER) {
-            return timer.Minutes;
+            return timer.getMinutes();
         } else {
             return -1;
         }
     }
 
     // method to retrieve seconds from the held non-null item
-    public int getSec() {
+    public int getSeconds() {
         if (active == TYPE_SET) {
-            return set.Seconds;
+            return set.getSeconds();
         } else if (active == TYPE_TIMER) {
-            return timer.Seconds;
+            return timer.getSeconds();
         } else {
             return -1;
         }
@@ -65,7 +65,7 @@ public class WorkoutItem {
     // Method to get total time in sec of active. Takes iterations into account
     public int getTotalTime() {
         if (active == TYPE_TIMER) {
-            return timer.Seconds + (timer.Minutes * 60); // potential to add timer iterations in here
+            return timer.getSeconds() + (timer.getMinutes() * 60); // potential to add timer iterations in here
         } else if (active == TYPE_SET) {
             return set.getTotalTime();
         } else {
@@ -80,16 +80,12 @@ public class WorkoutItem {
 
     // Accessor methods (can return null)
     public Timer getTimer() {
-        if (active == TYPE_TIMER) {
-            return timer;
-        } else { return null; }
+        return timer;
     }
 
     // Returns the set value of the item (can return null)
     public Set getSet() {
-        if (active == TYPE_SET) {
-            return set;
-        } else { return null; }
+        return set;
     }
 
     // Used to get the generics or null;
@@ -101,4 +97,7 @@ public class WorkoutItem {
         }
     }
 
+    public UUID getID() {
+        return ID;
+    }
 }

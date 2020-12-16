@@ -17,6 +17,7 @@ public class DebugTestWorkout {
 
     // Instantiate new set
     Set s1 = new Set();
+    Set s2 = new Set("Long Set");
 
     // Create workoutItem objs. w/timers
     WorkoutItem w1 = new WorkoutItem(t1);
@@ -35,7 +36,7 @@ public class DebugTestWorkout {
     // Create workout obj.
     public DebugTestWorkout(){
         testWorkout = new Workout();
-        testWorkout.workoutName = "Example Workout";
+        testWorkout.setWorkoutName("Example Workout");
 
         // Add timers to set
         s1.add(w1);
@@ -45,17 +46,19 @@ public class DebugTestWorkout {
         // Add set
         testWorkout.add(w11);
 
-        // Add timers
+        // Add timers in the middle
         testWorkout.add(w4);
         testWorkout.add(w5);
         testWorkout.add(w6);
         testWorkout.add(w7);
         testWorkout.add(w8);
-//        testWorkout.add(w6);
-//        testWorkout.add(w7);
-//        testWorkout.add(w8);
-//        testWorkout.add(w9);
-//        testWorkout.add(w10);
+
+        // Second set
+        s2.add(w9);
+        s2.add(w10);
+        WorkoutItem w12 = new WorkoutItem(s2);
+        testWorkout.add(w12);
+
 
     }
 }

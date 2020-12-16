@@ -8,13 +8,22 @@ import java.util.UUID;
 // Outter-most obj. in workout abstraction.
 // Made up of Sets and timers
 public class Workout {
+    // Lists left default access so other tools can manipulate (e.g. drag adapter)
     ArrayList<WorkoutItem> masterList; // Contains (S)sets and timers
-    String workoutName = "Workout"; // Default Name
+    private String workoutName = "Workout"; // Default Name
     //String level = "1"; // difficulty level
     private UUID ID = UUID.randomUUID(); // Make sure that each workout is unique
 
     public Workout() {
         masterList = new ArrayList<>();
+    }
+
+    public String getWorkoutName() {
+        return workoutName;
+    }
+
+    public void setWorkoutName(String workoutName) {
+        this.workoutName = workoutName;
     }
 
     // Returns the total run time of workout in SECONDS.
