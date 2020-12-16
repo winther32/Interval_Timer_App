@@ -3,6 +3,7 @@ package com.example.intervaltimer;
 
 import org.junit.Test;
 
+import java.security.spec.ECField;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 // Unit tests for the getter/setter methods of TimeUnit abstract class, using timer instances.
 public class TimeUnitUnitTest {
 
+    // Name Tests
     @Test
     public void getName_Test() {
         Timer timer = new Timer("Test", 1,0);
@@ -25,6 +27,8 @@ public class TimeUnitUnitTest {
         assertEquals("Test", timer.Name);
     }
 
+
+    // Minutes Testing
     @Test
     public void getMinutes_5() {
         Timer timer = new Timer("Test", 5,0);
@@ -32,10 +36,14 @@ public class TimeUnitUnitTest {
     }
 
     @Test
-    public void setMinutes_negativeIn_0() {
-        Timer timer = new Timer("Test", 0,2);
-        timer.setMinutes(-2);
-        assertEquals(0, timer.Minutes);
+    public void setMinutes_negativeIn_1() {
+        Timer timer = new Timer("Test", 1,0);
+        try {
+            timer.setMinutes(-2);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        assertEquals(1, timer.Minutes);
     }
 
     @Test
@@ -45,6 +53,8 @@ public class TimeUnitUnitTest {
         assertEquals(5, timer.Minutes);
     }
 
+
+    // Seconds testing
     @Test
     public void getSeconds_5() {
         Timer timer = new Timer("Test", 1,5);
@@ -54,7 +64,11 @@ public class TimeUnitUnitTest {
     @Test
     public void setSeconds_negativeIn_2() {
         Timer timer = new Timer("Test", 1,2);
-        timer.setSeconds(-5);
+        try {
+            timer.setSeconds(-5);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
         assertEquals(2, timer.Seconds);
     }
 
@@ -65,18 +79,26 @@ public class TimeUnitUnitTest {
     }
 
     @Test
-    public void setSeconds_over_59_2() {
+    public void setSeconds_over_59_0() {
         Timer timer = new Timer("Test", 1,0);
-        timer.setSeconds(61);
+        try {
+            timer.setSeconds(61);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
         assertEquals(0, timer.Seconds);
     }
 
+
+    // ID test
     @Test
     public void getID_UUID() {
         Timer timer = new Timer("Test", 1,0);
         assertNotNull(timer.getID());
     }
 
+
+    // Iterations Testing
     @Test
     public void getIterations_1() {
         Timer timer = new Timer("Iter", 1, 1);

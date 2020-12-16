@@ -80,16 +80,12 @@ public class WorkoutItem {
 
     // Accessor methods (can return null)
     public Timer getTimer() {
-        if (active == TYPE_TIMER) {
-            return timer;
-        } else { return null; }
+        return timer;
     }
 
     // Returns the set value of the item (can return null)
     public Set getSet() {
-        if (active == TYPE_SET) {
-            return set;
-        } else { return null; }
+        return set;
     }
 
     // Used to get the generics or null;

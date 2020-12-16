@@ -15,6 +15,7 @@ public class SetUnitTest {
         assertEquals(1, type);
     }
 
+
     // Empty/Null and size testing
     @Test
     public void new_set_is_empty() {
@@ -47,6 +48,7 @@ public class SetUnitTest {
         assertEquals(1, set.size());
     }
 
+
     // Rep Timing tests
     @Test
     public void empty_set_rep_time_0() {
@@ -65,12 +67,24 @@ public class SetUnitTest {
     }
 
     @Test
+    public void one_timer_3Iter_rep_time_100() {
+        Timer timer = new Timer("First", 1,40);
+        WorkoutItem item = new WorkoutItem(timer);
+        Set set = new Set();
+        set.add(item);
+        set.setIterations(3);
+        assertEquals(100, set.getRepTime());
+    }
+
+    @Test
     public void two_timer_repTime_90() {
         Timer t1 = new Timer("1", 0, 45);
         Timer t2 = new Timer("2", 0,45);
         Set set = new Set();
         WorkoutItem w1 = new WorkoutItem(t1);
         WorkoutItem w2 = new WorkoutItem(t2);
+        set.add(w1);
+        set.add(w2);
         assertEquals(90, set.getRepTime());
     }
 

@@ -39,7 +39,7 @@ public abstract class TimeUnit {
         if (minutes >=0) {
             Minutes = minutes;
         } else {
-            Log.e("TimeUnit", "Tried to set negative minute value");
+            throw new IllegalArgumentException("Minutes given < 0");
         }
     }
 
@@ -53,10 +53,10 @@ public abstract class TimeUnit {
             if (seconds < 60) {
                 Seconds = seconds;
             } else {
-                Log.e("TimeUnit", "tried to set over 59 sec to TimeUnit");
+                throw new IllegalArgumentException("Seconds given > 59");
             }
         } else {
-            Log.e("TimeUnit", "tried to set negative seconds to TimeUnit");
+            throw new IllegalArgumentException("Seconds given < 0");
         }
     }
 

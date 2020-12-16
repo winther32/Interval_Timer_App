@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 // Unit tests for Timer class methods
 public class TimerUnitTest {
 
+    // Constructor Testing
     @Test
     public void invalid_cons_args_Exception() {
         try {
@@ -17,6 +18,8 @@ public class TimerUnitTest {
         }
     }
 
+
+    // Type validation
     @Test
     public void timer_type_is_0() {
         Timer timer = new Timer("Test Timer", 0, 1);
@@ -24,12 +27,16 @@ public class TimerUnitTest {
         assertEquals(0, type);
     }
 
+
+    // Iteration Testing
     @Test
     public void default_iter_1() {
         Timer timer = new Timer("Test", 0, 10);
         assertEquals(1, timer.getIterations());
     }
 
+
+    // ParentName Testing
     @Test
     public void default_parentName_null() {
         Timer timer = new Timer("Test", 0, 5);
@@ -43,6 +50,8 @@ public class TimerUnitTest {
         assertEquals("Test", timer.getParentName());
     }
 
+
+    // ParentIter Testing
     @Test
     public void parentIter_getSet_2() {
         Timer timer = new Timer("ParIter", 1,1);
@@ -50,6 +59,8 @@ public class TimerUnitTest {
         assertEquals(2, timer.getParentIterations());
     }
 
+
+    // ParentTimerCount Testing
     @Test
     public void parentTimerCount_getSet_2() {
         Timer timer = new Timer("ParTC",1,1);
